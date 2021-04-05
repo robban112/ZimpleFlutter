@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "449198960487",
+    "firebase_url": "https://simple-ecb8f.firebaseio.com",
+    "project_id": "simple-ecb8f",
+    "storage_bucket": "simple-ecb8f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:449198960487:android:4ce1940176b07563",
+        "android_client_info": {
+          "package_name": "com.zimple.zimple"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "449198960487-m3jmloe031rtehh66n6vtmrgrhpf21jr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFzy7jlGS9zMkL4phPic-mrjk6N4z4FSA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "449198960487-m3jmloe031rtehh66n6vtmrgrhpf21jr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "449198960487-1e93q5m0266d7a4omk5bkj4sl682rt05.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.zimple.zimple"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
