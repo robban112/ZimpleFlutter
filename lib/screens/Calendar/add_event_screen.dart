@@ -35,6 +35,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   String location;
 
   bool changingEvent;
+  bool isSelectingPhotoProvider = false;
 
   final GlobalKey<FormState> _titleFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _startTimeFormKey = GlobalKey<FormState>();
@@ -300,8 +301,56 @@ class _AddEventScreenState extends State<AddEventScreen> {
               const SizedBox(height: 150),
             ],
           ),
-          _buildActionButtons()
+          _buildActionButtons(),
+          _buildPhotoButtons()
         ],
+      ),
+    );
+  }
+
+  Widget _buildPhotoButtons() {
+    return AnimatedPositioned(
+        duration: Duration(milliseconds: 200),
+        bottom: isSelectingPhotoProvider ? 16 : -300,
+        right: 16.0,
+        left: 16.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildPhotoButton(() {}, "Ta foto"),
+            SizedBox(height: 1.0),
+            _buildPhotoButton(() {}, "Välj foto"),
+            SizedBox(height: 5.0),
+            _buildPhotoButton(() {
+              setState(
+                () {
+                  isSelectingPhotoProvider = false;
+                },
+              );
+            }, "Avbryt"),
+          ],
+        ));
+  }
+
+  Widget _buildPhotoButton(Function onTap, String text) {
+    return Container(
+      height: 75.0,
+      width: 120,
+      child: ButtonTheme(
+        height: 60.0,
+        child: ElevatedButton(
+          child: Text(text, style: TextStyle(fontSize: 20.0)),
+          onPressed: () {
+            onTap();
+          },
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(100.0, 50.0),
+            elevation: 5,
+            primary: Colors.white,
+            onPrimary: Colors.black,
+          ),
+        ),
       ),
     );
   }
@@ -327,7 +376,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
             Icon(Icons.chevron_right)
           ],
         ),
-        onTap: () {});
+        onTap: () {
+          setState(() {
+            isSelectingPhotoProvider = !isSelectingPhotoProvider;
+          });
+        });
   }
 
   ListTile _buildPersonsListTile(BuildContext context) {

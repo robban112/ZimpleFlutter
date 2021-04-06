@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:zimple/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import '../model/event.dart';
@@ -51,17 +53,24 @@ class WeekView extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               physics: ClampingScrollPhysics(),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  VerticalTimeContainer(
-                    width: verticalTimeContainerWidth,
-                    minuteHeight: _minuteHeight,
-                  ),
+              child: Stack(
+                children: [
                   Row(
-                    children: _buildHoursAndEvents(
-                        dates, eventLayoutManager, dayWidth),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      VerticalTimeContainer(
+                        width: verticalTimeContainerWidth,
+                        minuteHeight: _minuteHeight,
+                      ),
+                      Row(
+                        children: _buildHoursAndEvents(
+                            dates, eventLayoutManager, dayWidth),
+                      ),
+                    ],
                   ),
+                  CurrentTimeLine(
+                    minuteHeight: this._minuteHeight,
+                  )
                 ],
               ),
             ),
@@ -89,7 +98,7 @@ class WeekView extends StatelessWidget {
           if (events.isNotEmpty)
             Stack(
               children: events,
-            )
+            ),
         ],
       );
     });
@@ -132,6 +141,61 @@ class HourContainer extends StatelessWidget {
           bottom: BorderSide(width: 0.2),
         ),
         color: color,
+      ),
+    );
+  }
+}
+
+class CurrentTimeLine extends StatefulWidget {
+  double minuteHeight;
+  CurrentTimeLine({this.minuteHeight});
+  @override
+  _CurrentTimeLineState createState() => _CurrentTimeLineState();
+}
+
+class _CurrentTimeLineState extends State<CurrentTimeLine> {
+  var now = new DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0);
+  Timer timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(minutes: 1), (timer) {
+      setState(() {
+        //now = DateTime.now();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    timer.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: (now.hour * 60 + now.minute) * widget.minuteHeight - 8),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Text(
+              dateToHourMinute(now),
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 4.0),
+          Expanded(
+            child: Container(
+              height: 1.0,
+              decoration: const BoxDecoration(color: Colors.red),
+            ),
+          ),
+        ],
       ),
     );
   }

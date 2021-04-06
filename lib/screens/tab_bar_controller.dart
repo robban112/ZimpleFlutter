@@ -2,6 +2,7 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
 import '../network/firebase_event_manager.dart';
 import '../network/firebase_user_manager.dart';
 import '../network/firebase_person_manager.dart';
@@ -18,7 +19,7 @@ class TabBarController extends StatefulWidget {
 
 class _TabBarControllerState extends State<TabBarController>
     with TickerProviderStateMixin<TabBarController> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  //final _navigatorKey = GlobalKey<NavigatorState>();
 
   String userName;
   String userToken;
@@ -29,7 +30,6 @@ class _TabBarControllerState extends State<TabBarController>
   EventManager eventManager;
   PersonManager personManager;
   bool loading = true;
-  int _selectedIndex = 1;
   PersistentTabController _controller;
 
   @override
@@ -58,6 +58,7 @@ class _TabBarControllerState extends State<TabBarController>
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
               ),
             ),
+            TimeReportingScreen(),
             Container()
           ]
         : [
@@ -65,6 +66,7 @@ class _TabBarControllerState extends State<TabBarController>
               user: user,
               personManager: personManager,
             ),
+            TimeReportingScreen(),
             SettingsScreen()
           ];
   }
@@ -78,8 +80,14 @@ class _TabBarControllerState extends State<TabBarController>
         inactiveColor: Colors.grey,
       ),
       PersistentBottomNavBarItem(
+        icon: Icon(Icons.timer),
+        title: ("Tidrapportering"),
+        activeColor: Colors.lightBlue,
+        inactiveColor: Colors.grey,
+      ),
+      PersistentBottomNavBarItem(
         icon: Icon(Icons.settings),
-        title: ("Inställningar"),
+        title: ("Verktyg"),
         activeColor: Colors.lightBlue,
         inactiveColor: Colors.grey,
       ),

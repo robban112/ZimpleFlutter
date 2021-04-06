@@ -1,6 +1,7 @@
 import 'package:zimple/model/person.dart';
 import 'package:zimple/screens/Calendar/add_event_screen.dart';
 import 'package:zimple/screens/Calendar/person_select_screen.dart';
+import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
 import 'package:zimple/screens/settings_screen.dart';
 import 'package:zimple/screens/todo_screen.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class _ZimpleState extends State<Zimple> {
     initializeDateFormatting('sv_SE');
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Montserrat', accentColor: Colors.lightBlue),
-      initialRoute: LoginScreen.routeName,
+      initialRoute: TabBarController.routeName,
       routes: {
         WelcomeScreen.routeName: (context) => WelcomeScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
@@ -56,7 +57,8 @@ class _ZimpleState extends State<Zimple> {
         AddEventScreen.routeName: (context) =>
             AddEventScreen(persons: mockperson),
         PersonSelectScreen.routeName: (context) =>
-            PersonSelectScreen(persons: mockperson)
+            PersonSelectScreen(persons: mockperson),
+        TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
       },
     );
   }

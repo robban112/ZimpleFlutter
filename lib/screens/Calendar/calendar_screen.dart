@@ -39,7 +39,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   FirebaseStorageManager firebaseStorageManager;
   EventManager eventManager = EventManager(events: []);
   bool loading = true;
-  double _minuteHeight = 0.5;
+  double _minuteHeight = 0.6;
   int _numberOfDays = 7;
   DateTime dateAggregator;
   bool isCopyingEvent = false;
@@ -102,7 +102,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     }
                   },
                 ),
-                buildCopyWidget(),
+                buildCopyWidget()
               ],
             ),
     );
