@@ -21,9 +21,12 @@ class TimereportManager {
 
   List<TimeReport> getTimeReportsByMonth(DateTime date) {}
 
-  List<TimeReport> sortTimereportsByStartDate(List<TimeReport> events) {
-    events.sort((a, b) => b.startDate.compareTo(a.startDate));
-    return events;
+  List<TimeReport> sortTimereportsByStartDate(List<TimeReport> timereports) {
+    if (timereports == null) {
+      return null;
+    }
+    timereports.sort((a, b) => b.startDate.compareTo(a.startDate));
+    return timereports;
   }
 
   void sortTimereportsByMonth(List<TimeReport> timereports) {

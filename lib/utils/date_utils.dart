@@ -10,6 +10,14 @@ bool isSameWeek(DateTime date1, DateTime date2) {
   return weekNumber(date1) == weekNumber(date2);
 }
 
+extension DateOnlyCompare on DateTime {
+  bool isSameDate(DateTime other) {
+    return this.year == other.year &&
+        this.month == other.month &&
+        this.day == other.day;
+  }
+}
+
 bool isCurrentWeek(DateTime date) {
   var now = DateTime.now();
   var _weekNumber = weekNumber(date);

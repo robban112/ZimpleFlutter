@@ -24,9 +24,9 @@ class TimereportingDetails extends StatelessWidget {
       title: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "",
+          "Tidrapport detaljer",
           style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
         ),
       ),
       leading: IconButton(
@@ -39,6 +39,9 @@ class TimereportingDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<ManagerProvider>(context, listen: false).user;
+    var eventManager =
+        Provider.of<ManagerProvider>(context, listen: true).eventManager;
+    Event event = eventManager.getEventForKey(key: timereport.eventId);
     return Scaffold(
       appBar: _buildAppbar(context),
       body: SingleChildScrollView(
@@ -51,7 +54,11 @@ class TimereportingDetails extends StatelessWidget {
                   iconData: Icons.access_time,
                   title: dateToYearMonthDay(timereport.startDate),
                   subtitle:
-                      '${dateToHourMinute(timereport.startDate)} - ${dateToHourMinute(timereport.endDate)}'),
+                      '${getHourDiff(timereport.startDate, timereport.endDate)} timmar, ${dateToHourMinute(timereport.startDate)} - ${dateToHourMinute(timereport.endDate)}'),
+              _buildParameter(
+                  iconData: Icons.access_alarm,
+                  title: "Rast",
+                  subtitle: '${timereport.breakTime.toString()} minuter'),
               ConditionalWidget(
                 condition: timereport.comment != "",
                 childTrue: _buildParameter(
@@ -60,11 +67,94 @@ class TimereportingDetails extends StatelessWidget {
                     subtitle: timereport.comment),
                 childFalse: Container(),
               ),
+              _buildCost(),
               _buildImageList(user),
+              _buildEventInfo(event)
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCost() {
+    var costs = timereport.costs;
+    if (costs == null) {
+      return Container();
+    }
+    return ListedParameter(
+      iconData: Icons.money,
+      child: Table(
+        columnWidths: const <int, TableColumnWidth>{
+          0: IntrinsicColumnWidth(),
+          1: IntrinsicColumnWidth(),
+          2: IntrinsicColumnWidth()
+        },
+        children: [
+              TableRow(children: [
+                Row(
+                  children: [
+                    Text("Utgift", style: greyText),
+                    SizedBox(width: 16.0),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text("Antal", style: greyText),
+                    SizedBox(width: 16.0),
+                  ],
+                ),
+                Text("Kostnad", style: greyText)
+              ]),
+            ] +
+            List.generate(costs.length, (index) {
+              var cost = costs[index];
+              return TableRow(
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 5.0),
+                          Text(cost.a, style: TextStyle(fontSize: 17.0)),
+                        ],
+                      ),
+                      SizedBox(width: 16.0),
+                    ],
+                  ),
+                  TableCell(
+                    child: Text("1"),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 5.0),
+                      Text(cost.b.toString() + " kr",
+                          style: TextStyle(fontSize: 17.0)),
+                    ],
+                  ),
+                ],
+              );
+            }),
+      ),
+    );
+  }
+
+  Widget _buildEventInfo(Event event) {
+    if (event == null) {
+      print("EVENT IS NULL LOL!");
+      return Container();
+    }
+    return Column(
+      children: [
+        _buildParameter(
+            iconData: Icons.location_city,
+            title: "Plats",
+            subtitle: event.location),
+        _buildParameter(
+            iconData: Icons.business, title: "Kund", subtitle: event.customer)
+      ],
     );
   }
 
@@ -102,30 +192,20 @@ class TimereportingDetails extends StatelessWidget {
   Widget _buildImageList(UserParameters user) {
     return timereport.imagesList == null
         ? Container()
-        : Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.image,
-                size: 28.0,
-              ),
-              SizedBox(
-                width: 25.0,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Bilder"),
-                  SizedBox(height: 5.0),
-                  FutureImageListWidget(
-                      key: _key,
-                      paths: timereport.imagesList,
-                      firebaseStorageManager:
-                          FirebaseStorageManager(company: user.company))
-                ],
-              )
-            ],
-          );
+        : ListedParameter(
+            iconData: Icons.image,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text("Bilder"),
+                SizedBox(height: 5.0),
+                FutureImageListWidget(
+                    key: _key,
+                    paths: timereport.imagesList,
+                    firebaseStorageManager:
+                        FirebaseStorageManager(company: user.company))
+              ],
+            ));
   }
 }

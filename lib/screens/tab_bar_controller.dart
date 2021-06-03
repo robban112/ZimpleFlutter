@@ -41,7 +41,8 @@ class _TabBarControllerState extends State<TabBarController>
   FirebaseCustomerManager firebaseCustomerManager;
   EventManager eventManager;
   PersonManager personManager;
-  bool loading = true;
+  bool loadingEvent = true;
+  bool loadingTimereport = true;
   PersistentTabController _controller;
   StreamSubscription<EventManager> eventManagerSubscriber;
   StreamSubscription<Void> timereportSubscriper;
@@ -63,10 +64,11 @@ class _TabBarControllerState extends State<TabBarController>
 
       setupCustomerSubscriber();
       managerProvider.firebaseCustomerManager = firebaseCustomerManager;
-      setupFirebaseTimereport();
       firebasePersonManager = FirebasePersonManager(company: user.company);
       firebasePersonManager.getPersons().then((persons) {
         setupPersonManager(persons);
+        setupFirebaseEventManager();
+        setupFirebaseTimereport();
       });
     });
   }
@@ -76,12 +78,14 @@ class _TabBarControllerState extends State<TabBarController>
         FirebaseTimeReportManager(
             company: user.company, personManager: personManager);
     managerProvider.firebaseTimereportManager = firebaseTimeReportManager;
+    managerProvider.timereportManager = TimereportManager();
     firebaseTimeReportManager
         .listenTimereports(user)
         .listen((timereportManager) {
       print("listen new timereport");
       setState(() {
         this.timeReportManager = timeReportManager;
+        this.loadingTimereport = false;
       });
       managerProvider.timereportManager = timereportManager;
       //print(timereportManager.getTimereports(user.token).first.breakTime);
@@ -108,7 +112,8 @@ class _TabBarControllerState extends State<TabBarController>
       if (!mounted) return;
       setState(() {
         this.eventManager = eventManager;
-        loading = false;
+        managerProvider.eventManager = eventManager;
+        loadingEvent = false;
       });
     });
   }
@@ -116,7 +121,6 @@ class _TabBarControllerState extends State<TabBarController>
   void setupPersonManager(List<Person> persons) {
     personManager = PersonManager(persons: persons);
     managerProvider.personManager = personManager;
-    setupFirebaseEventManager();
   }
 
   @override
@@ -127,7 +131,7 @@ class _TabBarControllerState extends State<TabBarController>
   }
 
   List<Widget> _buildScreens() {
-    return loading
+    return loadingEvent && loadingTimereport
         ? [
             Center(
               child: CircularProgressIndicator(

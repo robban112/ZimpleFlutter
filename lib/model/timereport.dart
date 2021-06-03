@@ -35,7 +35,7 @@ class TimeReport {
     return {
       'startDate': dateStringVerbose(this.startDate),
       'endDate': dateStringVerbose(this.endDate),
-      'breakTime': breakTime.toString(),
+      'breakTime': breakTime,
       'totalTime': this.totalTime,
       'eventId': eventId,
       'costs': costsToJson(),
@@ -56,10 +56,10 @@ class TimeReport {
   }
 
   Map<String, dynamic> costsToJson() {
-    Map<String, Map<String, String>> map = {};
+    Map<String, Map<String, dynamic>> map = {};
     costs.forEach((cost) {
       var uid = Uuid().v4().toString();
-      map[uid] = {'description': cost.a, 'cost': cost.b.toString()};
+      map[uid] = {'description': cost.a, 'cost': cost.b};
     });
     return map;
   }
@@ -67,17 +67,22 @@ class TimeReport {
   static TimeReport mapFromSnapshot(dynamic timereportData) {
     DateTime startDate = DateTime.parse(timereportData['startDate']);
     DateTime endDate = DateTime.parse(timereportData['endDate']);
-    int breakTime = int.parse(timereportData['breakTime'] ?? 0);
+    int breakTime = timereportData['breakTime'] ?? 0;
     int totalTime = timereportData['totalTime'];
     List<String> imagesStoragePaths = _getImagesFromEventData(timereportData);
+    print("Came here");
+    List<Cost> costs = _getCostsFromTimereportData(timereportData);
     String comment = timereportData['comment'];
+    String eventId = timereportData['eventId'];
     return TimeReport(
         startDate: startDate,
         endDate: endDate,
         breakTime: breakTime,
         totalTime: totalTime,
         comment: comment,
-        imagesList: imagesStoragePaths);
+        imagesList: imagesStoragePaths,
+        eventId: eventId,
+        costs: costs);
   }
 
   static List<String> _getImagesFromEventData(dynamic eventData) {
@@ -91,5 +96,22 @@ class TimeReport {
         ?.map((key) => imageMap[key]['storagePath'].toString())
         ?.toList();
     return storagePaths;
+  }
+
+  static List<Cost> _getCostsFromTimereportData(dynamic timereportData) {
+    dynamic costData = timereportData['costs'];
+    if (costData == null) {
+      return null;
+    }
+    Map<String, dynamic> costMap = Map.from(costData);
+
+    return costMap.keys.map((key) {
+      var data = costMap[key];
+      var description = data['description'];
+      var cost = data['cost'];
+      if (description is String && cost is int) {
+        return Cost<String, int>(description, cost);
+      }
+    }).toList();
   }
 }

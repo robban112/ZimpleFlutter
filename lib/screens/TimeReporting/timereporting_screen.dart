@@ -81,32 +81,18 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         children: [
           Container(
               height: size.height, width: size.width, color: backgroundColor),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 24.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildLatestTimereports(context),
-                  SizedBox(height: 24.0),
-                  _buildSectionTitle("Funktioner"),
-                  _buildFunctionRow("Rapportera tid", Icons.access_time,
-                      goToTimeReportingSelect),
-                  _buildFunctionRow(
-                      "Rapportera sjukdom", Icons.bar_chart, () {}),
-                  _buildFunctionRow(
-                      "Ansök om ledighet", Icons.bar_chart, () {}),
-                  _buildFunctionRow(
-                      "Visa mina utgifter", Icons.bar_chart, () {}),
-                  _buildSectionTitle("Admin"),
-                  _buildFunctionRow(
-                      "Visa alla tidrapporter", Icons.bar_chart, () {}),
-                  _buildFunctionRow("Se statistik", Icons.bar_chart, () {}),
-                  _buildFunctionRow(
-                      "Visa alla utgifter", Icons.bar_chart, () {}),
-                ],
-              ),
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 12.0),
+                _buildLatestTimereports(context),
+                SizedBox(height: 24.0),
+                _buildSectionTitle("Funktioner"),
+                _buildFunctionsListedView(),
+                _buildSectionTitle("Admin"),
+                _buildAdminFunctionsListedView()
+              ],
             ),
           ),
         ],
@@ -114,7 +100,53 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
     );
   }
 
-  Column _buildLatestTimereports(BuildContext context) {
+  ListedView _buildFunctionsListedView() {
+    return ListedView(
+      rowInset: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      items: [
+        ListedItem(
+            leadingIcon: Icons.access_time,
+            child: Text(
+              "Rapportera tid",
+            ),
+            trailingIcon: Icons.chevron_right,
+            onTap: goToTimeReportingSelect),
+        ListedItem(
+            leadingIcon: Icons.sick_outlined,
+            child: Text("Rapportera sjukdom"),
+            trailingIcon: Icons.chevron_right),
+        ListedItem(
+            leadingIcon: Icons.wb_sunny,
+            child: Text("Ansök om ledighet"),
+            trailingIcon: Icons.chevron_right),
+      ],
+    );
+  }
+
+  ListedView _buildAdminFunctionsListedView() {
+    return ListedView(
+      rowInset: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      items: [
+        ListedItem(
+            leadingIcon: Icons.all_inbox,
+            child: Text(
+              "Visa alla tidrapporter",
+            ),
+            trailingIcon: Icons.chevron_right,
+            onTap: goToTimeReportingSelect),
+        ListedItem(
+            leadingIcon: Icons.bar_chart,
+            child: Text("Se statistik"),
+            trailingIcon: Icons.chevron_right),
+        ListedItem(
+            leadingIcon: Icons.payment_outlined,
+            child: Text("Skapa faktura"),
+            trailingIcon: Icons.chevron_right),
+      ],
+    );
+  }
+
+  Widget _buildLatestTimereports(BuildContext context) {
     var timereports = Provider.of<ManagerProvider>(context, listen: true)
         .timereportManager
         .getTimereports(widget.user.token);
@@ -143,20 +175,23 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
     );
   }
 
-  Row buildLatestTimereportTitle() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("Mina senaste tidrapporter",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-        TextButton(
-          child: Text("Visa alla",
-              style: TextStyle(color: green, fontWeight: FontWeight.bold)),
-          onPressed: () {
-            pushNewScreen(context, screen: TimereportingListScreen());
-          },
-        )
-      ],
+  Widget buildLatestTimereportTitle() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Mina senaste tidrapporter",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          TextButton(
+            child: Text("Visa alla",
+                style: TextStyle(color: green, fontWeight: FontWeight.bold)),
+            onPressed: () {
+              pushNewScreen(context, screen: TimereportingListScreen());
+            },
+          )
+        ],
+      ),
     );
   }
 }
@@ -269,6 +304,63 @@ class _TimeReportCardState extends State<TimeReportCard> {
           ],
         )
       ],
+    );
+  }
+}
+
+class ListedItem {
+  final Widget child;
+  final IconData leadingIcon;
+  final IconData trailingIcon;
+  final Function onTap;
+  ListedItem({this.child, this.leadingIcon, this.trailingIcon, this.onTap});
+}
+
+class ListedView extends StatelessWidget {
+  final List<ListedItem> items;
+  final EdgeInsets rowInset;
+  ListedView({this.items, this.rowInset});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: items.length,
+        itemBuilder: (contex, index) {
+          var item = items[index];
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: item.onTap,
+              splashColor: Colors.grey.shade300,
+              child: Padding(
+                padding: this.rowInset,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          item.leadingIcon != null
+                              ? Icon(item.leadingIcon)
+                              : Container(),
+                          SizedBox(width: 16.0),
+                          item.child
+                        ],
+                      ),
+                      Icon(item.trailingIcon)
+                    ]),
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (contex, index) {
+          return Padding(
+            padding: rowInset.copyWith(top: 0, bottom: 0),
+            child: Container(color: Colors.grey.shade400, height: 0.5),
+          );
+        },
+      ),
     );
   }
 }

@@ -71,6 +71,7 @@ class EventDetailScreen extends StatelessWidget {
               Icon(
                 Icons.image,
                 size: 28.0,
+                color: Colors.grey.shade800,
               ),
               SizedBox(
                 width: 25.0,
@@ -293,6 +294,7 @@ class ListedParameter extends StatelessWidget {
             Icon(
               iconData,
               size: 28.0,
+              color: Colors.grey.shade800,
             ),
             SizedBox(
               width: 25.0,

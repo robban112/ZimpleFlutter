@@ -393,7 +393,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                               children: [
                                 PersonCircleAvatar(person: person),
                                 SizedBox(width: 12.0),
-                                Text(person.name),
+                                SizedBox(
+                                  width: 100,
+                                  child: ClipRRect(
+                                    child: Text(
+                                      person.name,
+                                      overflow: TextOverflow.clip,
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                             Checkbox(

@@ -168,8 +168,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
     return Event(
         id: widget.eventToChange?.id,
         title: this.title,
-        start: this.startDateController.getDate(),
-        end: this.endDateController.getDate(),
+        start: this.startDate,
+        end: this.endDate,
         persons: this.selectedPersons,
         phoneNumber: phonenumberController.text,
         notes: this.notes,
@@ -256,9 +256,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   void _addNewEvent() async {
-    print("Adding new event");
     fb.DatabaseReference ref = widget.firebaseEventManager.newEventRef();
     Event event = _uploadEventImages(ref.key);
+    print("Adding new event");
     widget.firebaseEventManager.addEventWithRef(ref, event).then((value) {
       context.hideLoaderOverlay();
       Navigator.pop(context);
@@ -283,7 +283,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
           children: [
             Expanded(
                 child: RectangularButton(
-                    onTap: () => this._addNewEvent(), text: "Spara"))
+                    onTap: changingEvent ? _changeEvent : _addNewEvent,
+                    text: "Spara"))
           ],
         ),
       ),

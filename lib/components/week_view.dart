@@ -33,8 +33,7 @@ class WeekView extends StatelessWidget {
 
   bool _isCurrentWeek() {
     if (dates.length > 0) {
-      DateTime date = dates[0];
-      return isCurrentWeek(date);
+      return dates.any((date) => isCurrentWeek(date));
     }
     return false;
   }
@@ -163,20 +162,23 @@ class HourContainer extends StatelessWidget {
 }
 
 class CurrentTimeLine extends StatefulWidget {
-  double minuteHeight;
+  final double minuteHeight;
   CurrentTimeLine({this.minuteHeight});
   @override
   _CurrentTimeLineState createState() => _CurrentTimeLineState();
 }
 
 class _CurrentTimeLineState extends State<CurrentTimeLine> {
+  var currentDay = DateTime.now();
   var now = DateTime.now();
   Timer timer;
   @override
   void initState() {
     super.initState();
+    print("Initiating current time line");
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
       setState(() {
+        print("Updating current time line");
         now = DateTime.now();
       });
     });
@@ -184,7 +186,6 @@ class _CurrentTimeLineState extends State<CurrentTimeLine> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     timer.cancel();
   }

@@ -4,6 +4,7 @@ import '../components/event_container.dart';
 import '../model/event.dart';
 import 'package:tuple/tuple.dart';
 import 'package:quiver/iterables.dart';
+import 'date_utils.dart';
 
 class EventLayoutManager {
   final double dayWidth;
@@ -26,7 +27,10 @@ class EventLayoutManager {
         .toList();
     for (var index_event = 0; index_event < eventsOfDay.length; index_event++) {
       Event event = eventsOfDay[index_event];
-
+      if (!event.start.isSameDate(event.end)) {
+        event.end = DateTime(event.start.year, event.start.month,
+            event.start.day, event.end.hour, event.end.minute);
+      }
       int diffHour = event.end.difference(event.start).inHours;
       int diffMin = event.end.difference(event.start).inMinutes;
       //print(diffMin);
