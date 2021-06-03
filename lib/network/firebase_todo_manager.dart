@@ -2,7 +2,7 @@ import 'package:zimple/model/todo.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/material.dart';
 import '../model/todo.dart';
-import '../utils/person_manager.dart';
+import '../managers/person_manager.dart';
 
 class FirebaseTodoManager {
   String company;

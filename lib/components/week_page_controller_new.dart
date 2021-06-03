@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:zimple/utils/event_manager.dart';
+import 'package:zimple/managers/event_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -15,10 +15,11 @@ typedef void DaysChanged(int prevNumberOfDays, int newNumberOfDays);
 class WeekPageControllerNew extends StatelessWidget {
   final double _minuteHeight;
   final int _numberOfDays;
-  final DaysChangedController daysChangedController;
+  final WeekPageController daysChangedController;
   //final List<Event> events;
   final Function(Event) didTapEvent;
   final Function(DateTime, int) didTapHour;
+  final Function(DateTime, int) didDoubleTapHour;
   final EventManager eventManager;
 
   WeekPageControllerNew(
@@ -28,7 +29,8 @@ class WeekPageControllerNew extends StatelessWidget {
       @required this.eventManager,
       @required this.didTapEvent,
       this.daysChangedController,
-      this.didTapHour})
+      this.didTapHour,
+      this.didDoubleTapHour})
       : _minuteHeight = minuteHeight,
         _numberOfDays = numberOfDays,
         super(key: key);
@@ -37,19 +39,12 @@ class WeekPageControllerNew extends StatelessWidget {
     return WeekView(
       numberOfDays: _numberOfDays,
       minuteHeight: _minuteHeight,
-      dates: _getDateList(date, _numberOfDays),
+      dates: getDateRange(date, _numberOfDays),
       events: eventManager.getEventByStartDate(date, _numberOfDays),
       didTapEvent: didTapEvent,
       didTapHour: didTapHour,
+      didDoubleTapHour: didDoubleTapHour,
     );
-  }
-
-  List<DateTime> _getDateList(DateTime startDate, int daysForward) {
-    List<DateTime> dates = [];
-    for (var i = 0; i < daysForward; i++) {
-      dates.add(startDate.add(Duration(days: i)));
-    }
-    return dates;
   }
 
   @override
@@ -69,7 +64,7 @@ class InnerWeekPageController extends StatefulWidget {
   final double screenWidth;
   final int numberOfDays;
   final WidgetBuilder widgetBuilder;
-  final DaysChangedController daysChangedController;
+  final WeekPageController daysChangedController;
   InnerWeekPageController(
       {Key key,
       this.screenWidth,
@@ -94,9 +89,10 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
   int pageOffset = 12;
   int currentPage = 0;
   UniqueKey key;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _InnerWeekPageControllerState(
-      Key key, DaysChangedController daysChangedController) {
+      Key key, WeekPageController daysChangedController) {
     daysChangedController.daysChanged = daysChanged;
     this.key = key;
   }
@@ -116,15 +112,34 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
         initialScrollOffset: widget.screenWidth * (pageOffset));
   }
 
-  void daysChanged(int prevNumberOfDays, int newNumberOfDays) {
+  void daysChanged(
+      int prevNumberOfDays, int newNumberOfDays, DateTime zoomDate) {
     if (!sc.hasClients) {
       return;
     }
-    print("prev: $prevNumberOfDays, new: $newNumberOfDays");
-    var _currentPage = currentPage - pageOffset;
 
-    var pageToJump = (_currentPage * prevNumberOfDays ~/ newNumberOfDays);
+    //print("prev: $prevNumberOfDays, new: $newNumberOfDays");
+    //print("currentPage: $currentPage");
+    //var pageToJump = 0;
+    print(
+        "currentPage: $currentPage, prevNumberOfDays: $prevNumberOfDays, newNumberOfDays: $newNumberOfDays");
+    if (prevNumberOfDays == 1 && newNumberOfDays == 7) {}
+    var pageToJump = (currentPage * prevNumberOfDays ~/ newNumberOfDays);
     pageToJump += pageOffset;
+
+    if (zoomDate != null && newNumberOfDays == 1) {
+      var date =
+          dateAggregator.add(Duration(days: widget.numberOfDays * currentPage));
+      var dates = getDateRange(date, widget.numberOfDays);
+      var startDate = dates[0];
+      var diff = zoomDate.difference(startDate).inDays;
+      if (currentPage < 0) {
+        pageToJump -= diff;
+      } else {
+        pageToJump += diff;
+      }
+    }
+
     _jumpToPage(pageToJump);
     print("1, Jump to page: $pageToJump");
   }
@@ -148,6 +163,7 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
   Widget build(BuildContext context) {
     print("Building InnerWeekPageController");
     return Scaffold(
+      key: _scaffoldKey,
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(75.0),
           child: AppBarWidget(
@@ -178,4 +194,6 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
       ),
     );
   }
+
+  Widget _build() {}
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zimple/widgets/rectangular_button.dart';
 import 'rounded_button.dart';
 import '../utils/constants.dart';
 //import 'package:flash_chat/constants.dart';
@@ -28,10 +29,26 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
     setState(() {
       _autoValidate = true;
     });
-    print(emailValidator(_email));
-    print(passwordValidator(_password));
     return (emailValidator(_email) == null &&
         passwordValidator(_password) == null);
+  }
+
+  InputDecoration _textfieldDecoration(IconData leadingIcon, String hintText) {
+    return textFieldInputDecoration.copyWith(
+      contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        borderSide: BorderSide(
+          color: Colors.white,
+        ),
+      ),
+      hintText: hintText,
+      hintStyle: TextStyle(color: Colors.white, fontSize: 14.0),
+      prefixIcon: Icon(
+        leadingIcon,
+        color: Colors.grey.shade300,
+      ),
+    );
   }
 
   @override
@@ -52,22 +69,7 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
           },
           style: TextStyle(color: Colors.white, fontSize: 17.0),
           autocorrect: false,
-          decoration: textFieldInputDecoration.copyWith(
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              borderSide: BorderSide(
-                color: Colors.white,
-              ),
-            ),
-            hintText: 'EMAIL',
-            hintStyle: TextStyle(color: Colors.grey.shade100, fontSize: 14.0),
-            prefixIcon: Icon(
-              Icons.email,
-              color: Colors.grey.shade300,
-            ),
-          ),
+          decoration: _textfieldDecoration(Icons.email, 'EMAIL'),
         ),
         SizedBox(
           height: 8.0,
@@ -85,34 +87,17 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
             //Do something with the user input.
           },
           obscureText: true,
-          decoration: textFieldInputDecoration.copyWith(
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              borderSide: BorderSide(
-                color: Colors.white,
-              ),
-            ),
-            hintText: 'PASSWORD',
-            hintStyle: TextStyle(color: Colors.white, fontSize: 14.0),
-            prefixIcon: Icon(
-              Icons.lock,
-              color: Colors.grey.shade300,
-            ),
-          ),
+          decoration: _textfieldDecoration(Icons.lock, 'PASSWORD'),
         ),
         SizedBox(
           height: 24.0,
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          padding: EdgeInsets.symmetric(horizontal: 0.0),
           child: Hero(
             tag: 'register_button',
-            child: RoundedButton(
-              color: Colors.lightBlue,
+            child: RectangularButton(
               text: widget.loginRegisterText,
-              textColor: Colors.white,
               onTap: () {
                 if (validateLoginInput()) {
                   widget.onTapLoginRegister(_email, _password);

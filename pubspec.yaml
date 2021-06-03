@@ -25,7 +25,12 @@ dependencies:
   rxdart: ^0.26.0
   firebase_storage: ^8.0.1
   infinite_listview: ^1.1.0
-
+  image_picker: ^0.7.4
+  uuid: ^3.0.3
+  firebase_messaging: ^9.1.1
+  provider: ^4.3.3
+  maps_launcher: ^2.0.0
+  collection: ^1.15.0
 
 dev_dependencies:
   flutter_test:
@@ -44,3 +49,18 @@ flutter:
     fonts: 
       - asset: fonts/Biryani/Biryani-Regular.ttf
       - asset: fonts/Biryani/Biryani-Light.ttf
+      - asset: fonts/Biryani/Biryani-Bold.ttf
+      - asset: fonts/Biryani/Biryani-ExtraBold.ttf
+      - asset: fonts/Biryani/Biryani-SemiBold.ttf
+      - asset: fonts/Biryani/Biryani-ExtraLight.ttf
+  - family: Biryani
+    fonts: 
+      - asset: fonts/Poppins/Poppins-Black.ttf
+      - asset: fonts/Poppins/Poppins-BlackItalic.ttf
+      - asset: fonts/Poppins/Poppins-Bold.ttf
+      - asset: fonts/Poppins/Poppins-Regular.ttf
+      - asset: fonts/Poppins/Poppins-SemiBold.ttf
+      - asset: fonts/Poppins/Poppins-Light.ttf
+      - asset: fonts/Poppins/Poppins-Medium.ttf
+      - asset: fonts/Poppins/Poppins-ExtraBold.ttf
+      - asset: fonts/Poppins/Poppins-ExtraLight.ttf

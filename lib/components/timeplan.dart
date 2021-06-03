@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/model/event.dart';
-import 'package:zimple/utils/event_manager.dart';
+import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:infinite_listview/infinite_listview.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -12,16 +13,25 @@ import 'package:zimple/utils/constants.dart';
 class Timeplan extends StatelessWidget {
   final EventManager eventManager;
   final Function(Event) didTapEvent;
-  Timeplan({@required this.eventManager, this.didTapEvent});
+  final bool appBarEnabled;
+  final bool shouldShowIsTimereported;
+  Timeplan({
+    @required this.eventManager,
+    this.didTapEvent,
+    this.appBarEnabled = true,
+    this.shouldShowIsTimereported = false,
+  });
   final DateTime today = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: Size.fromHeight(75.0),
-          child: AppBarWidget(
-            title: "Tidsplan",
-          )),
+      appBar: appBarEnabled
+          ? PreferredSize(
+              preferredSize: Size.fromHeight(75.0),
+              child: AppBarWidget(
+                title: "Tidsplan",
+              ))
+          : null,
       body: Container(
           decoration: BoxDecoration(color: Colors.white),
           child: InfiniteListView.separated(
@@ -40,9 +50,10 @@ class Timeplan extends StatelessWidget {
                         )
                       : Container(),
                   TimeplanDay(
-                    date: date,
-                    eventManager: this.eventManager,
-                  ),
+                      date: date,
+                      eventManager: this.eventManager,
+                      didTapEvent: didTapEvent,
+                      shouldShowIsTimereported: shouldShowIsTimereported),
                 ],
               );
             },
@@ -62,8 +73,14 @@ class TimeplanDay extends StatelessWidget {
   final EventManager eventManager;
   final DateTime date;
   final DateFormat dateFormat = DateFormat(DateFormat.DAY, locale);
+  final Function(Event) didTapEvent;
+  final bool shouldShowIsTimereported;
 
-  TimeplanDay({@required this.eventManager, @required this.date});
+  TimeplanDay(
+      {@required this.eventManager,
+      @required this.date,
+      @required this.didTapEvent,
+      @required this.shouldShowIsTimereported});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -92,7 +109,10 @@ class TimeplanDay extends StatelessWidget {
               ),
             ),
             SizedBox(width: 20.0),
-            TimeplanEvent(events: eventManager.getEventsByDate(date))
+            TimeplanEvent(
+                events: eventManager.getEventsByDate(date),
+                didTapEvent: didTapEvent,
+                shouldShowIsTimereported: shouldShowIsTimereported)
           ],
         ),
       ),
@@ -102,11 +122,9 @@ class TimeplanDay extends StatelessWidget {
 
 class TimeplanEvent extends StatelessWidget {
   final List<Event> events;
-  TimeplanEvent({this.events});
-
-  Color _dynamicBlackWhite(Color color) {
-    return color.computeLuminance() < 0.5 ? Colors.white : Colors.black;
-  }
+  final Function(Event) didTapEvent;
+  final bool shouldShowIsTimereported;
+  TimeplanEvent({this.events, this.didTapEvent, this.shouldShowIsTimereported});
 
   @override
   Widget build(BuildContext context) {
@@ -118,44 +136,9 @@ class TimeplanEvent extends StatelessWidget {
           var event = events[index];
           return GestureDetector(
             onTap: () {
-              ProviderWidget.of(context).didTapEvent(event);
+              didTapEvent(event);
             },
-            child: Container(
-              decoration: BoxDecoration(
-                  color: event.color, borderRadius: BorderRadius.circular(8.0)),
-              child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: 75),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(event.title,
-                            style: TextStyle(
-                                fontSize: 17.0,
-                                fontWeight: FontWeight.normal,
-                                color: _dynamicBlackWhite(event.color))),
-                        SizedBox(height: 2.0),
-                        Row(
-                          children: [
-                            Text(
-                                dateToHourMinute(event.start) +
-                                    " - " +
-                                    dateToHourMinute(event.end),
-                                style: TextStyle(
-                                    color: _dynamicBlackWhite(event.color)))
-                          ],
-                        ),
-                        SizedBox(height: 2.0),
-                        Text(
-                          event.location,
-                          style:
-                              TextStyle(color: _dynamicBlackWhite(event.color)),
-                        ),
-                      ],
-                    ),
-                  )),
-            ),
+            child: TimeplanEventContainer(event, shouldShowIsTimereported),
           );
         },
         itemCount: events.length,
@@ -163,6 +146,93 @@ class TimeplanEvent extends StatelessWidget {
           return SizedBox(height: 8.0);
         },
       ),
+    );
+  }
+}
+
+class TimeplanEventContainer extends StatelessWidget {
+  final Event event;
+  final bool shouldShowIsTimereported;
+  TimeplanEventContainer(this.event, this.shouldShowIsTimereported);
+
+  Color _dynamicBlackWhite(Color color) {
+    return color.computeLuminance() < 0.5 ? Colors.white : Colors.black;
+  }
+
+  bool _shouldShowTimereported(String userToken) {
+    var timereported = event.timereported ?? [];
+    return timereported.contains(userToken);
+  }
+
+  Widget _buildTimereportedSection(String userToken) {
+    return _shouldShowTimereported(userToken)
+        ? Row(
+            children: [
+              CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 10,
+                  child: Icon(Icons.check, size: 14, color: green)),
+              SizedBox(
+                width: 5.0,
+              ),
+              Text("Tidrapporterat",
+                  style: TextStyle(color: _dynamicBlackWhite(event.color)))
+            ],
+          )
+        : Container();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var userToken =
+        Provider.of<ManagerProvider>(context, listen: false).user.token;
+    return Container(
+      decoration: BoxDecoration(
+          color: _shouldShowTimereported(userToken)
+              ? event.color.withAlpha(120)
+              : event.color,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(-2, 2), // changes position of shadow
+            ),
+          ]),
+      child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: 75),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(event.title,
+                    style: TextStyle(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.normal,
+                        color: _dynamicBlackWhite(event.color))),
+                SizedBox(height: 2.0),
+                Row(
+                  children: [
+                    Text(
+                        dateToHourMinute(event.start) +
+                            " - " +
+                            dateToHourMinute(event.end),
+                        style:
+                            TextStyle(color: _dynamicBlackWhite(event.color)))
+                  ],
+                ),
+                SizedBox(height: 2.0),
+                Text(
+                  event.location,
+                  style: TextStyle(color: _dynamicBlackWhite(event.color)),
+                ),
+                SizedBox(height: 5.0),
+                _buildTimereportedSection(userToken)
+              ],
+            ),
+          )),
     );
   }
 }

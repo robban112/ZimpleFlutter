@@ -34,10 +34,30 @@ const textFieldInputDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(25.0)),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.greenAccent, width: 2.0),
+    borderSide: BorderSide(color: Colors.lightBlueAccent, width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(25.0)),
   ),
 );
+
+final double kPadding = 24.0;
+final TextStyle greyText = TextStyle(
+  color: Colors.grey[500],
+  fontSize: 14.0,
+);
+
+final Color shadedGrey = Color(0xffF5F6F9);
+final Color primaryColor = Color(0xff303E52);
+final Color backgroundColor = Color(0xffF7FAFB);
+final Color green = Color(0xff7BC9B5);
+
+final List<BoxShadow> standardShadow = [
+  BoxShadow(
+    color: Colors.grey.withOpacity(0.12),
+    spreadRadius: 1,
+    blurRadius: 3,
+    offset: Offset(-2, 2), // changes position of shadow
+  )
+];
 
 String emailValidator(String value) {
   Pattern pattern =

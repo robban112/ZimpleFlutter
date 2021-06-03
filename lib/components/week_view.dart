@@ -7,6 +7,7 @@ import 'vertical_time_container.dart';
 import 'week_header.dart';
 import '../utils/event_layout_manager.dart';
 import '../utils/date_utils.dart';
+import 'package:zimple/utils/constants.dart';
 
 class WeekView extends StatelessWidget {
   WeekView(
@@ -15,7 +16,8 @@ class WeekView extends StatelessWidget {
       @required this.events,
       @required this.didTapEvent,
       @required this.dates,
-      this.didTapHour})
+      this.didTapHour,
+      this.didDoubleTapHour})
       : _numberOfDays = numberOfDays,
         _minuteHeight = minuteHeight;
 
@@ -25,8 +27,17 @@ class WeekView extends StatelessWidget {
   final List<DateTime> dates;
   final Function(Event) didTapEvent;
   final Function(DateTime, int) didTapHour;
+  final Function(DateTime, int) didDoubleTapHour;
 
   final double verticalTimeContainerWidth = 45;
+
+  bool _isCurrentWeek() {
+    if (dates.length > 0) {
+      DateTime date = dates[0];
+      return isCurrentWeek(date);
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +52,7 @@ class WeekView extends StatelessWidget {
         didTapEvent: didTapEvent);
     return Container(
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(color: Colors.blueGrey),
+      decoration: BoxDecoration(color: primaryColor),
       child: Column(
         children: <Widget>[
           WeekHeader(
@@ -68,9 +79,11 @@ class WeekView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  CurrentTimeLine(
-                    minuteHeight: this._minuteHeight,
-                  )
+                  _isCurrentWeek()
+                      ? CurrentTimeLine(
+                          minuteHeight: this._minuteHeight,
+                        )
+                      : Container()
                 ],
               ),
             ),
@@ -111,6 +124,9 @@ class WeekView extends StatelessWidget {
         onTap: () {
           didTapHour(date, index);
         },
+        onDoubleTap: () {
+          this.didDoubleTapHour(date, index);
+        },
         child: HourContainer(
           minuteHeight: _minuteHeight,
           dayWidth: dayWidth,
@@ -135,7 +151,7 @@ class HourContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60 * minuteHeight,
-      width: dayWidth - 0.3,
+      width: dayWidth - 0.2,
       decoration: BoxDecoration(
         border: const Border(
           bottom: BorderSide(width: 0.2),
@@ -154,15 +170,14 @@ class CurrentTimeLine extends StatefulWidget {
 }
 
 class _CurrentTimeLineState extends State<CurrentTimeLine> {
-  var now = new DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0, 0);
+  var now = DateTime.now();
   Timer timer;
   @override
   void initState() {
     super.initState();
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
       setState(() {
-        //now = DateTime.now();
+        now = DateTime.now();
       });
     });
   }
@@ -174,11 +189,15 @@ class _CurrentTimeLineState extends State<CurrentTimeLine> {
     timer.cancel();
   }
 
+  double _getTopPadding() {
+    var padding = (now.hour * 60 + now.minute) * widget.minuteHeight - 8;
+    return padding > 0 ? padding : 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-          top: (now.hour * 60 + now.minute) * widget.minuteHeight - 8),
+      padding: EdgeInsets.only(top: _getTopPadding()),
       child: Row(
         children: [
           Padding(

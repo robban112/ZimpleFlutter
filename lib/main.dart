@@ -1,71 +1,95 @@
-import 'package:zimple/model/person.dart';
-import 'package:zimple/screens/Calendar/add_event_screen.dart';
-import 'package:zimple/screens/Calendar/person_select_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:provider/provider.dart';
+import 'package:zimple/screens/Login/forgot_password_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
-import 'package:zimple/screens/settings_screen.dart';
+import 'package:zimple/screens/Settings/settings_screen.dart';
 import 'package:zimple/screens/todo_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:zimple/screens/welcome_screen.dart';
-import 'screens/Calendar/add_event_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/Calendar/calendar_screen.dart';
+import 'package:zimple/utils/constants.dart';
+import 'package:zimple/widgets/provider_widget.dart';
+import 'screens/Login/login_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'screens/tab_bar_controller.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-
-import 'screens/tab_bar_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(App());
 }
 
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   FirebaseApp
-//   runApp(MaterialApp(
-//     title: 'Flutter Database Example',
-//     home: Zimple(app: app),
-//   ));
-// }
+Future<dynamic> _firebaseMessagingBackgroundHandler(
+  Map<String, dynamic> message,
+) async {
+  // Initialize the Firebase app
+  await Firebase.initializeApp();
+  print('onBackgroundMessage received: $message');
+}
+
+Future<bool> isUserLoggedIn() async {
+  // FirebaseAuth.instance.authStateChanges().listen((user) {
+  //   if (user == null) {
+  //     print("User is currently signed out");
+  //   } else {
+  //     print("User is signed in");
+  //   }
+  // });
+  User firebaseUser = getLoggedInFirebaseUser();
+  if (firebaseUser != null) {
+    String tokenResult = await firebaseUser.getIdToken(true);
+    return tokenResult != null;
+  } else {
+    return false;
+  }
+}
+
+User getLoggedInFirebaseUser() {
+  return FirebaseAuth.instance.currentUser;
+}
 
 class Zimple extends StatefulWidget {
+  final bool isLoggedIn;
+  Zimple(this.isLoggedIn);
   @override
   _ZimpleState createState() => _ZimpleState();
 }
 
 class _ZimpleState extends State<Zimple> {
-  List<Person> mockperson = [
-    Person(name: "Zebbe", color: Colors.blue, id: "0"),
-    Person(name: "Zebbe1", color: Colors.blue, id: "1"),
-    Person(name: "Zebbe2", color: Colors.blue, id: "2")
-  ];
+  FirebaseMessaging _messaging = FirebaseMessaging.instance;
+
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting('sv_SE');
-    return MaterialApp(
-      theme: ThemeData(fontFamily: 'Montserrat', accentColor: Colors.lightBlue),
-      initialRoute: TabBarController.routeName,
-      routes: {
-        WelcomeScreen.routeName: (context) => WelcomeScreen(),
-        LoginScreen.routeName: (context) => LoginScreen(),
-        CalendarScreen.routeName: (context) => CalendarScreen(),
-        TabBarController.routeName: (context) => TabBarController(),
-        TodoScreen.routeName: (context) => TodoScreen(),
-        SettingsScreen.routeName: (context) => SettingsScreen(),
-        AddEventScreen.routeName: (context) =>
-            AddEventScreen(persons: mockperson),
-        PersonSelectScreen.routeName: (context) =>
-            PersonSelectScreen(persons: mockperson),
-        TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
-      },
+    return ChangeNotifierProvider(
+      create: (_) => ManagerProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(fontFamily: 'Poppins', accentColor: green),
+        initialRoute: widget.isLoggedIn
+            ? TabBarController.routeName
+            : LoginScreen.routeName,
+        routes: {
+          LoginScreen.routeName: (context) => LoginScreen(),
+          TabBarController.routeName: (context) => TabBarController(),
+          TodoScreen.routeName: (context) => TodoScreen(),
+          SettingsScreen.routeName: (context) => SettingsScreen(),
+          TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
+          ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen()
+        },
+      ),
     );
   }
 }
 
+Future<bool> initializeApp() async {
+  await Firebase.initializeApp();
+  return isUserLoggedIn();
+}
+
 class App extends StatelessWidget {
-  final Future<FirebaseApp> _init = Firebase.initializeApp();
+  final Future<bool> _init = initializeApp();
+  //final Future<bool> _isLoggedIn = isUserLoggedIn();
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -79,7 +103,7 @@ class App extends StatelessWidget {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return Zimple();
+          return Zimple(snapshot.data);
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

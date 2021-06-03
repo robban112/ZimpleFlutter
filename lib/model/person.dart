@@ -5,10 +5,14 @@ class Person {
   Color color;
   String id;
   String email;
+  String profilePicturePath;
+  String phonenumber;
 
   Person(
       {@required this.name,
       @required this.color,
       @required this.id,
-      this.email});
+      this.email,
+      this.profilePicturePath,
+      this.phonenumber});
 }

@@ -1,9 +1,9 @@
-import 'package:zimple/utils/event_manager.dart';
+import 'package:zimple/managers/event_manager.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/material.dart';
 import '../model/person.dart';
 import '../model/event.dart';
-import '../utils/person_manager.dart';
+import '../managers/person_manager.dart';
 
 class FirebaseEventManager {
   String company;
@@ -23,8 +23,17 @@ class FirebaseEventManager {
         .then((value) => value);
   }
 
-  Future<void> addEvent(Event event) {
-    return eventRef.push().set(event.toJson()).then((value) => value);
+  fb.DatabaseReference newEventRef() {
+    return eventRef.push();
+  }
+
+  Future<String> addEventWithRef(fb.DatabaseReference ref, Event event) {
+    return ref.set(event.toJson()).then((value) => ref.key);
+  }
+
+  Future<String> addEvent(Event event) {
+    fb.DatabaseReference ref = eventRef.push();
+    return ref.set(event.toJson()).then((value) => ref.key);
   }
 
   Future<void> removeEvent(Event event) {
@@ -33,6 +42,7 @@ class FirebaseEventManager {
 
   Stream<EventManager> listenEvents() {
     return eventRef.limitToLast(500).onValue.map((event) {
+      print("listen events");
       var snapshot = event.snapshot;
       return EventManager(events: _mapSnapshot(snapshot));
       //return _mapSnapshot(snapshot);
@@ -65,8 +75,10 @@ class FirebaseEventManager {
       String location =
           eventData['address'] != null ? eventData['address'] : "";
       String phoneNumber =
-          eventData['phoneNumber'] != null ? eventData['phoneNumber'] : "";
-
+          eventData['phonenumber'] != null ? eventData['phonenumber'] : "";
+      String customerKey = eventData["customerKey"];
+      int customerContactIndex = eventData['customerContactIndex'];
+      List<String> timereported = _getTimereported(eventData);
       List<String> imageStoragePaths = _getImagesFromEventData(eventData);
       List<Person> persons = _getPersonsFromEventData(eventData);
       Color eventColor = _setEventColorFromPersons(persons);
@@ -84,7 +96,10 @@ class FirebaseEventManager {
           location: location,
           phoneNumber: phoneNumber,
           imageStoragePaths: imageStoragePaths,
-          originalImageStoragePaths: imageMap);
+          originalImageStoragePaths: imageMap,
+          customerKey: customerKey,
+          customerContactIndex: customerContactIndex,
+          timereported: timereported);
       events.add(event);
     }
     return events;
@@ -128,5 +143,14 @@ class FirebaseEventManager {
       //return persons[1].color;
       return colorAggregator.toColor();
     }
+  }
+
+  List<String> _getTimereported(dynamic eventData) {
+    if (eventData['timereported'] == null) {
+      return null;
+    }
+    return List.from(eventData['timereported'])
+        .map((e) => e.toString())
+        .toList();
   }
 }

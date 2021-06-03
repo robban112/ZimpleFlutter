@@ -7,7 +7,7 @@ import '../model/user_parameters.dart';
 class FirebaseUserManager {
   String userToken;
   User user;
-  FirebaseUserManager() {}
+  FirebaseUserManager();
 
   Future<UserParameters> getUser() {
     user = FirebaseAuth.instance.currentUser;
@@ -19,16 +19,24 @@ class FirebaseUserManager {
     print('USER TOKEN: $userToken');
     var snapshot =
         await database.reference().child('Users').child(userToken).once();
+
     return UserParameters(
         company: snapshot.value['company'],
         isAdmin: snapshot.value['isAdmin'],
         token: userToken,
         email: user.email,
-        name: snapshot.value['name']);
+        name: snapshot.value['name'],
+        profilePicturePath: snapshot.value['profilePicturePath']);
   }
 
   String _getCurrentUserToken() {
     user = FirebaseAuth.instance.currentUser;
     return user.uid;
+  }
+
+  Future<void> setUserProfileImage(UserParameters user, String filePath) async {
+    final ref =
+        FirebaseDatabase.instance.reference().child('Users').child(user.token);
+    return ref.child("profilePicturePath").set(filePath);
   }
 }

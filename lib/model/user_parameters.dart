@@ -6,12 +6,13 @@ class UserParameters {
   String company;
   String name;
   bool isAdmin;
+  String profilePicturePath;
 
-  UserParameters({
-    @required this.email,
-    @required this.token,
-    @required this.company,
-    @required this.isAdmin,
-    this.name,
-  });
+  UserParameters(
+      {@required this.email,
+      @required this.token,
+      @required this.company,
+      @required this.isAdmin,
+      this.name,
+      this.profilePicturePath});
 }

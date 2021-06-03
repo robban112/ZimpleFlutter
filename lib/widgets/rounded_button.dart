@@ -7,17 +7,20 @@ class RoundedButton extends StatelessWidget {
   final double minWidth;
   final Color textColor;
   final double fontSize;
+  final EdgeInsets padding;
   RoundedButton(
       {this.text,
       this.color,
       this.onTap,
       this.minWidth,
       this.textColor,
-      this.fontSize});
+      this.fontSize,
+      this.padding});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: padding,
       height: 55.0,
       child: ButtonTheme(
         height: 60.0,

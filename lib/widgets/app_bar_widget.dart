@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/date_utils.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+import '../utils/constants.dart';
 
 class AppBarWidget extends StatelessWidget {
   final Stream<DateTime> dateStream;
@@ -29,7 +30,7 @@ class AppBarWidget extends StatelessWidget {
                 ProviderWidget.of(context).drawerKey.currentState.openDrawer();
               },
             ),
-            backgroundColor: Colors.blueGrey,
+            backgroundColor: primaryColor,
             toolbarHeight: 75.0,
             iconTheme: IconThemeData(color: Colors.white),
             elevation: 0.0,

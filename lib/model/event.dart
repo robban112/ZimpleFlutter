@@ -12,9 +12,14 @@ class Event {
   String location;
   String phoneNumber;
   String notes;
+  String customerKey;
+  int customerContactIndex;
+  List<String> timereported;
   List<Person> persons;
   List<String> imageStoragePaths;
   Map<String, dynamic> originalImageStoragePaths;
+
+  bool hasCurrentUserTimereported;
 
   Event(
       {this.id,
@@ -28,7 +33,10 @@ class Event {
       this.phoneNumber,
       this.notes,
       this.imageStoragePaths,
-      this.originalImageStoragePaths});
+      this.originalImageStoragePaths,
+      this.customerKey,
+      this.customerContactIndex,
+      this.timereported});
 
   Map<String, dynamic> toJson() {
     return {
@@ -40,7 +48,10 @@ class Event {
       'endDate': dateStringVerbose(end),
       'anteckning': this.notes == null ? "" : this.notes,
       'persons': persons.map((e) => e.id).toList(),
-      'images': originalImageStoragePaths
+      'images': originalImageStoragePaths,
+      'customerKey': this.customerKey == null ? "" : this.customerKey,
+      'customerContactIndex': this.customerContactIndex,
+      'timereported': this.timereported
     };
   }
 }
