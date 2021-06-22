@@ -2,12 +2,14 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zimple/managers/event_manager.dart';
+import 'package:zimple/model/cost.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
@@ -34,16 +36,16 @@ class AddTimeReportingScreen extends StatefulWidget {
 class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   DateSelectorController startDateController = DateSelectorController();
   DateSelectorController endDateController = DateSelectorController();
-  TimereportCostController costController = TimereportCostController();
   TextEditingController notesController = TextEditingController();
   late FirebaseTimeReportManager firebaseTimeReportManager;
   late FirebaseEventManager firebaseEventManager;
   late FirebaseStorageManager firebaseStorageManager;
   late UserParameters user;
   Event? selectedEvent;
+  //final <TimereportCostComponentState> _costKey = GlobalKey();
+  List<Cost> costs = [];
 
   final GlobalKey<FormState> _titleFormKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _imagesFormKey = GlobalKey<FormState>();
 
   bool isSelectingPhotoProvider = false;
 
@@ -55,6 +57,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   @override
   void initState() {
+    print("Init State Add Timereport");
     super.initState();
     firebaseTimeReportManager =
         Provider.of<ManagerProvider>(context, listen: false)
@@ -233,6 +236,12 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                           didSelectEvent: (event) {
                             setState(() {
                               this.selectedEvent = event;
+                              this
+                                  .startDateController
+                                  .setDate(selectedEvent!.start);
+                              this
+                                  .endDateController
+                                  .setDate(selectedEvent!.end);
                             });
                           },
                         ));
@@ -286,12 +295,25 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   Column buildCostComponent() {
     return Column(
+      key: UniqueKey(),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle("Utgifter", leadingIcon: Icons.attach_money),
         _buildContainer(TimereportCostComponent(
-          timereportCostController: costController,
-        )),
+            costs: this.costs,
+            didAddCost: (cost) {
+              SchedulerBinding.instance?.addPostFrameCallback((_) {
+                Navigator.pop(context);
+                setState(() {
+                  this.costs.add(cost);
+                });
+              });
+            },
+            didRemoveCost: (cost) {
+              setState(() {
+                this.costs.remove(cost);
+              });
+            }))
       ],
     );
   }
@@ -334,6 +356,11 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   Column buildTimeComponent() {
     var now = DateTime.now();
+    var start = selectedEvent != null
+        ? selectedEvent!.start
+        : DateTime(now.year, now.month, now.day, 8, 0, 0);
+    var end =
+        selectedEvent?.end ?? DateTime(now.year, now.month, now.day, 16, 0, 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -342,13 +369,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              StartEndDateSelector(
-                  selectedEvent?.start ??
-                      DateTime(now.year, now.month, now.day, 8, 0, 0),
-                  selectedEvent?.end ??
-                      DateTime(now.year, now.month, now.day, 16, 0, 0),
-                  startDateController,
-                  endDateController, (startDate) {
+              StartEndDateSelector(startDateController, endDateController,
+                  (startDate) {
                 updateDifference(
                     startDate, endDateController.getDate(), this.minutesBreak);
               }, (endDate) {
@@ -464,7 +486,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         breakTime: this.minutesBreak,
         totalTime: startEndDifference.inMinutes,
         eventId: selectedEvent?.id,
-        costs: costController.getCosts(),
+        costs: this.costs,
         comment: notesController.text);
     fb.DatabaseReference ref = firebaseTimeReportManager.newTimereportRef();
     var filenames = selectedImages.map((_) => Uuid().v4().toString()).toList();

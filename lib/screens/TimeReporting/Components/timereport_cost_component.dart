@@ -1,164 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/model/cost.dart';
-import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 
-class TimereportCostController {
-  late List<Cost> Function() getCosts;
-}
+class TimereportCostComponent extends StatelessWidget {
+  final List<Cost> costs;
+  final Function(Cost) didAddCost;
+  final Function(Cost) didRemoveCost;
+  TimereportCostComponent(
+      {Key? key,
+      required this.costs,
+      required this.didAddCost,
+      required this.didRemoveCost})
+      : super(key: key);
 
-class TimereportCostComponent extends StatefulWidget {
-  final TimereportCostController timereportCostController;
-  TimereportCostComponent({required this.timereportCostController});
-  @override
-  TimereportCostComponentState createState() => TimereportCostComponentState();
-}
-
-class TimereportCostComponentState extends State<TimereportCostComponent> {
-  List<Cost> costs = [];
-  final _costListKey = GlobalKey<AnimatedListState>();
-
-  @override
-  void initState() {
-    super.initState();
-    widget.timereportCostController.getCosts = _getCosts;
-  }
-
-  List<Cost> _getCosts() {
-    return costs;
-  }
-
-  Container _buildCost(Cost cost) {
-    return Container(
-      height: 45,
-      width: 80,
-      // decoration: BoxDecoration(
-      //   color: Colors.grey.shade100,
-      //   borderRadius: BorderRadius.circular(24.0),
-      //   border: Border.all(
-      //     width: 1,
-      //     color: shadedGrey,
-      //   ),
-      // ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 4.0),
-        child: TextFormField(
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(12.0),
-              ),
-            ),
-            labelText: 'Kostnad',
-          ),
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          controller: TextEditingController(text: cost.cost.toString()),
-          onChanged: (text) {
-            try {
-              var intCost = int.parse(text);
-              cost.cost = intCost;
-            } on FormatException {
-              cost.cost = 0;
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-  Container _buildCostDescription(Cost cost) {
-    return Container(
-      height: 45,
-      child: TextFormField(
-        onChanged: (text) {
-          cost.description = text;
-        },
-        decoration: InputDecoration(
-          //icon: Icon(Icons.attach_money),
-          contentPadding: const EdgeInsets.only(
-            left: 8.0,
-            bottom: 2.0,
-            top: 2.0,
-          ),
-          labelText: 'Beskrivning',
-          labelStyle: TextStyle(
-            color: Colors.grey,
-            fontSize: 14.0,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(12.0),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Container _buildAmount(Cost cost) {
-    var controller = TextEditingController(text: cost.amount.toString());
-
-    return Container(
-      height: 45,
-      child: TextFormField(
-        textAlign: TextAlign.center,
-        onChanged: (text) {
-          controller.selection =
-              TextSelection(baseOffset: text.length, extentOffset: text.length);
-          try {
-            var intCost = int.parse(text);
-            cost.amount = intCost;
-          } on FormatException {
-            cost.amount = 1;
-          }
-        },
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
-        controller: TextEditingController(text: cost.amount.toString()),
-        decoration: InputDecoration(
-          //icon: Icon(Icons.attach_money),
-          contentPadding: const EdgeInsets.only(
-            bottom: 2.0,
-            top: 2.0,
-          ),
-          labelText: 'Antal',
-          labelStyle: TextStyle(
-            color: Colors.grey,
-            fontSize: 14.0,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(12.0),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Container _buildCostDetails(Cost cost, VoidCallback onTapDelete) {
+  Container _buildCostDetails(BuildContext context, Cost cost) {
     var width = MediaQuery.of(context).size.width;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(
-            width: width / 3,
-            child: _buildCostDescription(cost),
-          ),
+          SizedBox(width: width / 3, child: Text(cost.description)),
           SizedBox(
             width: width / 6,
-            child: _buildAmount(cost),
+            child: Text(cost.amount.toString()),
           ),
           Row(
             children: [
-              _buildCost(cost),
-              SizedBox(width: 2.0),
+              Text(
+                '${cost.cost.toString()} kr',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(width: 12.0),
               //Text("kr"),
               SizedBox(width: 2.0),
               Container(
@@ -167,7 +41,7 @@ class TimereportCostComponentState extends State<TimereportCostComponent> {
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   icon: Icon(Icons.close, color: Colors.grey),
-                  onPressed: onTapDelete,
+                  onPressed: () => didRemoveCost(cost),
                 ),
               )
             ],
@@ -177,22 +51,12 @@ class TimereportCostComponentState extends State<TimereportCostComponent> {
     );
   }
 
-  Container _buildCostRow(int index) {
+  Container _buildCostRow(BuildContext context, int index) {
     Cost cost = costs[index];
-    return _buildCostDetails(cost, () {
-      setState(() {
-        costs.removeAt(index);
-        _costListKey.currentState?.removeItem(index, (context, animation) {
-          return SizeTransition(
-              axis: Axis.vertical,
-              sizeFactor: animation,
-              child: _buildCostDetails(cost, () {}));
-        });
-      });
-    });
+    return _buildCostDetails(context, cost);
   }
 
-  void didTapAddCost() {
+  void didTapAddCost(BuildContext context) {
     showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -205,10 +69,7 @@ class TimereportCostComponentState extends State<TimereportCostComponent> {
         builder: (context) {
           return AddCostComponent(
             didAddCost: (cost) {
-              setState(() {
-                costs.add(cost);
-                _costListKey.currentState?.insertItem(costs.length - 1);
-              });
+              didAddCost(cost);
             },
           );
         });
@@ -216,36 +77,30 @@ class TimereportCostComponentState extends State<TimereportCostComponent> {
 
   @override
   Widget build(BuildContext context) {
+    print("Building Timereport Cost Component");
     const padding = EdgeInsets.symmetric(horizontal: 16.0, vertical: 10);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AnimatedList(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          key: _costListKey,
-          initialItemCount: costs.length,
-          itemBuilder: (context, index, animation) {
-            return SizeTransition(
-              axis: Axis.vertical,
-              sizeFactor: animation,
-              child: _buildCostRow(index),
-            );
-          },
-        ),
-        MaterialButton(
-          color: Colors.grey.shade200,
-          elevation: 0.0,
-          child:
-              Text("Lägg till utgift", style: TextStyle(color: Colors.black)),
-          onPressed: () {
-            didTapAddCost();
-            // setState(() {
-            //   costs.add(Cost("", 0, 1));
-            //   _costListKey.currentState?.insertItem(costs.length - 1);
-            // });
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
+        Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(costs.length, (index) {
+              return _buildCostRow(context, index);
+            })),
+        Container(
+          child: Center(
+            child: MaterialButton(
+              color: Colors.grey.shade200,
+              elevation: 0.0,
+              child: Text("Lägg till utgift",
+                  style: TextStyle(color: Colors.black)),
+              onPressed: () {
+                didTapAddCost(context);
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
           ),
         )
       ],
@@ -333,14 +188,13 @@ class _AddCostComponentState extends State<AddCostComponent> {
                           Center(
                             child: RectangularButton(
                                 onTap: () {
-                                  print(descriptionController.text);
                                   Cost cost = Cost(
                                       description: descriptionController.text,
                                       cost: int.parse(costController.text),
                                       amount: int.parse(amountController.text));
 
                                   widget.didAddCost(cost);
-                                  Navigator.pop(context);
+                                  //Navigator.pop(context);
                                 },
                                 text: 'Lägg till utgift'),
                           )

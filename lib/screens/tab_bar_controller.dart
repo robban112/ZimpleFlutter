@@ -181,7 +181,7 @@ class _TabBarControllerState extends State<TabBarController>
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.settings),
-        title: ("Verktyg"),
+        title: ("Mer"),
         activeColorPrimary: Colors.lightBlueAccent,
         inactiveColorPrimary: Colors.grey,
       ),

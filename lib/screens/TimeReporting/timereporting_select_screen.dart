@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/components/timeplan.dart';
 import 'package:zimple/model/event.dart';
@@ -7,10 +6,6 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/widgets/rectangular_button.dart';
-import 'package:zimple/widgets/rounded_button.dart';
-
-import 'add_timereport_screen.dart';
 
 class TimeReportingSelectScreen extends StatefulWidget {
   static const routeName = "time_reporting_select_screen";
@@ -64,8 +59,8 @@ class _TimeReportingSelectScreenState extends State<TimeReportingSelectScreen> {
                 shouldShowIsTimereported: true,
                 userIdToOnlyShow: user.token,
                 didTapEvent: (event) {
-                  widget.didSelectEvent(event);
                   Navigator.of(context).pop();
+                  widget.didSelectEvent(event);
                 },
               ),
             ],

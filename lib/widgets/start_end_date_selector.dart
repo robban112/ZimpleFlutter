@@ -1,19 +1,15 @@
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
-import 'package:zimple/widgets/listed_view.dart';
 import '../utils/date_utils.dart';
 import '../screens/TimeReporting/add_timereport_screen.dart';
-import 'package:zimple/utils/constants.dart';
 
 class DateSelectorController {
+  DateTime? initialDate;
   late DateTime Function() getDate;
+  late void Function(DateTime) setDate;
 }
 
 class StartEndDateSelector extends StatefulWidget {
-  final DateTime? initialStart;
-  final DateTime? initialEnd;
   final CupertinoDatePickerMode datePickerMode;
   final DateSelectorController startDateSelectorController;
   final DateSelectorController endDateSelectorController;
@@ -23,13 +19,8 @@ class StartEndDateSelector extends StatefulWidget {
   final EdgeInsets rowInset;
   final bool hidesSeparatorByDefault;
   final bool hidesLastSeparator;
-  StartEndDateSelector(
-      this.initialStart,
-      this.initialEnd,
-      this.startDateSelectorController,
-      this.endDateSelectorController,
-      this.onChangeStart,
-      this.onChangeEnd,
+  StartEndDateSelector(this.startDateSelectorController,
+      this.endDateSelectorController, this.onChangeStart, this.onChangeEnd,
       {this.color = Colors.white,
       this.rowInset = EdgeInsets.zero,
       this.hidesSeparatorByDefault = false,
@@ -41,6 +32,8 @@ class StartEndDateSelector extends StatefulWidget {
 }
 
 class _StartEndDateSelectorState extends State<StartEndDateSelector> {
+  late DateSelectorController startDateSelectorController;
+  late DateSelectorController endDateSelectorController;
   bool isShowingStartSelector = false;
   bool isShowingEndSelector = false;
   late DateTime start;
@@ -48,8 +41,24 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
 
   _StartEndDateSelectorState(DateSelectorController startDateSelectorController,
       DateSelectorController endDateSelectorController) {
+    this.startDateSelectorController = startDateSelectorController;
+    this.endDateSelectorController = endDateSelectorController;
     startDateSelectorController.getDate = getStartDate;
+    startDateSelectorController.setDate = setStartDate;
     endDateSelectorController.getDate = getEndDate;
+    endDateSelectorController.setDate = setEndDate;
+  }
+
+  void setStartDate(DateTime start) {
+    setState(() {
+      this.start = start;
+    });
+  }
+
+  void setEndDate(DateTime end) {
+    setState(() {
+      this.end = end;
+    });
   }
 
   DateTime getStartDate() {
@@ -63,9 +72,10 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
   @override
   void initState() {
     var now = DateTime.now();
-    start =
-        widget.initialStart ?? DateTime(now.year, now.month, now.day, 8, 0, 0);
-    end = widget.initialEnd ?? DateTime(now.year, now.month, now.day, 16, 0, 0);
+    start = startDateSelectorController.initialDate ??
+        DateTime(now.year, now.month, now.day, 8, 0, 0);
+    end = endDateSelectorController.initialDate ??
+        DateTime(now.year, now.month, now.day, 16, 0, 0);
     super.initState();
   }
 

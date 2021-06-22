@@ -87,6 +87,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
     if (changingEvent) {
       startDate = widget.eventToChange!.start;
       endDate = widget.eventToChange!.end;
+      startDateController.initialDate = startDate;
+      endDateController.initialDate = endDate;
       title = widget.eventToChange?.title ?? "";
       phonenumberController.text = widget.eventToChange?.phoneNumber ?? "";
       notes = widget.eventToChange?.notes;
@@ -345,8 +347,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         _buildSectionTitle("TID"),
         Container(height: 0.5, color: Colors.grey.shade400),
         SizedBox(height: 10),
-        StartEndDateSelector(
-            startDate, endDate, startDateController, endDateController, (te) {
+        StartEndDateSelector(startDateController, endDateController, (te) {
           setState(() {});
         }, (te) {
           setState(() {});
