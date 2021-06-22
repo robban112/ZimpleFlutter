@@ -13,11 +13,11 @@ class EventLayoutManager {
   final List<DateTime> datesOfWeek;
   final Function(Event) didTapEvent;
   EventLayoutManager(
-      {@required this.dayWidth,
-      @required this.events,
-      @required this.minuteHeight,
-      @required this.datesOfWeek,
-      @required this.didTapEvent});
+      {required this.dayWidth,
+      required this.events,
+      required this.minuteHeight,
+      required this.datesOfWeek,
+      required this.didTapEvent});
 
   List<Widget> buildEventContainers(int index) {
     List<EventLayout> eventContainers = [];
@@ -48,8 +48,8 @@ class EventLayoutManager {
     List<Widget> columnBasedLayout =
         zip([_columnBasedLayout(eventContainers), eventsOfDay])
             .map((zipped) => EventContainer(
-                  event: zipped[1],
-                  eventLayout: zipped[0],
+                  event: zipped[1] as Event,
+                  eventLayout: zipped[0] as EventLayout,
                   didTapEvent: didTapEvent,
                 ))
             .toList();
@@ -169,5 +169,6 @@ class EventLayoutManager {
     } else if (secondBottom < firstBottom && firstEvent.top > secondBottom) {
       return true;
     }
+    return false;
   }
 }

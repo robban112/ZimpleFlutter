@@ -15,12 +15,13 @@ class Timeplan extends StatelessWidget {
   final Function(Event) didTapEvent;
   final bool appBarEnabled;
   final bool shouldShowIsTimereported;
-  Timeplan({
-    @required this.eventManager,
-    this.didTapEvent,
-    this.appBarEnabled = true,
-    this.shouldShowIsTimereported = false,
-  });
+  final String? userIdToOnlyShow;
+  Timeplan(
+      {required this.eventManager,
+      required this.didTapEvent,
+      this.appBarEnabled = true,
+      this.shouldShowIsTimereported = false,
+      this.userIdToOnlyShow});
   final DateTime today = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -50,10 +51,12 @@ class Timeplan extends StatelessWidget {
                         )
                       : Container(),
                   TimeplanDay(
-                      date: date,
-                      eventManager: this.eventManager,
-                      didTapEvent: didTapEvent,
-                      shouldShowIsTimereported: shouldShowIsTimereported),
+                    date: date,
+                    eventManager: this.eventManager,
+                    didTapEvent: didTapEvent,
+                    shouldShowIsTimereported: shouldShowIsTimereported,
+                    userIdToOnlyShow: userIdToOnlyShow,
+                  ),
                 ],
               );
             },
@@ -75,12 +78,28 @@ class TimeplanDay extends StatelessWidget {
   final DateFormat dateFormat = DateFormat(DateFormat.DAY, locale);
   final Function(Event) didTapEvent;
   final bool shouldShowIsTimereported;
+  final String? userIdToOnlyShow;
 
   TimeplanDay(
-      {@required this.eventManager,
-      @required this.date,
-      @required this.didTapEvent,
-      @required this.shouldShowIsTimereported});
+      {required this.eventManager,
+      required this.date,
+      required this.didTapEvent,
+      this.shouldShowIsTimereported = false,
+      this.userIdToOnlyShow});
+
+  List<Event> _filterForUserIfShould() {
+    var events = eventManager.getEventsByDate(date);
+    if (userIdToOnlyShow != null) {
+      return events
+          .where((event) =>
+              event.persons?.any((person) => person.id == userIdToOnlyShow) ??
+              false)
+          .toList();
+    } else {
+      return events;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -110,9 +129,11 @@ class TimeplanDay extends StatelessWidget {
             ),
             SizedBox(width: 20.0),
             TimeplanEvent(
-                events: eventManager.getEventsByDate(date),
-                didTapEvent: didTapEvent,
-                shouldShowIsTimereported: shouldShowIsTimereported)
+              events: _filterForUserIfShould(),
+              didTapEvent: didTapEvent,
+              shouldShowIsTimereported: shouldShowIsTimereported,
+              userIdToOnlyShow: userIdToOnlyShow,
+            )
           ],
         ),
       ),
@@ -124,7 +145,13 @@ class TimeplanEvent extends StatelessWidget {
   final List<Event> events;
   final Function(Event) didTapEvent;
   final bool shouldShowIsTimereported;
-  TimeplanEvent({this.events, this.didTapEvent, this.shouldShowIsTimereported});
+  final String? userIdToOnlyShow;
+
+  TimeplanEvent(
+      {required this.events,
+      required this.didTapEvent,
+      required this.shouldShowIsTimereported,
+      this.userIdToOnlyShow});
 
   @override
   Widget build(BuildContext context) {
@@ -160,8 +187,11 @@ class TimeplanEventContainer extends StatelessWidget {
   }
 
   bool _shouldShowTimereported(String userToken) {
-    var timereported = event.timereported ?? [];
-    return timereported.contains(userToken);
+    if (shouldShowIsTimereported) {
+      var timereported = event.timereported ?? [];
+      return timereported.contains(userToken);
+    }
+    return false;
   }
 
   Widget _buildTimereportedSection(String userToken) {
@@ -225,7 +255,7 @@ class TimeplanEventContainer extends StatelessWidget {
                 ),
                 SizedBox(height: 2.0),
                 Text(
-                  event.location,
+                  event.location ?? "",
                   style: TextStyle(color: _dynamicBlackWhite(event.color)),
                 ),
                 SizedBox(height: 5.0),

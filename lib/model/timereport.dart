@@ -4,30 +4,31 @@ import 'package:uuid/uuid.dart';
 import 'cost.dart';
 
 class TimeReport {
-  final String id;
+  String? id;
+  String? userId;
 
   final DateTime startDate;
   final DateTime endDate;
   final int breakTime;
   final int totalTime;
-  final String comment;
-  final String eventId;
-  final String userId;
-  final List<Cost<String, int>> costs;
-  final List<String> imagesList;
+  final String? comment;
+  final String? eventId;
 
-  Map<String, dynamic> imageStoragePaths;
+  final List<Cost>? costs;
+  List<String>? imagesList;
+
+  Map<String, dynamic>? imageStoragePaths;
 
   TimeReport(
       {this.id,
       this.userId,
-      this.startDate,
-      this.endDate,
-      this.breakTime,
-      this.totalTime,
-      this.comment,
+      required this.startDate,
+      required this.endDate,
+      required this.breakTime,
+      required this.totalTime,
+      required this.comment,
       this.eventId,
-      this.costs,
+      required this.costs,
       this.imagesList,
       this.imageStoragePaths});
 
@@ -57,9 +58,13 @@ class TimeReport {
 
   Map<String, dynamic> costsToJson() {
     Map<String, Map<String, dynamic>> map = {};
-    costs.forEach((cost) {
+    costs?.forEach((cost) {
       var uid = Uuid().v4().toString();
-      map[uid] = {'description': cost.a, 'cost': cost.b};
+      map[uid] = {
+        'description': cost.description,
+        'cost': cost.cost,
+        'amount': cost.amount
+      };
     });
     return map;
   }
@@ -69,11 +74,12 @@ class TimeReport {
     DateTime endDate = DateTime.parse(timereportData['endDate']);
     int breakTime = timereportData['breakTime'] ?? 0;
     int totalTime = timereportData['totalTime'];
-    List<String> imagesStoragePaths = _getImagesFromEventData(timereportData);
+    List<String> imagesStoragePaths =
+        _getImagesFromEventData(timereportData) ?? [];
     print("Came here");
-    List<Cost> costs = _getCostsFromTimereportData(timereportData);
-    String comment = timereportData['comment'];
-    String eventId = timereportData['eventId'];
+    List<Cost> costs = _getCostsFromTimereportData(timereportData) ?? [];
+    String? comment = timereportData['comment'];
+    String? eventId = timereportData['eventId'];
     return TimeReport(
         startDate: startDate,
         endDate: endDate,
@@ -85,33 +91,35 @@ class TimeReport {
         costs: costs);
   }
 
-  static List<String> _getImagesFromEventData(dynamic eventData) {
-    dynamic imageData = eventData['images'];
+  static List<String>? _getImagesFromEventData(dynamic eventData) {
+    dynamic? imageData = eventData['images'];
     if (imageData == null) {
       return null;
     }
     Map<String, dynamic> imageMap = Map.from(imageData);
-    var imageKeys = imageMap?.keys;
+    var imageKeys = imageMap.keys;
     List<String> storagePaths = imageKeys
-        ?.map((key) => imageMap[key]['storagePath'].toString())
-        ?.toList();
+        .map((key) => imageMap[key]['storagePath'].toString())
+        .toList();
     return storagePaths;
   }
 
-  static List<Cost> _getCostsFromTimereportData(dynamic timereportData) {
+  static List<Cost>? _getCostsFromTimereportData(dynamic timereportData) {
     dynamic costData = timereportData['costs'];
     if (costData == null) {
       return null;
     }
     Map<String, dynamic> costMap = Map.from(costData);
-
-    return costMap.keys.map((key) {
+    List<Cost> costs = [];
+    costMap.keys.forEach((key) {
       var data = costMap[key];
       var description = data['description'];
       var cost = data['cost'];
+      var amount = data['amount'] ?? 1;
       if (description is String && cost is int) {
-        return Cost<String, int>(description, cost);
+        costs.add(Cost(description: description, cost: cost, amount: amount));
       }
-    }).toList();
+    });
+    return costs;
   }
 }

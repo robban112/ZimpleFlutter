@@ -32,33 +32,33 @@ class _TabBarControllerState extends State<TabBarController>
     with TickerProviderStateMixin<TabBarController> {
   //final _navigatorKey = GlobalKey<NavigatorState>();
 
-  String userName;
-  String userToken;
-  UserParameters user;
-  FirebaseEventManager firebaseEventManager;
-  FirebaseUserManager firebaseUserManager;
-  FirebasePersonManager firebasePersonManager;
-  FirebaseCustomerManager firebaseCustomerManager;
-  EventManager eventManager;
-  PersonManager personManager;
+  late String userName;
+  late String userToken;
+  late UserParameters user;
+  late FirebaseEventManager firebaseEventManager;
+  FirebaseUserManager firebaseUserManager = FirebaseUserManager();
+  late FirebasePersonManager firebasePersonManager;
+  late FirebaseCustomerManager firebaseCustomerManager;
+  late EventManager eventManager;
+  late PersonManager personManager;
   bool loadingEvent = true;
   bool loadingTimereport = true;
-  PersistentTabController _controller;
-  StreamSubscription<EventManager> eventManagerSubscriber;
-  StreamSubscription<Void> timereportSubscriper;
-  StreamSubscription<List<Customer>> customerSubscriber;
-  ManagerProvider managerProvider;
-  TimereportManager timeReportManager;
-  List<Customer> customers;
+  PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
+  late StreamSubscription<EventManager> eventManagerSubscriber;
+  late StreamSubscription<Void> timereportSubscriper;
+  late StreamSubscription<List<Customer>> customerSubscriber;
+  late ManagerProvider managerProvider;
+  TimereportManager timeReportManager = TimereportManager();
+  late List<Customer> customers;
+
+  _TabBarControllerState();
 
   @override
   void initState() {
-    super.initState();
-    _controller = PersistentTabController(initialIndex: 0);
-    firebaseUserManager = FirebaseUserManager();
     managerProvider = Provider.of<ManagerProvider>(context, listen: false);
 
-    firebaseUserManager.getUser().then((user) {
+    firebaseUserManager.getUser()?.then((user) {
       this.user = user;
       managerProvider.user = user;
 
@@ -71,6 +71,7 @@ class _TabBarControllerState extends State<TabBarController>
         setupFirebaseTimereport();
       });
     });
+    super.initState();
   }
 
   void setupFirebaseTimereport() {
@@ -79,15 +80,17 @@ class _TabBarControllerState extends State<TabBarController>
             company: user.company, personManager: personManager);
     managerProvider.firebaseTimereportManager = firebaseTimeReportManager;
     managerProvider.timereportManager = TimereportManager();
+    timeReportManager = TimereportManager();
     firebaseTimeReportManager
         .listenTimereports(user)
         .listen((timereportManager) {
       print("listen new timereport");
       setState(() {
         this.timeReportManager = timeReportManager;
+        managerProvider.timereportManager = timereportManager;
         this.loadingTimereport = false;
       });
-      managerProvider.timereportManager = timereportManager;
+
       //print(timereportManager.getTimereports(user.token).first.breakTime);
     });
   }
@@ -125,9 +128,11 @@ class _TabBarControllerState extends State<TabBarController>
 
   @override
   void dispose() {
-    super.dispose();
     eventManagerSubscriber.cancel();
     customerSubscriber.cancel();
+    timereportSubscriper.cancel();
+    managerProvider.dispose();
+    super.dispose();
   }
 
   List<Widget> _buildScreens() {
@@ -135,7 +140,7 @@ class _TabBarControllerState extends State<TabBarController>
         ? [
             Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+                valueColor: AlwaysStoppedAnimation<Color>(green),
               ),
             ),
             Container(),
@@ -165,20 +170,20 @@ class _TabBarControllerState extends State<TabBarController>
       PersistentBottomNavBarItem(
         icon: Icon(Icons.calendar_today),
         title: ("Kalender"),
-        activeColor: Colors.lightBlueAccent,
-        inactiveColor: Colors.grey,
+        activeColorPrimary: Colors.lightBlueAccent,
+        inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.timer),
         title: ("Tidrapportering"),
-        activeColor: Colors.lightBlueAccent,
-        inactiveColor: Colors.grey,
+        activeColorPrimary: Colors.lightBlueAccent,
+        inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.settings),
         title: ("Verktyg"),
-        activeColor: Colors.lightBlueAccent,
-        inactiveColor: Colors.grey,
+        activeColorPrimary: Colors.lightBlueAccent,
+        inactiveColorPrimary: Colors.grey,
       ),
     ];
   }
@@ -199,7 +204,7 @@ class _TabBarControllerState extends State<TabBarController>
           backgroundColor: Color(0xffF4F7FB),
           handleAndroidBackButtonPress: true,
           resizeToAvoidBottomInset:
-              false, // This needs to be true if you want to move up the screen when keyboard appears.
+              true, // This needs to be true if you want to move up the screen when keyboard appears.
           stateManagement: true,
           hideNavigationBarWhenKeyboardShows:
               true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.

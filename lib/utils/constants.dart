@@ -47,6 +47,7 @@ final TextStyle greyText = TextStyle(
 
 final Color shadedGrey = Color(0xffF5F6F9);
 final Color primaryColor = Color(0xff303E52);
+//final Color primaryColor = Colors.black;
 final Color backgroundColor = Color(0xffF7FAFB);
 final Color green = Color(0xff7BC9B5);
 
@@ -59,10 +60,11 @@ final List<BoxShadow> standardShadow = [
   )
 ];
 
-String emailValidator(String value) {
+String? emailValidator(String? value) {
+  if (value == null) return null;
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-  RegExp regex = new RegExp(pattern);
+  RegExp regex = new RegExp(pattern.toString());
   if (value.isEmpty) return '*Required';
   if (!regex.hasMatch(value))
     return '*Enter a valid email';

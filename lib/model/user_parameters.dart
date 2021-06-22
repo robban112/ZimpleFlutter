@@ -9,10 +9,10 @@ class UserParameters {
   String profilePicturePath;
 
   UserParameters(
-      {@required this.email,
-      @required this.token,
-      @required this.company,
-      @required this.isAdmin,
-      this.name,
-      this.profilePicturePath});
+      {required this.email,
+      required this.token,
+      required this.company,
+      required this.isAdmin,
+      required this.name,
+      required this.profilePicturePath});
 }

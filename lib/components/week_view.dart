@@ -11,13 +11,13 @@ import 'package:zimple/utils/constants.dart';
 
 class WeekView extends StatelessWidget {
   WeekView(
-      {@required int numberOfDays,
-      @required double minuteHeight,
-      @required this.events,
-      @required this.didTapEvent,
-      @required this.dates,
-      this.didTapHour,
-      this.didDoubleTapHour})
+      {required int numberOfDays,
+      required double minuteHeight,
+      required this.events,
+      required this.didTapEvent,
+      required this.dates,
+      required this.didTapHour,
+      required this.didDoubleTapHour})
       : _numberOfDays = numberOfDays,
         _minuteHeight = minuteHeight;
 
@@ -141,9 +141,9 @@ class HourContainer extends StatelessWidget {
   final double dayWidth;
   final Color color;
   HourContainer({
-    this.minuteHeight,
-    this.dayWidth,
-    this.color,
+    required this.minuteHeight,
+    required this.dayWidth,
+    required this.color,
   });
 
   @override
@@ -163,7 +163,7 @@ class HourContainer extends StatelessWidget {
 
 class CurrentTimeLine extends StatefulWidget {
   final double minuteHeight;
-  CurrentTimeLine({this.minuteHeight});
+  CurrentTimeLine({required this.minuteHeight});
   @override
   _CurrentTimeLineState createState() => _CurrentTimeLineState();
 }
@@ -171,7 +171,7 @@ class CurrentTimeLine extends StatefulWidget {
 class _CurrentTimeLineState extends State<CurrentTimeLine> {
   var currentDay = DateTime.now();
   var now = DateTime.now();
-  Timer timer;
+  Timer? timer;
   @override
   void initState() {
     super.initState();
@@ -187,7 +187,7 @@ class _CurrentTimeLineState extends State<CurrentTimeLine> {
   @override
   void dispose() {
     super.dispose();
-    timer.cancel();
+    timer?.cancel();
   }
 
   double _getTopPadding() {

@@ -47,8 +47,8 @@ class SupportScreen extends StatelessWidget {
 
 class TopHeader extends StatelessWidget {
   const TopHeader({
-    Key key,
-    @required this.kPadding,
+    Key? key,
+    required this.kPadding,
   }) : super(key: key);
 
   final double kPadding;

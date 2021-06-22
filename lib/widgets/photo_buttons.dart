@@ -8,7 +8,9 @@ class PhotoButtons extends StatelessWidget {
   final Function(File) didReceiveImage;
   final picker = ImagePicker();
   PhotoButtons(
-      {this.isSelectingPhotoProvider, this.didTapCancel, this.didReceiveImage});
+      {required this.isSelectingPhotoProvider,
+      required this.didTapCancel,
+      required this.didReceiveImage});
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(

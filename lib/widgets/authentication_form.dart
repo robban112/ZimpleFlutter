@@ -8,7 +8,7 @@ class AuthenticationForm extends StatefulWidget {
   Function(String, String) onTapLoginRegister;
   final String loginRegisterText;
   AuthenticationForm(
-      {@required this.loginRegisterText, this.onTapLoginRegister});
+      {required this.loginRegisterText, required this.onTapLoginRegister});
   @override
   _AuthenticationFormFieldState createState() =>
       _AuthenticationFormFieldState();
@@ -18,10 +18,11 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
   final GlobalKey<FormState> _emailFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _passwordFormKey = GlobalKey<FormState>();
   bool _autoValidate = false;
-  String _email;
-  String _password;
+  late String _email;
+  late String _password;
 
-  String passwordValidator(String pass) {
+  String? passwordValidator(String? pass) {
+    if (pass == null) return null;
     return pass.length < 4 ? '*Required' : null;
   }
 

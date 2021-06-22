@@ -4,7 +4,7 @@ class VerticalTimeContainer extends StatelessWidget {
   final double width;
   final double minuteHeight;
 
-  VerticalTimeContainer({this.width, this.minuteHeight});
+  VerticalTimeContainer({required this.width, required this.minuteHeight});
 
   String _getTime(int index) {
     var hour;

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
-import 'package:zimple/widgets/conditional_widget.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../../model/event.dart';
@@ -12,33 +11,43 @@ import '../../utils/date_utils.dart';
 import '../../utils/constants.dart';
 import '../../network/firebase_event_manager.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:zimple/utils/color_utils.dart';
+import 'package:collection/collection.dart';
 
-class EventDetailScreen extends StatelessWidget {
-  final _key = GlobalKey();
+class EventDetailScreen extends StatefulWidget {
   final Event event;
   final FirebaseEventManager firebaseEventManager;
   final FirebaseStorageManager firebaseStorageManager;
   final Function(Event) didTapCopyEvent;
   final Function(Event) didTapChangeEvent;
   EventDetailScreen(
-      {Key key,
-      @required this.event,
-      @required this.firebaseEventManager,
-      @required this.firebaseStorageManager,
-      this.didTapCopyEvent,
-      this.didTapChangeEvent})
+      {Key? key,
+      required this.event,
+      required this.firebaseEventManager,
+      required this.firebaseStorageManager,
+      required this.didTapCopyEvent,
+      required this.didTapChangeEvent})
       : super(key: key);
+
+  @override
+  _EventDetailScreenState createState() => _EventDetailScreenState();
+}
+
+class _EventDetailScreenState extends State<EventDetailScreen> {
+  final _key = GlobalKey();
+
   final EdgeInsets contentPadding =
       EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0);
 
   Widget _buildParameter(
-      {@required IconData iconData,
-      @required String title,
-      @required String subtitle}) {
+      {required IconData iconData,
+      required String title,
+      required String subtitle}) {
     return ListedParameter(
         iconData: iconData,
         child: Expanded(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -63,33 +72,33 @@ class EventDetailScreen extends StatelessWidget {
   }
 
   Widget _buildImageList() {
-    return event.imageStoragePaths == null
-        ? Container()
-        : Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.image,
-                size: 28.0,
-                color: Colors.grey.shade800,
-              ),
-              SizedBox(
-                width: 25.0,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Bilder"),
-                  SizedBox(height: 5.0),
-                  FutureImageListWidget(
-                      key: _key,
-                      paths: event.imageStoragePaths,
-                      firebaseStorageManager: firebaseStorageManager)
-                ],
-              )
-            ],
-          );
+    if (widget.event.imageStoragePaths == null) return Container();
+    if (widget.event.imageStoragePaths!.isEmpty) return Container();
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          Icons.image,
+          size: 28.0,
+          color: Colors.grey.shade800,
+        ),
+        SizedBox(
+          width: 25.0,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text("Bilder"),
+            SizedBox(height: 5.0),
+            FutureImageListWidget(
+                key: _key,
+                paths: widget.event.imageStoragePaths!,
+                firebaseStorageManager: widget.firebaseStorageManager)
+          ],
+        )
+      ],
+    );
   }
 
   Widget _buildPersonListTile(Person person) {
@@ -118,62 +127,58 @@ class EventDetailScreen extends StatelessWidget {
   }
 
   Widget _buildLocation() {
-    return event.location != ""
-        ? ListedParameter(
-            iconData: Icons.location_city,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Plats", style: greyText),
-                RichText(
-                    text: TextSpan(
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            print("pressed");
-                            MapsLauncher.launchQuery(
-                                event.location + ' Sverige');
-                          },
-                        text: event.location,
-                        style: TextStyle(
-                            color: Colors.lightBlueAccent, fontSize: 18.0)))
-              ],
-            ))
-        : Container();
+    if (widget.event.location == null || widget.event.location == "")
+      return Container();
+    return ListedParameter(
+        iconData: Icons.location_city,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Plats", style: greyText),
+            RichText(
+                text: TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        print("pressed");
+                        MapsLauncher.launchQuery(
+                            widget.event.location! + ' Sverige');
+                      },
+                    text: widget.event.location,
+                    style: TextStyle(
+                        color: Colors.lightBlueAccent, fontSize: 18.0)))
+          ],
+        ));
   }
 
   Widget _buildPersonsList() {
-    return event.persons.length > 0
+    var persons = widget.event.persons;
+    return (persons?.length ?? 0) > 0
         ? Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Icon(Icons.group),
                   SizedBox(width: 25.0),
-                  Text(" ${event.persons.length} personer",
+                  Text(" ${widget.event.persons!.length} personer",
                       style: TextStyle(color: Colors.grey)),
                 ],
               ),
-              SizedBox(height: 20.0),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: event.persons.length,
-                      itemBuilder: (context, index) {
-                        var person = event.persons[index];
-                        return _buildPersonListTile(person);
-                      },
-                      separatorBuilder: (context, index) =>
-                          SizedBox(height: 10.0),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30)
+              SizedBox(height: 16.0),
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: List.generate(persons!.length, (index) {
+                    var person = persons[index];
+                    return Column(
+                      children: [
+                        _buildPersonListTile(person),
+                        SizedBox(height: 12)
+                      ],
+                    );
+                  })),
+              SizedBox(height: 12)
             ],
           )
         : Container();
@@ -182,10 +187,10 @@ class EventDetailScreen extends StatelessWidget {
   void handleClick(String value) {
     switch (value) {
       case 'Kopiera event':
-        this.didTapCopyEvent(this.event);
+        this.widget.didTapCopyEvent(this.widget.event);
         break;
       case 'Ta bort event':
-        firebaseEventManager.removeEvent(event);
+        widget.firebaseEventManager.removeEvent(widget.event);
         break;
     }
   }
@@ -195,99 +200,239 @@ class EventDetailScreen extends StatelessWidget {
     print("Rebuild Event Detail screen");
     List<Customer> customers =
         Provider.of<ManagerProvider>(context, listen: false).customers;
-    Customer customer;
-    if (event.customerKey != null) {
-      customer = customers.firstWhere((c) => c.id == event.customerKey,
-          orElse: () => null);
+    Customer? customer;
+    if (widget.event.customerKey != null) {
+      customer = customers.firstWhereOrNull(
+          (element) => element.id == widget.event.customerKey);
     }
-    return Scaffold(
-      key: key,
-      appBar: AppBar(
-        title: Text(event.title),
-        backgroundColor: event.color,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.pop(context);
-              this.didTapChangeEvent(this.event);
-            },
-          ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              this.handleClick(value);
-              Navigator.of(context).pop();
-            },
-            itemBuilder: (BuildContext context) {
-              return {'Kopiera event', 'Ta bort event'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 15.0, top: 25.0),
-        child: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: [
-                _buildParameter(
-                    iconData: Icons.access_time,
-                    title: dateToYearMonthDay(event.start),
-                    subtitle:
-                        '${dateToHourMinute(event.start)} - ${dateToHourMinute(event.end)}'),
-                _buildPersonsList(),
-                customer != null
-                    ? Column(
-                        children: [
-                          _buildParameter(
-                              iconData: Icons.business,
-                              title: 'Kund',
-                              subtitle: customer.name),
-                        ],
-                      )
-                    : Container(),
-                _buildLocation(),
-                event.phoneNumber != ""
-                    ? _buildParameter(
-                        iconData: Icons.phone,
-                        title: 'Telefonnummer',
-                        subtitle: event.phoneNumber)
-                    : Container(),
-                ConditionalWidget(
-                  condition: event.notes != "",
-                  childTrue: _buildParameter(
-                      iconData: Icons.event_note,
-                      title: 'Anteckningar',
-                      subtitle: event.notes),
-                  childFalse: Container(),
+    var width = MediaQuery.of(context).size.width;
+    return DraggableScrollableSheet(
+      initialChildSize: 0.84,
+      minChildSize: 0.7,
+      maxChildSize: 0.9,
+      builder: (context, controller) {
+        return LayoutBuilder(
+          builder: (context, constraint) {
+            return SingleChildScrollView(
+              physics: ClampingScrollPhysics(),
+              controller: controller,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraint.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: <Widget>[
+                      _buildTitle(width),
+                      _buildBody(customer),
+                      Expanded(
+                        child: Container(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                _buildImageList(),
-                SizedBox(height: 15.0)
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildBody(Customer? customer) {
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
+        child: Column(
+          children: [
+            //SizedBox(height: 12.0),
+            // _buildParameter(
+            //     iconData: Icons.access_time,
+            //     title: dateToYearMonthDay(widget.event.start),
+            //     subtitle:
+            //         '${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}'),
+            _buildPersonsList(),
+            customer != null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildParameter(
+                          iconData: Icons.business,
+                          title: 'Kund',
+                          subtitle: customer.name),
+                    ],
+                  )
+                : Container(),
+            _buildLocation(),
+            widget.event.phoneNumber != null && widget.event.phoneNumber != ""
+                ? _buildParameter(
+                    iconData: Icons.phone,
+                    title: 'Telefonnummer',
+                    subtitle: widget.event.phoneNumber!)
+                : Container(),
+            widget.event.notes != null && widget.event.notes != ""
+                ? _buildParameter(
+                    iconData: Icons.event_note,
+                    title: 'Anteckningar',
+                    subtitle: widget.event.notes!)
+                : Container(),
+            _buildImageList(),
+            // SizedBox(height: 15.0),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle(double width) {
+    var textColor = dynamicBlackWhite(widget.event.color);
+    var width = MediaQuery.of(context).size.width;
+    return Stack(
+      children: [
+        // Container(
+        //   height: 75,
+        //   padding: EdgeInsets.only(left: 0),
+        //   decoration: BoxDecoration(
+        //       color: widget.event.color,
+        //       borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+        // ),
+        Container(
+          //height: 75,
+          padding: EdgeInsets.only(left: 0),
+          decoration: BoxDecoration(
+              color: widget.event.color,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     Navigator.pop(context);
+                        //   },
+                        //   child: CircleAvatar(
+                        //     radius: 12,
+                        //     backgroundColor: Colors.grey.shade300,
+                        //     child: Container(
+                        //       height: 8,
+                        //       width: 8,
+                        //       child: Image.asset("images/close.png"),
+                        //     ),
+                        //   ),
+                        // ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: width * 0.65),
+                          child: Text(widget.event.title,
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: textColor)),
+                        ),
+                      ],
+                    ),
+                    buildActions(textColor),
+                  ],
+                ),
+                SizedBox(height: 4.0),
+                Text(
+                    '${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}',
+                    style: TextStyle(
+                        color: textColor.withAlpha(120),
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w500))
               ],
             ),
           ),
         ),
-      ),
+      ],
     );
+  }
+
+  Row buildActions(Color textColor) {
+    return Row(children: [
+      SizedBox(
+        height: 26,
+        width: 26,
+        child: IconButton(
+          constraints: BoxConstraints(maxHeight: 15, maxWidth: 15),
+          splashRadius: 5,
+          padding: EdgeInsets.zero,
+          icon: Icon(Icons.edit, color: textColor),
+          onPressed: () {
+            Navigator.pop(context);
+            this.widget.didTapChangeEvent(this.widget.event);
+          },
+        ),
+      ),
+      SizedBox(width: 16),
+      SizedBox(
+        height: 26,
+        width: 26,
+        child: PopupMenuButton<String>(
+          padding: EdgeInsets.zero,
+          icon: Icon(Icons.more_horiz, color: textColor),
+          onSelected: (value) {
+            this.handleClick(value);
+            Navigator.of(context).pop();
+          },
+          itemBuilder: (BuildContext context) {
+            return {'Kopiera event', 'Ta bort event'}.map((String choice) {
+              return PopupMenuItem<String>(
+                value: choice,
+                child: Text(choice),
+              );
+            }).toList();
+          },
+        ),
+      ),
+    ]);
+  }
+
+  List<Widget> _buildActions(BuildContext context, Color color) {
+    return [
+      IconButton(
+        icon: Icon(Icons.edit, color: color),
+        onPressed: () {
+          Navigator.pop(context);
+          this.widget.didTapChangeEvent(this.widget.event);
+        },
+      ),
+      PopupMenuButton<String>(
+        color: color,
+        onSelected: (value) {
+          this.handleClick(value);
+          Navigator.of(context).pop();
+        },
+        itemBuilder: (BuildContext context) {
+          return {'Kopiera event', 'Ta bort event'}.map((String choice) {
+            return PopupMenuItem<String>(
+              value: choice,
+              child: Text(choice),
+            );
+          }).toList();
+        },
+      ),
+    ];
   }
 }
 
 class ListedParameter extends StatelessWidget {
   final Widget child;
   final IconData iconData;
-  ListedParameter({this.iconData, this.child});
+  ListedParameter({required this.iconData, required this.child});
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           children: [
@@ -303,7 +448,7 @@ class ListedParameter extends StatelessWidget {
           ],
         ),
         SizedBox(
-          height: 25,
+          height: 16,
         )
       ],
     );

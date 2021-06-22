@@ -7,12 +7,12 @@ import '../managers/person_manager.dart';
 class FirebaseTodoManager {
   String company;
   PersonManager personManager;
-  fb.DatabaseReference todoRef;
-  fb.DatabaseReference database;
+  late fb.DatabaseReference todoRef;
+  late fb.DatabaseReference database;
 
-  FirebaseTodoManager({@required this.company}) {
-    database = fb.FirebaseDatabase.instance.reference();
-    todoRef = database.reference().child(company).child('Todo');
+  FirebaseTodoManager({required this.company, required this.personManager}) {
+    this.database = fb.FirebaseDatabase.instance.reference();
+    this.todoRef = database.reference().child(company).child('Todo');
   }
 
   Future<List<Todo>> getTodos() async {

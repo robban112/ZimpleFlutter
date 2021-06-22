@@ -2,15 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/screens/Login/forgot_password_screen.dart';
-import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
-import 'package:zimple/screens/Settings/settings_screen.dart';
-import 'package:zimple/screens/todo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'screens/Login/login_screen.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'screens/tab_bar_controller.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
@@ -35,7 +32,7 @@ Future<bool> isUserLoggedIn() async {
   //     print("User is signed in");
   //   }
   // });
-  User firebaseUser = getLoggedInFirebaseUser();
+  User? firebaseUser = getLoggedInFirebaseUser();
   if (firebaseUser != null) {
     String tokenResult = await firebaseUser.getIdToken(true);
     return tokenResult != null;
@@ -44,7 +41,7 @@ Future<bool> isUserLoggedIn() async {
   }
 }
 
-User getLoggedInFirebaseUser() {
+User? getLoggedInFirebaseUser() {
   return FirebaseAuth.instance.currentUser;
 }
 
@@ -56,25 +53,31 @@ class Zimple extends StatefulWidget {
 }
 
 class _ZimpleState extends State<Zimple> {
-  FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  //FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   @override
   Widget build(BuildContext context) {
-    initializeDateFormatting('sv_SE');
+    //initializeDateFormatting('sv_se');
     return ChangeNotifierProvider(
       create: (_) => ManagerProvider(),
       child: MaterialApp(
+        localizationsDelegates: [
+          GlobalCupertinoLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate
+        ],
+        supportedLocales: [const Locale('sv', 'SV')],
+        locale: Locale.fromSubtags(languageCode: 'sv'),
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'Poppins', accentColor: green),
+        theme: ThemeData(
+            fontFamily: 'Poppins', accentColor: green, focusColor: green),
         initialRoute: widget.isLoggedIn
             ? TabBarController.routeName
             : LoginScreen.routeName,
         routes: {
           LoginScreen.routeName: (context) => LoginScreen(),
           TabBarController.routeName: (context) => TabBarController(),
-          TodoScreen.routeName: (context) => TodoScreen(),
-          SettingsScreen.routeName: (context) => SettingsScreen(),
-          TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
+          // SettingsScreen.routeName: (context) => SettingsScreen(),
+          // TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
           ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen()
         },
       ),
@@ -90,20 +93,22 @@ Future<bool> initializeApp() async {
 class App extends StatelessWidget {
   final Future<bool> _init = initializeApp();
   //final Future<bool> _isLoggedIn = isUserLoggedIn();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       // Initialize FlutterFire
       future: _init,
-      builder: (context, snapshot) {
+      builder: (context, AsyncSnapshot<bool> snapshot) {
         // Check for errors
         if (snapshot.hasError) {
           return Container();
         }
 
         // Once complete, show your application
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Zimple(snapshot.data);
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.data != null) {
+          return Zimple(snapshot.data!);
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

@@ -7,11 +7,11 @@ class TimereportManager {
   Map<String, List<TimeReport>> timereportDateMap =
       Map<String, List<TimeReport>>();
 
-  void addTimereport({String userId, TimeReport timeReport}) {
+  void addTimereport({required String userId, required TimeReport timeReport}) {
     if (!timereportMap.containsKey(userId)) {
       timereportMap[userId] = [timeReport];
     } else {
-      timereportMap[userId].add(timeReport);
+      timereportMap[userId]!.add(timeReport);
     }
   }
 
@@ -19,9 +19,20 @@ class TimereportManager {
     return sortTimereportsByStartDate(timereportMap[userId]) ?? [];
   }
 
-  List<TimeReport> getTimeReportsByMonth(DateTime date) {}
+  List<TimeReport> getTimereportsForMulitple(List<String> userIds) {
+    List<TimeReport> timereports = [];
+    userIds.forEach((id) {
+      var userTimereports = timereportMap[id];
+      if (userTimereports != null) {
+        timereports.addAll(userTimereports);
+      }
+    });
+    return sortTimereportsByStartDate(timereports) ?? [];
+  }
 
-  List<TimeReport> sortTimereportsByStartDate(List<TimeReport> timereports) {
+  //List<TimeReport> getTimeReportsByMonth(DateTime date) {}
+
+  List<TimeReport>? sortTimereportsByStartDate(List<TimeReport>? timereports) {
     if (timereports == null) {
       return null;
     }
@@ -33,7 +44,7 @@ class TimereportManager {
     timereports.forEach((timereport) {
       var key = dateToYearMonth(timereport.startDate);
       if (timereportMap.containsKey(key)) {
-        timereportMap[key].add(timereport);
+        timereportMap[key]!.add(timereport);
       } else {
         timereportMap[key] = [timereport];
       }

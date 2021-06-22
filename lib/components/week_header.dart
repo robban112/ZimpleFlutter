@@ -10,11 +10,11 @@ class WeekHeader extends StatelessWidget {
   final double _leftPadding;
   final double _dayWidth;
   WeekHeader({
-    @required int numberOfDays,
-    @required List<DateTime> dates,
-    @required double leftPadding,
-    @required double dayWidth,
-  })  : _numberOfDays = numberOfDays,
+    required int numberOfDays,
+    required List<DateTime> dates,
+    required double leftPadding,
+    required double dayWidth,
+  })   : _numberOfDays = numberOfDays,
         _dates = dates,
         _leftPadding = leftPadding,
         _dayWidth = dayWidth;

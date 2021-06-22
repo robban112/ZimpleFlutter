@@ -4,18 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/timereport_manager.dart';
+import 'package:zimple/model/event.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
-import 'package:zimple/screens/TimeReporting/timereporting_select_screen.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
+import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/widgets/rectangular_button.dart';
-import '../../widgets/rounded_button.dart';
+import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/utils/date_utils.dart';
 
 class TimeReportingScreen extends StatefulWidget {
@@ -23,20 +24,23 @@ class TimeReportingScreen extends StatefulWidget {
   final EventManager eventManager;
   final PersonManager personManager;
   final UserParameters user;
-  TimeReportingScreen({this.eventManager, this.personManager, this.user});
+  TimeReportingScreen(
+      {required this.eventManager,
+      required this.personManager,
+      required this.user});
   @override
   _TimeReportingScreenState createState() => _TimeReportingScreenState();
 }
 
 class _TimeReportingScreenState extends State<TimeReportingScreen> {
-  TimereportManager timereportManager;
+  late TimereportManager timereportManager;
 
   @override
   void initState() {
     super.initState();
   }
 
-  Widget _buildSectionTitle(String title, {IconData leadingIcon}) {
+  Widget _buildSectionTitle(String title, {IconData? leadingIcon}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
       child: Row(
@@ -46,14 +50,14 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
           Text(title,
               style: TextStyle(
                   color: primaryColor,
-                  fontSize: 18.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.bold)),
         ],
       ),
     );
   }
 
-  Widget _buildFunctionRow(String title, IconData icon, Function onTap) {
+  Widget _buildFunctionRow(String title, IconData icon, VoidCallback onTap) {
     return ListTile(
       title: Text(title),
       leading: Icon(icon),
@@ -64,6 +68,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Building Timereporting Screen");
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -80,7 +85,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
       body: Stack(
         children: [
           Container(
-              height: size.height, width: size.width, color: backgroundColor),
+              height: size.height, width: size.width, color: Colors.white),
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +115,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
               "Rapportera tid",
             ),
             trailingIcon: Icons.chevron_right,
-            onTap: goToTimeReportingSelect),
+            onTap: goToAddTimereportScreen),
         ListedItem(
             leadingIcon: Icons.sick_outlined,
             child: Text("Rapportera sjukdom"),
@@ -133,7 +138,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
               "Visa alla tidrapporter",
             ),
             trailingIcon: Icons.chevron_right,
-            onTap: goToTimeReportingSelect),
+            onTap: goToShowAllTimereportScreen),
         ListedItem(
             leadingIcon: Icons.bar_chart,
             child: Text("Se statistik"),
@@ -158,21 +163,21 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: TimeReportList(
-                  timereports: timereports.take(12).toList(),
-                ),
+                    timereports: timereports.take(12).toList(),
+                    eventManager: widget.eventManager),
               ),
             ],
           )
         : Container();
   }
 
-  void goToTimeReportingSelect() {
-    pushNewScreen(
-      context,
-      screen: TimeReportingSelectScreen(
-        eventManager: widget.eventManager,
-      ),
-    );
+  void goToShowAllTimereportScreen() {
+    pushNewScreen(context, screen: TimereportingListScreen());
+  }
+
+  void goToAddTimereportScreen() {
+    pushNewScreen(context,
+        screen: AddTimeReportingScreen(eventManager: widget.eventManager));
   }
 
   Widget buildLatestTimereportTitle() {
@@ -182,12 +187,15 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("Mina senaste tidrapporter",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
           TextButton(
             child: Text("Visa alla",
                 style: TextStyle(color: green, fontWeight: FontWeight.bold)),
             onPressed: () {
-              pushNewScreen(context, screen: TimereportingListScreen());
+              pushNewScreen(context,
+                  screen: TimereportingListScreen(
+                    userId: widget.user.token,
+                  ));
             },
           )
         ],
@@ -198,7 +206,8 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
 
 class TimeReportList extends StatelessWidget {
   final List<TimeReport> timereports;
-  TimeReportList({this.timereports});
+  final EventManager eventManager;
+  TimeReportList({required this.timereports, required this.eventManager});
 
   @override
   Widget build(BuildContext context) {
@@ -206,8 +215,9 @@ class TimeReportList extends StatelessWidget {
       children: timereports
           .map(
             (timereport) => TimeReportCard(
-              timereport: timereport,
-            ),
+                timereport: timereport,
+                event:
+                    eventManager.getEventForKey(key: timereport.eventId ?? "")),
           )
           .toList(),
     );
@@ -216,57 +226,72 @@ class TimeReportList extends StatelessWidget {
 
 class TimeReportCard extends StatefulWidget {
   final TimeReport timereport;
-  TimeReportCard({this.timereport});
+  final Event? event;
+  TimeReportCard({required this.timereport, this.event});
   @override
   _TimeReportCardState createState() => _TimeReportCardState();
 }
 
 class _TimeReportCardState extends State<TimeReportCard> {
-  Color _backgroundColor = Colors.white;
-  Color _highlightColor = Colors.grey.shade300;
-  Color _color = Colors.white;
+  Widget _ifNotNull(bool condition, Widget widget) {
+    return condition ? widget : Container();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var spacing = 8.0;
+    var eventAvailable = widget.event != null;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {
-          pushNewScreen(context,
-              screen: TimereportingDetails(
-                timereport: widget.timereport,
-              ));
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(12.0)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.05),
-                  spreadRadius: 4,
-                  blurRadius: 4,
-                  offset: Offset(-2, 2), // changes position of shadow
-                )
-              ]),
-          width: 175,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildFirstRow(),
-                SizedBox(height: 12.0),
-                Text("Tink"),
-                SizedBox(height: 12.0),
-                Row(
-                  children: [
-                    Text(dateToHourMinute(widget.timereport.startDate)),
-                    Text(" - "),
-                    Text(dateToHourMinute(widget.timereport.endDate))
-                  ],
-                )
-              ],
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.10),
+                spreadRadius: 4,
+                blurRadius: 4,
+                offset: Offset(-2, 2), // changes position of shadow
+              )
+            ]),
+        width: 175,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            splashColor: Colors.grey.shade300,
+            onTap: () {
+              pushNewScreen(context,
+                  screen: TimereportingDetails(
+                    timereport: widget.timereport,
+                  ));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildFirstRow(),
+                  SizedBox(height: spacing),
+                  Text(widget.event?.customer ?? ""),
+                  SizedBox(height: spacing),
+                  widget.event != null
+                      ? ListPersonCircleAvatar(
+                          persons: widget.event?.persons ?? [],
+                          radius: 10,
+                          fontSize: 9)
+                      : SizedBox(height: 20),
+                  SizedBox(height: spacing),
+                  Row(
+                    children: [
+                      Text(dateToHourMinute(widget.timereport.startDate)),
+                      Text(" - "),
+                      Text(dateToHourMinute(widget.timereport.endDate))
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -304,63 +329,6 @@ class _TimeReportCardState extends State<TimeReportCard> {
           ],
         )
       ],
-    );
-  }
-}
-
-class ListedItem {
-  final Widget child;
-  final IconData leadingIcon;
-  final IconData trailingIcon;
-  final Function onTap;
-  ListedItem({this.child, this.leadingIcon, this.trailingIcon, this.onTap});
-}
-
-class ListedView extends StatelessWidget {
-  final List<ListedItem> items;
-  final EdgeInsets rowInset;
-  ListedView({this.items, this.rowInset});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: items.length,
-        itemBuilder: (contex, index) {
-          var item = items[index];
-          return Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: item.onTap,
-              splashColor: Colors.grey.shade300,
-              child: Padding(
-                padding: this.rowInset,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          item.leadingIcon != null
-                              ? Icon(item.leadingIcon)
-                              : Container(),
-                          SizedBox(width: 16.0),
-                          item.child
-                        ],
-                      ),
-                      Icon(item.trailingIcon)
-                    ]),
-              ),
-            ),
-          );
-        },
-        separatorBuilder: (contex, index) {
-          return Padding(
-            padding: rowInset.copyWith(top: 0, bottom: 0),
-            child: Container(color: Colors.grey.shade400, height: 0.5),
-          );
-        },
-      ),
     );
   }
 }

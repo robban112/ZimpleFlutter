@@ -2,12 +2,10 @@ import 'dart:async';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 import 'week_view.dart';
 import '../model/event.dart';
 import '../utils/date_utils.dart';
 import '../utils/days_changed_controller.dart';
-import '../utils/date_utils.dart';
 
 typedef List<Event> EventCallback(DateTime date, int numberOfDays);
 typedef void DaysChanged(int prevNumberOfDays, int newNumberOfDays);
@@ -23,14 +21,14 @@ class WeekPageControllerNew extends StatelessWidget {
   final EventManager eventManager;
 
   WeekPageControllerNew(
-      {Key key,
-      @required double minuteHeight,
-      @required int numberOfDays,
-      @required this.eventManager,
-      @required this.didTapEvent,
-      this.daysChangedController,
-      this.didTapHour,
-      this.didDoubleTapHour})
+      {Key? key,
+      required double minuteHeight,
+      required int numberOfDays,
+      required this.eventManager,
+      required this.didTapEvent,
+      required this.daysChangedController,
+      required this.didTapHour,
+      required this.didDoubleTapHour})
       : _minuteHeight = minuteHeight,
         _numberOfDays = numberOfDays,
         super(key: key);
@@ -49,7 +47,7 @@ class WeekPageControllerNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
     print("Rebuilt WeekPageController");
     return InnerWeekPageController(
       screenWidth: width,
@@ -66,11 +64,11 @@ class InnerWeekPageController extends StatefulWidget {
   final WidgetBuilder widgetBuilder;
   final WeekPageController daysChangedController;
   InnerWeekPageController(
-      {Key key,
-      this.screenWidth,
-      this.widgetBuilder,
-      this.numberOfDays,
-      this.daysChangedController})
+      {Key? key,
+      required this.screenWidth,
+      required this.widgetBuilder,
+      required this.numberOfDays,
+      required this.daysChangedController})
       : super(key: key);
   @override
   _InnerWeekPageControllerState createState() =>
@@ -81,46 +79,42 @@ typedef Widget WidgetBuilder(DateTime date);
 
 class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
   List<Widget> pages = [];
-  ScrollController sc;
-  int lowerCount;
-  int upperCount;
+  late ScrollController sc;
   bool hasFinishedInitialScroll = false;
-  DateTime dateAggregator;
+  late DateTime dateAggregator;
   int pageOffset = 12;
   int currentPage = 0;
-  UniqueKey key;
+  Key? key;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  StreamController<DateTime> streamController = StreamController<DateTime>();
 
   _InnerWeekPageControllerState(
-      Key key, WeekPageController daysChangedController) {
+      Key? key, WeekPageController daysChangedController) {
     daysChangedController.daysChanged = daysChanged;
-    this.key = key;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    sc.dispose();
-    print("disposed Inner Week Page Controller");
   }
 
   @override
   void initState() {
-    super.initState();
-    dateAggregator = firstDayOfWeek(DateTime.now());
-    sc = ScrollController(
+    this.dateAggregator = firstDayOfWeek(DateTime.now());
+    this.sc = ScrollController(
         initialScrollOffset: widget.screenWidth * (pageOffset));
+    this.key = key;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    sc.dispose();
+    super.dispose();
+    print("disposed Inner Week Page Controller");
   }
 
   void daysChanged(
-      int prevNumberOfDays, int newNumberOfDays, DateTime zoomDate) {
+      int prevNumberOfDays, int newNumberOfDays, DateTime? zoomDate) {
     if (!sc.hasClients) {
       return;
     }
 
-    //print("prev: $prevNumberOfDays, new: $newNumberOfDays");
-    //print("currentPage: $currentPage");
-    //var pageToJump = 0;
     print(
         "currentPage: $currentPage, prevNumberOfDays: $prevNumberOfDays, newNumberOfDays: $newNumberOfDays");
     if (prevNumberOfDays == 1 && newNumberOfDays == 7) {}
@@ -157,8 +151,6 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
     sc.jumpTo(widget.screenWidth * page);
   }
 
-  StreamController<DateTime> streamController = StreamController<DateTime>();
-
   @override
   Widget build(BuildContext context) {
     print("Building InnerWeekPageController");
@@ -179,6 +171,7 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
             streamController.add(first);
             print("Page: $currentPage");
           }
+          return false;
         },
         child: ListView.builder(
           controller: sc,
@@ -194,6 +187,4 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
       ),
     );
   }
-
-  Widget _build() {}
 }

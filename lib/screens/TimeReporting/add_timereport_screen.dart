@@ -1,20 +1,22 @@
 import 'dart:io';
 import 'package:firebase_database/firebase_database.dart' as fb;
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
+import 'package:zimple/screens/TimeReporting/timereporting_select_screen.dart';
 import 'package:zimple/widgets/image_dialog.dart';
+import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 import 'package:zimple/widgets/start_end_date_selector.dart';
@@ -22,8 +24,8 @@ import '../../utils/constants.dart';
 import 'Components/timereport_cost_component.dart';
 
 class AddTimeReportingScreen extends StatefulWidget {
-  final Event selectedEvent;
-  AddTimeReportingScreen({this.selectedEvent});
+  final EventManager eventManager;
+  AddTimeReportingScreen({required this.eventManager});
 
   @override
   _AddTimeReportingScreenState createState() => _AddTimeReportingScreenState();
@@ -34,13 +36,15 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   DateSelectorController endDateController = DateSelectorController();
   TimereportCostController costController = TimereportCostController();
   TextEditingController notesController = TextEditingController();
-  FirebaseTimeReportManager firebaseTimeReportManager;
-  FirebaseEventManager firebaseEventManager;
-  FirebaseStorageManager firebaseStorageManager;
-  UserParameters user;
+  late FirebaseTimeReportManager firebaseTimeReportManager;
+  late FirebaseEventManager firebaseEventManager;
+  late FirebaseStorageManager firebaseStorageManager;
+  late UserParameters user;
+  Event? selectedEvent;
 
   final GlobalKey<FormState> _titleFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _imagesFormKey = GlobalKey<FormState>();
+
   bool isSelectingPhotoProvider = false;
 
   List<File> selectedImages = [];
@@ -64,11 +68,9 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   @override
   void dispose() {
     super.dispose();
-    startDateController = null;
-    endDateController = null;
   }
 
-  Widget _buildSectionTitle(String title, {IconData leadingIcon}) {
+  Widget _buildSectionTitle(String title, {IconData? leadingIcon}) {
     var style = TextStyle(
         color: primaryColor, fontSize: 18.0, fontWeight: FontWeight.bold);
     return Padding(
@@ -148,10 +150,9 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         ),
       ),
       backgroundColor: backgroundColor,
-      body: ModalProgressHUD(
-        inAsyncCall: _uploadingTimereport,
-        opacity: 0.5,
-        progressIndicator: CircularProgressIndicator(),
+      body: LoaderOverlay(
+        //inAsyncCall: _uploadingTimereport,
+        //progressIndicator: CircularProgressIndicator(),
         child: GestureDetector(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
@@ -164,6 +165,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
               ListView(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
                 children: [
+                  buildChooseWorkOrderComponent(),
+                  SizedBox(height: 24.0),
                   buildTimeComponent(),
                   SizedBox(height: 24.0),
                   buildInfoComponent(),
@@ -173,7 +176,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                   _buildPlannedInfoComponent(),
                   SizedBox(height: 24.0),
                   buildDoneButton(context),
-                  SizedBox(height: 48.0),
+                  SizedBox(height: 175.0),
                 ],
               ),
               SelectImagesComponent(
@@ -192,6 +195,52 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildChooseWorkOrderComponent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 12.0),
+        _buildSectionTitle("Arbetsorder"),
+        _buildContainer(
+          ListedView(
+            items: [
+              ListedItem(
+                  trailingIcon: Icons.work,
+                  child: Text("Välj arbetsorder"),
+                  trailingWidget: Row(
+                    children: [
+                      selectedEvent != null
+                          ? ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(maxWidth: 150, maxHeight: 17),
+                              child: Text(
+                                selectedEvent?.title ?? "",
+                                overflow: TextOverflow.fade,
+                                maxLines: 1,
+                              ),
+                            )
+                          : Container(),
+                      Icon(Icons.chevron_right),
+                    ],
+                  ),
+                  onTap: () {
+                    pushNewScreen(context,
+                        screen: TimeReportingSelectScreen(
+                          eventManager: widget.eventManager,
+                          didSelectEvent: (event) {
+                            setState(() {
+                              this.selectedEvent = event;
+                            });
+                          },
+                        ));
+                  })
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -248,7 +297,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   }
 
   Widget _buildPlannedInfoComponent() {
-    if (widget.selectedEvent == null) {
+    if (selectedEvent == null) {
       return Container();
     }
     return Column(
@@ -259,16 +308,24 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           children: [
             TimereportRow(
                 "Personer",
-                Text(widget.selectedEvent.persons
+                Text((selectedEvent?.persons ?? [])
                     .map((e) => e.name)
                     .toList()
                     .toString())),
-            TimereportRow("Plats", Text(widget.selectedEvent.location)),
-            TimereportRow("Kund", Text(widget.selectedEvent.customer)),
+            TimereportRow("Plats", Text(selectedEvent?.location ?? "")),
+            TimereportRow("Kund", Text(selectedEvent?.customer ?? "")),
             TimereportRow(
-                "Telefonnummer", Text(widget.selectedEvent.phoneNumber)),
-            TimereportRow("Anteckningar", Text(widget.selectedEvent.notes)),
-            TimereportRow("Bilder", Text(widget.selectedEvent.phoneNumber)),
+                "Telefonnummer", Text(selectedEvent?.phoneNumber ?? "")),
+            TimereportRow(
+                "Anteckningar",
+                ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width / 2),
+                    child: Text(
+                      selectedEvent?.notes ?? "",
+                      textAlign: TextAlign.end,
+                    ))),
+            TimereportRow("Bilder", Text(selectedEvent?.phoneNumber ?? "")),
           ],
         ))
       ],
@@ -286,9 +343,9 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               StartEndDateSelector(
-                  widget.selectedEvent?.start ??
+                  selectedEvent?.start ??
                       DateTime(now.year, now.month, now.day, 8, 0, 0),
-                  widget.selectedEvent?.end ??
+                  selectedEvent?.end ??
                       DateTime(now.year, now.month, now.day, 16, 0, 0),
                   startDateController,
                   endDateController, (startDate) {
@@ -297,11 +354,14 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
               }, (endDate) {
                 updateDifference(
                     startDateController.getDate(), endDate, this.minutesBreak);
-              }),
+              },
+                  datePickerMode: selectedEvent != null
+                      ? CupertinoDatePickerMode.time
+                      : CupertinoDatePickerMode.dateAndTime),
               //buildBreakRow(),
               buildBreakSlider(),
               TimereportRow(
-                  "Total tid", Text(_getTotalTime(startEndDifference)))
+                  "Total arbetad tid", Text(_getTotalTime(startEndDifference)))
             ],
           ),
         ),
@@ -356,7 +416,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           textInputAction: TextInputAction.done,
           onChanged: (minutes) {
             try {
-              var intMinutes = int.parse(minutes) ?? 0;
+              var intMinutes = int.parse(minutes);
               updateDifference(startDateController.getDate(),
                   endDateController.getDate(), intMinutes);
             } on FormatException {
@@ -370,13 +430,13 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   }
 
   Future<void> _setEventTimereported() async {
-    var event = widget.selectedEvent;
+    var event = selectedEvent;
     if (event != null) {
       if (event.timereported == null) {
         event.timereported = [user.token];
       } else {
-        if (!event.timereported.contains(user.token)) {
-          event.timereported.add(user.token);
+        if (!event.timereported!.contains(user.token)) {
+          event.timereported!.add(user.token);
         }
       }
       await firebaseEventManager.changeEvent(event);
@@ -403,7 +463,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         endDate: endDateController.getDate(),
         breakTime: this.minutesBreak,
         totalTime: startEndDifference.inMinutes,
-        eventId: widget.selectedEvent?.id,
+        eventId: selectedEvent?.id,
         costs: costController.getCosts(),
         comment: notesController.text);
     fb.DatabaseReference ref = firebaseTimeReportManager.newTimereportRef();
@@ -427,13 +487,19 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 class TimereportRow extends StatelessWidget {
   final String title;
   final Widget leading;
-  TimereportRow(this.title, this.leading);
+  final Color color;
+  final EdgeInsets rowInset;
+  final bool hidesSeparatorByDefault;
+  TimereportRow(this.title, this.leading,
+      {this.color = Colors.white,
+      this.rowInset = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
+      this.hidesSeparatorByDefault = false});
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+      padding: rowInset,
       child: Container(
-          color: Colors.white,
+          color: this.color,
           child: Column(
             children: [
               Row(
@@ -444,10 +510,12 @@ class TimereportRow extends StatelessWidget {
                 ],
               ),
               Container(height: 15),
-              Container(
-                color: Colors.grey.shade300,
-                height: 1,
-              ),
+              hidesSeparatorByDefault
+                  ? Container()
+                  : Container(
+                      color: Colors.grey.shade300,
+                      height: 1,
+                    ),
             ],
           )),
     );
@@ -456,7 +524,7 @@ class TimereportRow extends StatelessWidget {
 
 class PreviewImagesComponent extends StatelessWidget {
   final List<File> selectedImages;
-  PreviewImagesComponent({this.selectedImages});
+  PreviewImagesComponent({required this.selectedImages});
 
   @override
   Widget build(BuildContext context) {
@@ -495,7 +563,9 @@ class SelectImagesComponent extends StatelessWidget {
   final picker = ImagePicker();
 
   SelectImagesComponent(
-      {this.isSelectingPhotoProvider, this.didPickImage, this.didTapCancel});
+      {required this.isSelectingPhotoProvider,
+      required this.didPickImage,
+      required this.didTapCancel});
 
   Widget _buildPhotoButton(Function onTap, String text) {
     return Container(
@@ -559,7 +629,7 @@ class SelectImagesComponent extends StatelessWidget {
 class NotesComponent extends StatelessWidget {
   final TextEditingController controller;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  NotesComponent({this.controller});
+  NotesComponent({required this.controller});
 
   Widget divider() {
     return Column(
@@ -577,9 +647,13 @@ class NotesComponent extends StatelessWidget {
     return TextFormField(
       controller: controller,
       maxLines: 7,
-      key: _formKey,
+      //key: _formKey,
+      autocorrect: false,
+      enableSuggestions: false,
       decoration: InputDecoration(
-          border: InputBorder.none, enabledBorder: InputBorder.none),
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+      ),
     );
   }
 

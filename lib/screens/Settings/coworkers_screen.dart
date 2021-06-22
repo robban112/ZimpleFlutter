@@ -11,7 +11,7 @@ class CoworkersScreen extends StatefulWidget {
 }
 
 class _CoworkersScreenState extends State<CoworkersScreen> {
-  PersonManager personManager;
+  late PersonManager personManager;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
             print(person.phonenumber);
             return DataRow(cells: [
               DataCell(_buildProfile(person)),
-              DataCell(Text(person.name ?? "")),
+              DataCell(Text(person.name)),
               DataCell(Text(person.phonenumber ?? "")),
               DataCell(Text(person.email ?? "")),
             ]);

@@ -10,11 +10,11 @@ class FirebaseTimeReportManager {
   String company;
   PersonManager personManager;
 
-  fb.DatabaseReference database;
-  fb.DatabaseReference timereportRef;
+  late fb.DatabaseReference database;
+  late fb.DatabaseReference timereportRef;
 
   FirebaseTimeReportManager(
-      {@required this.company, @required this.personManager}) {
+      {required this.company, required this.personManager}) {
     database = fb.FirebaseDatabase.instance.reference();
     timereportRef = database.reference().child(company).child('TimeReport');
   }
@@ -60,6 +60,8 @@ class FirebaseTimeReportManager {
         dynamic timereportData = timereportMap[key2];
 
         var timereport = TimeReport.mapFromSnapshot(timereportData);
+        timereport.id = key2;
+        timereport.userId = key;
         timereportManager.addTimereport(userId: key, timeReport: timereport);
       }
     }

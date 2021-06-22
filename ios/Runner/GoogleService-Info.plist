@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>449198960487-0n3s5s1iaap5e6h36ttbtndfqg45gjj8.apps.googleusercontent.com</string>
+	<string>449198960487-2rg8r7n91h4n5vfmkkeh4ecerekev6g6.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.449198960487-0n3s5s1iaap5e6h36ttbtndfqg45gjj8</string>
+	<string>com.googleusercontent.apps.449198960487-2rg8r7n91h4n5vfmkkeh4ecerekev6g6</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCudV9fHu8Nkiy8BnQnKzk1mtMZxtW_Qu4</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.zimple.zimpleflutter</string>
+	<string>com.zimpleflutter.zimple</string>
 	<key>PROJECT_ID</key>
 	<string>simple-ecb8f</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:449198960487:ios:e9b06b703506fe88e089c2</string>
+	<string>1:449198960487:ios:28d1c6a4bdc0e16de089c2</string>
 	<key>DATABASE_URL</key>
 	<string>https://simple-ecb8f.firebaseio.com</string>
 </dict>

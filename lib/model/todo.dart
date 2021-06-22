@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Todo {
   String id;
   String title;
@@ -9,10 +7,10 @@ class Todo {
   String createdBy;
 
   Todo(
-      {@required this.id,
-      @required this.title,
-      @required this.color,
-      @required this.date,
-      @required this.todo,
-      @required this.createdBy});
+      {required this.id,
+      required this.title,
+      required this.color,
+      required this.date,
+      required this.todo,
+      required this.createdBy});
 }

@@ -5,11 +5,11 @@ import 'package:zimple/model/customer.dart';
 
 class FirebaseCustomerManager {
   String company;
-  fb.DatabaseReference database;
-  fb.DatabaseReference customerRef;
-  FirebaseCustomerManager({@required this.company}) {
-    database = fb.FirebaseDatabase.instance.reference();
-    customerRef = database.reference().child(company).child('Customers');
+  late fb.DatabaseReference database;
+  late fb.DatabaseReference customerRef;
+  FirebaseCustomerManager({required this.company}) {
+    this.database = fb.FirebaseDatabase.instance.reference();
+    this.customerRef = database.reference().child(company).child('Customers');
   }
 
   Stream<List<Customer>> listenCustomers() {
@@ -31,10 +31,11 @@ class FirebaseCustomerManager {
     }
     for (String key in mapOfMaps.keys) {
       dynamic customerData = mapOfMaps[key];
-      var address = customerData['address'];
-      var name = customerData['name'];
-      var contacts = _getContact(customerData);
-      var customer = Customer(name, address, contacts);
+      String address = customerData['address'] ?? "";
+      String name = customerData['name'] ?? "";
+      String orgNr = customerData['orgNr'] ?? "";
+      List<Contact> contacts = _getContact(customerData);
+      var customer = Customer(name, address, orgNr, contacts);
       customer.id = key;
       customers.add(customer);
     }
@@ -57,7 +58,17 @@ class FirebaseCustomerManager {
   }
 
   Future<void> addCustomer(Customer customer) {
+    print("Add New Customer ${customer.name}");
     var ref = customerRef.push();
     return ref.set(customer.toJson()).then((value) => value);
+  }
+
+  Future<void> changeCustomer(Customer customer) async {
+    print("Update Customer ${customer.name}");
+    if (customer.id == null) return Future.error(Error);
+    var ref = customerRef
+        .child(customer.id!)
+        .update(customer.toJson())
+        .then((value) => value);
   }
 }

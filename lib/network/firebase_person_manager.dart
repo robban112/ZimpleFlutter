@@ -6,9 +6,9 @@ import '../utils/color_utils.dart';
 
 class FirebasePersonManager {
   String company;
-  DatabaseReference personsRef;
-  DatabaseReference database;
-  FirebasePersonManager({@required this.company}) {
+  late DatabaseReference personsRef;
+  late DatabaseReference database;
+  FirebasePersonManager({required this.company}) {
     database = FirebaseDatabase.instance.reference();
     personsRef = database.reference().child(company).child('Persons');
   }
@@ -22,7 +22,7 @@ class FirebasePersonManager {
       persons.add(
         Person(
             color: hexToColor(personData['color']),
-            name: personData['name'],
+            name: personData['name'] ?? "",
             id: personData['id'].toString(),
             email: personData['email'],
             profilePicturePath: personData['profilePicturePath'],
@@ -32,7 +32,7 @@ class FirebasePersonManager {
     return persons;
   }
 
-  Future<void> setUserProfileImage(UserParameters user, String filePath) {
+  Future<void> setUserProfileImage(UserParameters user, String filePath) async {
     personsRef.child(user.token).child("profilePicturePath").set(filePath);
   }
 }

@@ -1,28 +1,40 @@
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
+import 'package:zimple/widgets/listed_view.dart';
 import '../utils/date_utils.dart';
 import '../screens/TimeReporting/add_timereport_screen.dart';
+import 'package:zimple/utils/constants.dart';
 
 class DateSelectorController {
-  DateTime Function() getDate;
+  late DateTime Function() getDate;
 }
 
 class StartEndDateSelector extends StatefulWidget {
-  final DateTime initialStart;
-  final DateTime initialEnd;
+  final DateTime? initialStart;
+  final DateTime? initialEnd;
+  final CupertinoDatePickerMode datePickerMode;
   final DateSelectorController startDateSelectorController;
   final DateSelectorController endDateSelectorController;
   final Function(DateTime) onChangeStart;
   final Function(DateTime) onChangeEnd;
+  final Color color;
+  final EdgeInsets rowInset;
+  final bool hidesSeparatorByDefault;
+  final bool hidesLastSeparator;
   StartEndDateSelector(
       this.initialStart,
       this.initialEnd,
       this.startDateSelectorController,
       this.endDateSelectorController,
       this.onChangeStart,
-      this.onChangeEnd);
+      this.onChangeEnd,
+      {this.color = Colors.white,
+      this.rowInset = EdgeInsets.zero,
+      this.hidesSeparatorByDefault = false,
+      this.hidesLastSeparator = false,
+      this.datePickerMode = CupertinoDatePickerMode.dateAndTime});
   @override
   _StartEndDateSelectorState createState() => _StartEndDateSelectorState(
       startDateSelectorController, endDateSelectorController);
@@ -31,8 +43,8 @@ class StartEndDateSelector extends StatefulWidget {
 class _StartEndDateSelectorState extends State<StartEndDateSelector> {
   bool isShowingStartSelector = false;
   bool isShowingEndSelector = false;
-  DateTime start;
-  DateTime end;
+  late DateTime start;
+  late DateTime end;
 
   _StartEndDateSelectorState(DateSelectorController startDateSelectorController,
       DateSelectorController endDateSelectorController) {
@@ -62,6 +74,7 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
     return Column(
       children: [
         buildStartDateSelector(),
+        SizedBox(height: 4),
         buildEndDateSelector(),
       ],
     );
@@ -69,56 +82,73 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
 
   DateSelector buildEndDateSelector() {
     return DateSelector(
-        "Sluttid",
-        end,
-        (date) {
-          setState(() {
-            end = date;
-            if (start.isAfter(end)) {
-              start = DateTime(
-                  end.year, end.month, end.day, start.hour, start.minute);
-              if (start.isAfter(end)) {
-                start = end;
-              }
-              widget.onChangeStart(start);
-            }
-            widget.onChangeEnd(end);
-          });
-        },
-        isShowingEndSelector,
-        () {
-          setState(() {
-            isShowingEndSelector = !isShowingEndSelector;
-            isShowingStartSelector = false;
-          });
+      "Sluttid",
+      end,
+      (date) {
+        _onChangeEndDate(date);
+      },
+      isShowingEndSelector,
+      () {
+        setState(() {
+          isShowingEndSelector = !isShowingEndSelector;
+          isShowingStartSelector = false;
         });
+      },
+      color: widget.color,
+      rowInset: widget.rowInset,
+      hidesSeparator: true,
+      datePickerMode: widget.datePickerMode,
+    );
   }
 
   DateSelector buildStartDateSelector() {
     return DateSelector(
-        "Starttid",
-        start,
-        (date) {
-          setState(() {
-            start = date;
-            if (start.isAfter(end)) {
-              end = DateTime(
-                  start.year, start.month, start.day, end.hour, end.minute);
-              if (start.isAfter(end)) {
-                end = start;
-              }
-              widget.onChangeEnd(end);
-            }
-            widget.onChangeStart(start);
-          });
-        },
-        isShowingStartSelector,
-        () {
-          setState(() {
-            isShowingStartSelector = !isShowingStartSelector;
-            isShowingEndSelector = false;
-          });
+      "Starttid",
+      start,
+      (date) {
+        _onChangeStartDate(date);
+      },
+      isShowingStartSelector,
+      () {
+        setState(() {
+          isShowingStartSelector = !isShowingStartSelector;
+          isShowingEndSelector = false;
         });
+      },
+      color: widget.color,
+      rowInset: widget.rowInset,
+      datePickerMode: widget.datePickerMode,
+    );
+  }
+
+  void _onChangeEndDate(DateTime date) {
+    setState(() {
+      end = date;
+      if (start.isAfter(end)) {
+        start =
+            DateTime(end.year, end.month, end.day, start.hour, start.minute);
+        if (start.isAfter(end)) {
+          start = end;
+        }
+        widget.onChangeStart(start);
+      }
+      widget.onChangeEnd(end);
+    });
+  }
+
+  void _onChangeStartDate(DateTime date) {
+    setState(() {
+      start = date;
+      if (start.isAfter(end)) {
+        end =
+            DateTime(start.year, start.month, start.day, end.hour, end.minute);
+        if (start.isAfter(end)) {
+          end = start;
+        }
+        widget.onChangeEnd(end);
+      }
+      widget.onChangeStart(start);
+    });
   }
 }
 
@@ -126,10 +156,18 @@ class DateSelector extends StatelessWidget {
   final String title;
   final DateTime date;
   final Function(DateTime) didSelectDate;
+  final CupertinoDatePickerMode datePickerMode;
   final bool isShowingDatePicker;
   final Function didTapDateRow;
+  final Color color;
+  final EdgeInsets rowInset;
+  final bool hidesSeparator;
   DateSelector(this.title, this.date, this.didSelectDate,
-      this.isShowingDatePicker, this.didTapDateRow);
+      this.isShowingDatePicker, this.didTapDateRow,
+      {this.color = Colors.white,
+      this.rowInset = EdgeInsets.zero,
+      this.hidesSeparator = false,
+      this.datePickerMode = CupertinoDatePickerMode.dateAndTime});
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +177,7 @@ class DateSelector extends StatelessWidget {
     );
   }
 
-  GestureDetector buildTimeRow() {
+  Widget buildTimeRow() {
     return GestureDetector(
       onTap: () {
         didTapDateRow();
@@ -158,6 +196,8 @@ class DateSelector extends StatelessWidget {
                 : Icons.keyboard_arrow_down)
           ],
         ),
+        color: this.color,
+        hidesSeparatorByDefault: hidesSeparator,
       ),
     );
   }

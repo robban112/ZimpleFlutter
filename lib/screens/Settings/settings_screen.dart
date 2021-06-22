@@ -3,29 +3,25 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
 import 'package:zimple/screens/Settings/coworkers_screen.dart';
-import 'package:zimple/screens/Settings/customers_screen.dart';
+import 'package:zimple/screens/Settings/Customers/customers_screen.dart';
 import 'package:zimple/screens/Settings/support_screen.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/conditional_widget.dart';
-import 'package:zimple/widgets/future_image_widget.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 import '../Login/login_screen.dart';
-import '../../model/destination.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/photo_buttons.dart';
+import 'package:zimple/widgets/listed_view.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const String routeName = "settings_screen";
   final UserParameters user;
   final List<Customer> customers;
-  const SettingsScreen({this.user, this.customers});
+  const SettingsScreen({required this.user, required this.customers});
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -34,7 +30,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool isSelectingPhotoProvider = false;
   final picker = ImagePicker();
-  File _image;
+  File? _image;
   bool isLoadingUploadImage = false;
 
   @override
@@ -51,24 +47,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
       withNavBar: false,
       pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );
+
     // Navigator.pushNamedAndRemoveUntil(
     //     context, LoginScreen.routeName, (route) => false);
   }
 
-  ListTile buildMenuTile(String title, Function onTap) {
+  ListTile buildMenuTile(String title, VoidCallback onTap) {
     return ListTile(
         title: Text(title), trailing: Icon(Icons.chevron_right), onTap: onTap);
   }
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Stack(
         children: [
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              height: 210,
+              height: 160,
+              width: width,
               decoration: BoxDecoration(
                   color: primaryColor,
                   borderRadius: BorderRadius.only(
@@ -81,7 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 130),
+                SizedBox(height: 80),
                 _buildProfile(),
                 SizedBox(height: 10),
                 Text(widget.user.email,
@@ -94,52 +93,72 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         textAlign: TextAlign.center,
                       )
                     : Container(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      buildMenuTile("Kunder", () {
-                        pushNewScreen(context,
-                            screen: CustomerScreen(widget.customers));
-                      }),
-                      buildMenuTile("Medarbetare", () {
-                        pushNewScreen(context, screen: CoworkersScreen());
-                      }),
-                      buildMenuTile("Support", () {
-                        pushNewScreen(context, screen: SupportScreen());
-                      }),
-                      buildMenuTile("Logga ut", () {
-                        logout(context);
-                      }),
-                    ],
-                  ),
-                )
+                buildListMenu(context)
               ],
             ),
           ),
-          PhotoButtons(
-            isSelectingPhotoProvider: this.isSelectingPhotoProvider,
-            didTapCancel: () {
-              setState(() {
-                this.isSelectingPhotoProvider = false;
-              });
-            },
-            didReceiveImage: (file) {
-              setState(() {
-                this.isLoadingUploadImage = true;
-                this._image = file;
-              });
-              this._uploadProfileImage(file).then((value) {
-                setState(() {
-                  this.isLoadingUploadImage = false;
-                });
-              });
-            },
-          )
+          buildPhotoButtons()
         ],
       ),
+    );
+  }
+
+  Widget buildListMenu(BuildContext context) {
+    return ListedView(
+      rowInset: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      items: [
+        ListedItem(
+            leadingIcon: Icons.people_alt_outlined,
+            trailingIcon: Icons.chevron_right,
+            child: Text("Kunder"),
+            onTap: () {
+              pushNewScreen(context,
+                  screen: CustomerScreen(customers: widget.customers));
+            }),
+        ListedItem(
+            trailingIcon: Icons.chevron_right,
+            leadingIcon: Icons.people,
+            child: Text("Medarbetare"),
+            onTap: () {
+              pushNewScreen(context, screen: CoworkersScreen());
+            }),
+        ListedItem(
+            trailingIcon: Icons.chevron_right,
+            leadingIcon: Icons.support_agent,
+            child: Text("Support"),
+            onTap: () {
+              pushNewScreen(context, screen: SupportScreen());
+            }),
+        ListedItem(
+            trailingIcon: Icons.chevron_right,
+            leadingIcon: Icons.logout,
+            child: Text("Logga ut"),
+            onTap: () {
+              logout(context);
+            }),
+      ],
+    );
+  }
+
+  PhotoButtons buildPhotoButtons() {
+    return PhotoButtons(
+      isSelectingPhotoProvider: this.isSelectingPhotoProvider,
+      didTapCancel: () {
+        setState(() {
+          this.isSelectingPhotoProvider = false;
+        });
+      },
+      didReceiveImage: (file) {
+        setState(() {
+          this.isLoadingUploadImage = true;
+          this._image = file;
+        });
+        this._uploadProfileImage(file).then((value) {
+          setState(() {
+            this.isLoadingUploadImage = false;
+          });
+        });
+      },
     );
   }
 

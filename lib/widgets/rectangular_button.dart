@@ -4,7 +4,7 @@ import 'package:zimple/utils/constants.dart';
 class RectangularButton extends StatelessWidget {
   final Function onTap;
   final String text;
-  RectangularButton({this.onTap, this.text});
+  RectangularButton({required this.onTap, required this.text});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +15,9 @@ class RectangularButton extends StatelessWidget {
         height: 60,
         child: ElevatedButton(
           child: Text(text, style: TextStyle(fontSize: 17.0)),
-          onPressed: onTap,
+          onPressed: () {
+            this.onTap();
+          },
           style: ElevatedButton.styleFrom(
             elevation: 0,
             primary: green,

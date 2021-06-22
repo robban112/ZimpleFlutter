@@ -5,5 +5,9 @@ Color hexToColor(String hexString, {String alphaChannel = 'F0'}) {
 }
 
 int toHex(String hexString) {
-  int.parse(hexString, radix: 16);
+  return int.parse(hexString, radix: 16);
+}
+
+Color dynamicBlackWhite(Color color) {
+  return color.computeLuminance() < 0.5 ? Colors.white : Colors.black;
 }

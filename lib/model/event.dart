@@ -8,26 +8,24 @@ class Event {
   String title;
   Color color;
   String id;
-  String customer;
-  String location;
-  String phoneNumber;
-  String notes;
-  String customerKey;
-  int customerContactIndex;
-  List<String> timereported;
-  List<Person> persons;
-  List<String> imageStoragePaths;
-  Map<String, dynamic> originalImageStoragePaths;
-
-  bool hasCurrentUserTimereported;
+  String? customer;
+  String? location;
+  String? phoneNumber;
+  String? notes;
+  String? customerKey;
+  int? customerContactIndex;
+  List<String>? timereported;
+  List<Person>? persons;
+  List<String>? imageStoragePaths;
+  Map<String, dynamic>? originalImageStoragePaths;
 
   Event(
-      {this.id,
-      @required this.start,
-      @required this.end,
-      @required this.persons,
-      this.color,
-      this.title,
+      {required this.id,
+      required this.start,
+      required this.end,
+      this.persons,
+      required this.title,
+      this.color = Colors.white,
       this.customer,
       this.location,
       this.phoneNumber,
@@ -40,16 +38,16 @@ class Event {
 
   Map<String, dynamic> toJson() {
     return {
-      'title': this.title == null ? "" : this.title,
-      'address': this.location == null ? "" : this.location,
-      'customer': this.customer == null ? "" : this.customer,
-      'phonenumber': this.phoneNumber == null ? "" : this.phoneNumber,
+      'title': this.title,
+      'address': this.location,
+      'customer': this.customer,
+      'phonenumber': this.phoneNumber,
       'startDate': dateStringVerbose(start),
       'endDate': dateStringVerbose(end),
-      'anteckning': this.notes == null ? "" : this.notes,
-      'persons': persons.map((e) => e.id).toList(),
+      'anteckning': this.notes,
+      'persons': persons?.map((e) => e.id).toList(),
       'images': originalImageStoragePaths,
-      'customerKey': this.customerKey == null ? "" : this.customerKey,
+      'customerKey': this.customerKey,
       'customerContactIndex': this.customerContactIndex,
       'timereported': this.timereported
     };

@@ -8,12 +8,12 @@ import '../managers/person_manager.dart';
 class FirebaseEventManager {
   String company;
   PersonManager personManager;
-  fb.DatabaseReference eventRef;
-  fb.DatabaseReference database;
+  late fb.DatabaseReference eventRef;
+  late fb.DatabaseReference database;
 
-  FirebaseEventManager({@required this.company, @required this.personManager}) {
-    database = fb.FirebaseDatabase.instance.reference();
-    eventRef = database.reference().child(company).child('Events');
+  FirebaseEventManager({required this.company, required this.personManager}) {
+    this.database = fb.FirebaseDatabase.instance.reference();
+    this.eventRef = database.reference().child(company).child('Events');
   }
 
   Future<void> changeEvent(Event event) {
@@ -59,7 +59,7 @@ class FirebaseEventManager {
     if (snapshot.value == null) {
       return [];
     }
-    Map<String, dynamic> mapOfMaps = Map.from(snapshot.value);
+    Map<String, dynamic>? mapOfMaps = Map.from(snapshot.value);
     if (mapOfMaps == null) {
       return [];
     }
@@ -68,21 +68,17 @@ class FirebaseEventManager {
       DateTime startDate = DateTime.parse(eventData['startDate']);
       DateTime endDate = DateTime.parse(eventData['endDate']);
       String title = eventData['title'] != null ? eventData['title'] : "";
-      String notes =
-          eventData['anteckning'] != null ? eventData['anteckning'] : "";
-      String customer =
-          eventData['customer'] != null ? eventData['customer'] : "";
-      String location =
-          eventData['address'] != null ? eventData['address'] : "";
-      String phoneNumber =
-          eventData['phonenumber'] != null ? eventData['phonenumber'] : "";
-      String customerKey = eventData["customerKey"];
-      int customerContactIndex = eventData['customerContactIndex'];
-      List<String> timereported = _getTimereported(eventData);
-      List<String> imageStoragePaths = _getImagesFromEventData(eventData);
+      String? notes = eventData['anteckning'];
+      String? customer = eventData['customer'];
+      String? location = eventData['address'];
+      String? phoneNumber = eventData['phonenumber'];
+      String? customerKey = eventData["customerKey"];
+      int? customerContactIndex = eventData['customerContactIndex'];
+      List<String> timereported = _getTimereported(eventData) ?? [];
+      List<String> imageStoragePaths = _getImagesFromEventData(eventData) ?? [];
       List<Person> persons = _getPersonsFromEventData(eventData);
       Color eventColor = _setEventColorFromPersons(persons);
-      Map<String, dynamic> imageMap =
+      Map<String, dynamic>? imageMap =
           eventData['images'] == null ? null : Map.from(eventData['images']);
       Event event = Event(
           end: endDate,
@@ -105,16 +101,16 @@ class FirebaseEventManager {
     return events;
   }
 
-  List<String> _getImagesFromEventData(dynamic eventData) {
+  List<String>? _getImagesFromEventData(dynamic eventData) {
     dynamic imageData = eventData['images'];
     if (imageData == null) {
       return null;
     }
     Map<String, dynamic> imageMap = Map.from(imageData);
-    var imageKeys = imageMap?.keys;
+    var imageKeys = imageMap.keys;
     List<String> storagePaths = imageKeys
-        ?.map((key) => imageMap[key]['storagePath'].toString())
-        ?.toList();
+        .map((key) => imageMap[key]['storagePath'].toString())
+        .toList();
     return storagePaths;
   }
 
@@ -135,17 +131,17 @@ class FirebaseEventManager {
       return persons[0].color;
     } else {
       persons.sort((a, b) => a.id.compareTo(b.id));
-      HSVColor colorAggregator = HSVColor.fromColor(persons[0].color);
+      HSVColor? colorAggregator = HSVColor.fromColor(persons[0].color);
       for (var person in persons) {
         colorAggregator = HSVColor.lerp(
             colorAggregator, HSVColor.fromColor(person.color), 0.5);
       }
       //return persons[1].color;
-      return colorAggregator.toColor();
+      return colorAggregator?.toColor() ?? Colors.blue;
     }
   }
 
-  List<String> _getTimereported(dynamic eventData) {
+  List<String>? _getTimereported(dynamic eventData) {
     if (eventData['timereported'] == null) {
       return null;
     }

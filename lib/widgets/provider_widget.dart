@@ -12,30 +12,29 @@ import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 
 class ManagerProvider extends ChangeNotifier {
-  PersonManager personManager;
-  EventManager eventManager;
-  UserParameters user;
-  List<Customer> customers;
-  FirebaseCustomerManager firebaseCustomerManager;
-  FirebasePersonManager firebasePersonManager;
-  FirebaseEventManager firebaseEventManager;
-  FirebaseUserManager firebaseUserManager;
-  FirebaseTimeReportManager firebaseTimereportManager;
-  TimereportManager timereportManager;
+  late PersonManager personManager;
+  late EventManager eventManager;
+  late UserParameters user;
+  late List<Customer> customers;
+  late FirebaseCustomerManager firebaseCustomerManager;
+  late FirebasePersonManager firebasePersonManager;
+  late FirebaseEventManager firebaseEventManager;
+  late FirebaseUserManager firebaseUserManager;
+  late FirebaseTimeReportManager firebaseTimereportManager;
+  late TimereportManager timereportManager;
 }
 
 class ProviderWidget extends InheritedWidget {
   const ProviderWidget(
-      {@required this.drawerKey,
-      @required this.child,
-      @required this.didTapEvent});
+      {required this.drawerKey, required this.child, required this.didTapEvent})
+      : super(child: child);
   final GlobalKey<ScaffoldState> drawerKey;
   final Function(Event) didTapEvent;
   final Widget child;
 
   static ProviderWidget of(BuildContext context) {
     final ProviderWidget result =
-        context.dependOnInheritedWidgetOfExactType<ProviderWidget>();
+        context.dependOnInheritedWidgetOfExactType<ProviderWidget>()!;
     assert(result != null, '');
     return result;
   }

@@ -1,5 +1,6 @@
-class Cost<T1, T2> {
-  T1 a;
-  T2 b;
-  Cost(this.a, this.b);
+class Cost {
+  String description;
+  int cost;
+  int amount;
+  Cost({required this.description, required this.cost, required this.amount});
 }

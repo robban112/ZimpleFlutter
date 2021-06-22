@@ -1,5 +1,6 @@
 class WeekPageController {
-  void Function(int prevNumberOfDays, int newNumberOfDays, DateTime zoomDate)
+  late void Function(
+          int prevNumberOfDays, int newNumberOfDays, DateTime? zoomDate)
       daysChanged;
-  void Function(DateTime zoomDate) zoomDate;
+  late void Function(DateTime zoomDate) zoomDate;
 }

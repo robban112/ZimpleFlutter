@@ -52,7 +52,7 @@ String dateStringVerbose(DateTime date) {
 }
 
 String dateStringMonthHourMinute(DateTime date) {
-  DateFormat formatter = DateFormat('MM-dd kk:mm');
+  DateFormat formatter = DateFormat('dd MMMM kk:mm', locale);
   return formatter.format(date);
 }
 
@@ -69,15 +69,15 @@ bool isToday(DateTime date) {
 }
 
 String dateToHourMinute(DateTime date) {
-  return DateFormat('kk:mm').format(date);
+  return DateFormat('kk:mm', locale).format(date);
 }
 
 String dateToYearMonthDay(DateTime date) {
-  return DateFormat('yyyy-MM-dd').format(date);
+  return DateFormat('yyyy-MM-dd', locale).format(date);
 }
 
 String dateToYearMonth(DateTime date) {
-  return DateFormat('yyyy-MM').format(date);
+  return DateFormat('yyyy MMMM', locale).format(date);
 }
 
 DateTime firstDayOfWeek(DateTime date) {
@@ -94,6 +94,6 @@ List<DateTime> getDateRange(DateTime startDate, int daysForward) {
 
 String getHourDiff(DateTime startDate, DateTime endDate) {
   var minutes = endDate.difference(startDate).inMinutes;
-  var minutesToHours = (minutes / 60).roundToDouble();
+  var minutesToHours = (minutes / 60);
   return "$minutesToHours";
 }

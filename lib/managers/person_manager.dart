@@ -4,7 +4,7 @@ import '../model/person.dart';
 class PersonManager {
   List<Person> persons;
 
-  PersonManager({@required this.persons});
+  PersonManager({required this.persons});
 
   List<Person> getPersonsByIds(List<String> personIds) {
     List<Person> _persons = [];
@@ -17,5 +17,9 @@ class PersonManager {
       }
     });
     return _persons;
+  }
+
+  Person getPersonById(String id) {
+    return persons.firstWhere((p) => p.id == id);
   }
 }

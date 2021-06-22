@@ -4,12 +4,12 @@ import '../utils/date_utils.dart';
 
 class EventManager {
   List<Event> events;
-  List<Event> Function(List<Event>) eventFilter;
+  List<Event> Function(List<Event>)? eventFilter;
 
   Map<String, List<Event>> eventMap = Map<String, List<Event>>();
   Map<String, Event> eventKeyMap = Map<String, Event>();
 
-  EventManager({@required this.events}) {
+  EventManager({required this.events}) {
     orderEventByWeek(this.events);
   }
 
@@ -26,7 +26,7 @@ class EventManager {
       if (!eventMap.containsKey(dateKey)) {
         eventMap[dateKey] = [event];
       } else {
-        eventMap[dateKey].add(event);
+        eventMap[dateKey]?.add(event);
       }
     });
   }
@@ -36,7 +36,7 @@ class EventManager {
     var weekKey = eventMapKey(then);
 
     if (eventMap.containsKey(weekKey)) {
-      return sortEventByStartDate(eventMap[weekKey]);
+      return sortEventByStartDate(eventMap[weekKey]!);
     }
     return [];
   }
@@ -44,9 +44,9 @@ class EventManager {
   List<Event> getEventsByDate(DateTime date) {
     var key = eventMapKey(date);
     if (eventMap.containsKey(key)) {
-      var sortedEvents = sortEventByStartDate(eventMap[key]);
+      var sortedEvents = sortEventByStartDate(eventMap[key]!);
       if (eventFilter != null) {
-        return eventFilter(sortedEvents);
+        return eventFilter!(sortedEvents);
       } else {
         return sortedEvents;
       }
@@ -71,11 +71,12 @@ class EventManager {
     return dateString(date);
   }
 
-  Event getEventForKey({String key}) {
+  Event? getEventForKey({String? key}) {
+    if (key == null) return null;
     return eventKeyMap[key];
   }
 
   bool hasUserTimreportedCurrentEvent(Event event, String key) {
-    return event.timereported.contains(key);
+    return event.timereported?.contains(key) ?? false;
   }
 }

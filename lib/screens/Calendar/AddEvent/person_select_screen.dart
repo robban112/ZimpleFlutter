@@ -6,25 +6,25 @@ class PersonSelectScreen extends StatefulWidget {
   static const String routeName = 'person_select_screen';
   final List<Person> persons;
   final Function(List<Person>) personCallback;
-  final List<Person> preSelectedPersons;
+  final List<Person>? preSelectedPersons;
 
   PersonSelectScreen(
-      {@required this.persons,
-      @required this.personCallback,
+      {required this.persons,
+      required this.personCallback,
       this.preSelectedPersons});
   @override
   _PersonSelectScreenState createState() => _PersonSelectScreenState();
 }
 
 class _PersonSelectScreenState extends State<PersonSelectScreen> {
-  Map<Person, bool> selectedPersonsMap;
+  late Map<Person, bool> selectedPersonsMap;
 
   @override
   void initState() {
     super.initState();
     selectedPersonsMap = new Map.fromIterable(widget.persons,
         key: (person) => person, value: (person) => false);
-    widget.preSelectedPersons.forEach((person) {
+    widget.preSelectedPersons?.forEach((person) {
       selectedPersonsMap[person] = true;
     });
   }
@@ -32,20 +32,15 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
   void _performCallback() {
     List<Person> selectedPersons = [];
     widget.persons.forEach((person) {
-      if (selectedPersonsMap[person]) {
+      if (selectedPersonsMap[person] ?? false) {
         selectedPersons.add(person);
       }
     });
     widget.personCallback(selectedPersons);
   }
 
-  Widget _buildDivider([double thickness]) {
-    thickness ??= 0.5;
-    return Divider(height: 20, thickness: thickness, color: Colors.grey);
-  }
-
   Widget _buildCheckMark(Person person) {
-    if (selectedPersonsMap[person]) {
+    if (selectedPersonsMap[person] ?? false) {
       return Icon(Icons.check_circle, color: green);
     } else {
       return Icon(Icons.radio_button_off_outlined, color: green);
@@ -54,7 +49,8 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
 
   void _togglePerson(Person person) {
     setState(() {
-      selectedPersonsMap[person] = !selectedPersonsMap[person];
+      if (selectedPersonsMap[person] == null) return;
+      selectedPersonsMap[person] = !selectedPersonsMap[person]!;
     });
   }
 
@@ -72,7 +68,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            iconTheme: IconThemeData(color: Colors.white),
+            //iconTheme: IconThemeData(color: Colors.white),
             elevation: 0.0,
             backgroundColor: primaryColor,
             leading: IconButton(

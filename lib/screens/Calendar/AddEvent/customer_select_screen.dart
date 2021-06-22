@@ -7,14 +7,14 @@ import 'package:zimple/utils/constants.dart';
 
 class CustomerSelectScreen extends StatefulWidget {
   final Function(Customer, int) didSelectCustomer;
-  CustomerSelectScreen({this.didSelectCustomer});
+  CustomerSelectScreen({required this.didSelectCustomer});
   @override
   _CustomerSelectScreenState createState() => _CustomerSelectScreenState();
 }
 
 class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
-  List<Customer> customers;
-  Map<Customer, int> selectedContact;
+  late List<Customer> customers;
+  late Map<Customer, int> selectedContact;
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
             onTap: () {
               Navigator.pop(context);
               print(selectedContact[customer]);
-              widget.didSelectCustomer(customer, selectedContact[customer]);
+              widget.didSelectCustomer(customer, selectedContact[customer]!);
             },
           );
         });
@@ -98,7 +98,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
 
 class ContactSelect extends StatefulWidget {
   const ContactSelect(
-      {Key key, @required this.customer, @required this.didSelectContact})
+      {Key? key, required this.customer, required this.didSelectContact})
       : super(key: key);
 
   final Customer customer;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:zimple/screens/Login/forgot_password_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import '../../widgets/authentication_form.dart';
@@ -38,14 +38,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: primaryColor,
-      body: ModalProgressHUD(
-        inAsyncCall: _loading,
-        opacity: 0.5,
-        progressIndicator: CircularProgressIndicator(
-          backgroundColor: green,
-        ),
+      body: LoaderOverlay(
+        overlayColor: _loading ? Colors.grey : Colors.transparent,
+        // progressIndicator: CircularProgressIndicator(
+        //   backgroundColor: green,
+        // ),
         child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
@@ -56,9 +56,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(height: 100, color: primaryColor),
+                    Container(height: 50, color: primaryColor),
                     Container(
-                      height: 150,
+                      height: 180,
+                      child: Image.asset(
+                        "images/clock.png",
+                        width: width / 2,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Container(
+                      height: 50,
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: kPadding * 3),
                         child: Hero(

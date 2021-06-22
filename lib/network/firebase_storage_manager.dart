@@ -7,12 +7,13 @@ import 'package:zimple/model/user_parameters.dart';
 
 class FirebaseStorageManager {
   String company;
-  firebase_storage.Reference storageRef;
-  FirebaseStorageManager({@required this.company}) {
-    storageRef = firebase_storage.FirebaseStorage.instance.ref().child(company);
+  late firebase_storage.Reference storageRef;
+  FirebaseStorageManager({required this.company}) {
+    this.storageRef =
+        firebase_storage.FirebaseStorage.instance.ref().child(company);
   }
 
-  Future<Image> getImage(String path) {
+  Future<Image?> getImage(String path) async {
     storageRef.child(path).fullPath;
     print("Downloading Image");
     return storageRef.child(path).getData(10000000000).then((bytes) {
