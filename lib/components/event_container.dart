@@ -39,10 +39,15 @@ class EventContainer extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(event.title,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: isEventLarge ? 17 : 11)),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxHeight: eventLayout.height - 10,
+                            maxWidth: eventLayout.width - 10),
+                        child: Text(event.title,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: isEventLarge ? 17 : 11)),
+                      ),
                       isEventLarge ? SizedBox(height: 8.0) : Container(),
                       isEventLarge ? Text(event.customer ?? "") : Container(),
                       isEventLarge ? SizedBox(height: 8.0) : Container(),

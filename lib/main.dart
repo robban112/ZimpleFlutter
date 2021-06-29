@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/screens/Login/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +16,13 @@ void main() {
   runApp(App());
 }
 
-Future<dynamic> _firebaseMessagingBackgroundHandler(
-  Map<String, dynamic> message,
-) async {
-  // Initialize the Firebase app
-  await Firebase.initializeApp();
-  print('onBackgroundMessage received: $message');
-}
+// Future<dynamic> _firebaseMessagingBackgroundHandler(
+//   Map<String, dynamic> message,
+// ) async {
+//   // Initialize the Firebase app
+//   await Firebase.initializeApp();
+//   print('onBackgroundMessage received: $message');
+// }
 
 Future<bool> isUserLoggedIn() async {
   // FirebaseAuth.instance.authStateChanges().listen((user) {
@@ -35,7 +35,7 @@ Future<bool> isUserLoggedIn() async {
   User? firebaseUser = getLoggedInFirebaseUser();
   if (firebaseUser != null) {
     String tokenResult = await firebaseUser.getIdToken(true);
-    return tokenResult != null;
+    return true;
   } else {
     return false;
   }
@@ -87,6 +87,7 @@ class _ZimpleState extends State<Zimple> {
 
 Future<bool> initializeApp() async {
   await Firebase.initializeApp();
+  //await FirebaseCoreWeb.registerWith(registrar)
   return isUserLoggedIn();
 }
 

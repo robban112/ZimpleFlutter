@@ -24,7 +24,7 @@ class FirebaseUserManager {
 
     return UserParameters(
         company: snapshot.value['company'],
-        isAdmin: snapshot.value['isAdmin'],
+        isAdmin: snapshot.value['isAdmin'] ?? false,
         token: userToken,
         email: user?.email ?? "",
         name: snapshot.value['name'],

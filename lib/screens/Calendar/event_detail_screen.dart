@@ -13,6 +13,7 @@ import '../../network/firebase_event_manager.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:zimple/utils/color_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final Event event;
@@ -130,7 +131,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     if (widget.event.location == null || widget.event.location == "")
       return Container();
     return ListedParameter(
-        iconData: Icons.location_city,
+        iconData: Icons.location_on,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -207,7 +208,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     }
     var width = MediaQuery.of(context).size.width;
     return DraggableScrollableSheet(
-      initialChildSize: 0.84,
+      initialChildSize: 0.75,
       minChildSize: 0.7,
       maxChildSize: 0.9,
       builder: (context, controller) {
@@ -265,13 +266,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   )
                 : Container(),
             _buildLocation(),
-            widget.event.phoneNumber != null && widget.event.phoneNumber != ""
+            widget.event.phoneNumber.isNotBlank()
                 ? _buildParameter(
                     iconData: Icons.phone,
                     title: 'Telefonnummer',
                     subtitle: widget.event.phoneNumber!)
                 : Container(),
-            widget.event.notes != null && widget.event.notes != ""
+            widget.event.notes.isNotBlank()
                 ? _buildParameter(
                     iconData: Icons.event_note,
                     title: 'Anteckningar',
@@ -357,71 +358,61 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  Row buildActions(Color textColor) {
-    return Row(children: [
-      SizedBox(
-        height: 26,
-        width: 26,
-        child: IconButton(
-          constraints: BoxConstraints(maxHeight: 15, maxWidth: 15),
-          splashRadius: 5,
-          padding: EdgeInsets.zero,
-          icon: Icon(Icons.edit, color: textColor),
-          onPressed: () {
-            Navigator.pop(context);
-            this.widget.didTapChangeEvent(this.widget.event);
-          },
-        ),
-      ),
-      SizedBox(width: 16),
-      SizedBox(
-        height: 26,
-        width: 26,
-        child: PopupMenuButton<String>(
-          padding: EdgeInsets.zero,
-          icon: Icon(Icons.more_horiz, color: textColor),
-          onSelected: (value) {
-            this.handleClick(value);
-            Navigator.of(context).pop();
-          },
-          itemBuilder: (BuildContext context) {
-            return {'Kopiera event', 'Ta bort event'}.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice),
-              );
-            }).toList();
-          },
-        ),
-      ),
-    ]);
-  }
-
-  List<Widget> _buildActions(BuildContext context, Color color) {
-    return [
-      IconButton(
-        icon: Icon(Icons.edit, color: color),
-        onPressed: () {
-          Navigator.pop(context);
-          this.widget.didTapChangeEvent(this.widget.event);
-        },
-      ),
-      PopupMenuButton<String>(
-        color: color,
-        onSelected: (value) {
-          this.handleClick(value);
-          Navigator.of(context).pop();
-        },
-        itemBuilder: (BuildContext context) {
-          return {'Kopiera event', 'Ta bort event'}.map((String choice) {
-            return PopupMenuItem<String>(
-              value: choice,
-              child: Text(choice),
-            );
-          }).toList();
-        },
-      ),
-    ];
+  Widget buildActions(Color textColor) {
+    bool isAdmin =
+        Provider.of<ManagerProvider>(context, listen: false).user.isAdmin;
+    return isAdmin
+        ? Row(children: [
+            SizedBox(
+              height: 26,
+              width: 26,
+              child: IconButton(
+                constraints: BoxConstraints(maxHeight: 15, maxWidth: 15),
+                splashRadius: 5,
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.edit, color: textColor),
+                onPressed: () {
+                  Navigator.pop(context);
+                  this.widget.didTapChangeEvent(this.widget.event);
+                },
+              ),
+            ),
+            SizedBox(width: 16),
+            SizedBox(
+              height: 26,
+              width: 26,
+              child: PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.more_horiz, color: textColor),
+                onSelected: (value) {
+                  this.handleClick(value);
+                  Navigator.of(context).pop();
+                },
+                itemBuilder: (BuildContext context) {
+                  return {'Kopiera event', 'Ta bort event'}
+                      .map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+              ),
+            )
+          ])
+        : GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Image.asset(
+                "images/close.png",
+                height: 16,
+                width: 16,
+              ),
+            ),
+          );
   }
 }
 

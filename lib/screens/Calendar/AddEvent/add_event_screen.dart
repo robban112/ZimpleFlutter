@@ -5,6 +5,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/event.dart';
+import 'package:zimple/model/event_type.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
@@ -23,6 +24,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:collection/collection.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 
 class AddEventScreen extends StatefulWidget {
   static const String routeName = 'add_event_screen';
@@ -167,12 +169,25 @@ class _AddEventScreenState extends State<AddEventScreen> {
     );
   }
 
+  String getTitle() {
+    if (this.title != "") return this.title;
+    String agg = "";
+    if (companyController.text.isNotBlank()) {
+      agg += companyController.text + " - ";
+    }
+    if (selectedPersons.isNotEmpty) {
+      agg += selectedPersons.map((p) => p.name).join(", ");
+    }
+    return agg;
+  }
+
   Event _getNewEvent() {
     var customerKey = selectedCustomer != null ? selectedCustomer!.id : null;
     return Event(
         id: widget.eventToChange?.id ?? "",
-        title: this.title,
+        title: getTitle(),
         start: this.startDateController.getDate(),
+        eventType: EventType.event,
         end: this.endDateController.getDate(),
         persons: this.selectedPersons,
         phoneNumber: phonenumberController.text,
@@ -252,8 +267,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
     fb.DatabaseReference ref = widget.firebaseEventManager.newEventRef();
     Event event = _uploadEventImages(ref.key);
     print("Adding new event");
+    context.loaderOverlay.show();
     widget.firebaseEventManager.addEventWithRef(ref, event).then((value) {
-      context.hideLoaderOverlay();
+      context.loaderOverlay.hide();
       Navigator.pop(context);
     });
   }
@@ -261,8 +277,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
   void _changeEvent() async {
     print("Changing event with id: ${widget.eventToChange?.id}");
     Event event = _uploadEventImages(widget.eventToChange!.id);
+    context.loaderOverlay.show();
     widget.firebaseEventManager.changeEvent(event).then((value) {
-      context.hideLoaderOverlay();
+      context.loaderOverlay.hide();
       Navigator.pop(context);
     });
   }
@@ -346,12 +363,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
       children: [
         _buildSectionTitle("TID"),
         Container(height: 0.5, color: Colors.grey.shade400),
-        SizedBox(height: 10),
-        StartEndDateSelector(startDateController, endDateController, (te) {
-          setState(() {});
-        }, (te) {
-          setState(() {});
-        }, color: Colors.transparent),
+        //SizedBox(height: 10),
+        StartEndDateSelector(
+            startDateSelectorController: startDateController,
+            endDateSelectorController: endDateController,
+            onChangeStart: (te) {
+              setState(() {});
+            },
+            onChangeEnd: (te) {
+              setState(() {});
+            },
+            color: Colors.transparent),
         Container(height: 0.5, color: Colors.grey.shade400),
       ],
     );
@@ -403,19 +425,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   },
                 ));
               }),
-          ListedItem(
-              leadingIcon: Icons.image_rounded,
-              child: Text("Lägg till bilder"),
-              trailingWidget: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [selectedImagesPreview(), Icon(Icons.chevron_right)],
-              ),
-              onTap: () {
-                setState(() {
-                  isSelectingPhotoProvider = !isSelectingPhotoProvider;
-                });
-              }),
           ListedTextField(
               leadingIcon: Icons.business_center,
               placeholder: "Kund fritext",
@@ -425,7 +434,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
               key: _companyFormKey,
               controller: companyController),
           ListedTextField(
-              leadingIcon: Icons.location_city,
+              leadingIcon: Icons.location_on,
               placeholder: "Address",
               onChanged: (location) {
                 this.location = location;
@@ -440,6 +449,19 @@ class _AddEventScreenState extends State<AddEventScreen> {
               },
               key: _phoneNumberFormKey,
               controller: phonenumberController),
+          ListedItem(
+              leadingIcon: Icons.image_rounded,
+              child: Text("Lägg till bilder"),
+              trailingWidget: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [selectedImagesPreview(), Icon(Icons.chevron_right)],
+              ),
+              onTap: () {
+                setState(() {
+                  isSelectingPhotoProvider = !isSelectingPhotoProvider;
+                });
+              }),
         ]);
   }
 

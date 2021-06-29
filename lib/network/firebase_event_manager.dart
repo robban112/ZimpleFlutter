@@ -1,6 +1,10 @@
 import 'package:zimple/managers/event_manager.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/material.dart';
+import 'package:zimple/model/absence_request.dart';
+import 'package:zimple/model/event_type.dart';
+import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/utils/date_utils.dart';
 import '../model/person.dart';
 import '../model/event.dart';
 import '../managers/person_manager.dart';
@@ -40,9 +44,15 @@ class FirebaseEventManager {
     return eventRef.child(event.id).remove().then((value) => value);
   }
 
+  Future<void> removeEventsIds(List<String> eventIds) async {
+    eventIds.forEach((id) async {
+      await eventRef.child(id).remove();
+    });
+  }
+
   Stream<EventManager> listenEvents() {
-    return eventRef.limitToLast(500).onValue.map((event) {
-      print("listen events");
+    return eventRef.limitToLast(1000).onValue.map((event) {
+      print("Listening events");
       var snapshot = event.snapshot;
       return EventManager(events: _mapSnapshot(snapshot));
       //return _mapSnapshot(snapshot);
@@ -52,6 +62,31 @@ class FirebaseEventManager {
   Future<List<Event>> getEvents() async {
     var snapshot = await eventRef.limitToLast(500).once();
     return _mapSnapshot(snapshot);
+  }
+
+  Future<List<String>> addVacationPeriod(
+      AbsenceRequest absenceRequest, String? name) async {
+    List<DateTime> dates =
+        getDaysInBeteween(absenceRequest.startDate, absenceRequest.endDate);
+    List<String> eventIds = [];
+    for (DateTime date in dates) {
+      DateTime _startDate = DateTime(date.year, date.month, date.day, 0, 0, 0);
+      DateTime _endDate = DateTime(date.year, date.month, date.day, 2, 0, 0);
+      Event event = Event(
+          id: "",
+          start: _startDate,
+          end: _endDate,
+          title:
+              "${absenceToString(absenceRequest.absenceType)} - ${name ?? ""}",
+          notes: absenceRequest.notes,
+          persons: [
+            Person(id: absenceRequest.userId, color: Colors.white, name: "")
+          ],
+          eventType: EventType.vacation);
+      String id = await addEvent(event);
+      eventIds.add(id);
+    }
+    return eventIds;
   }
 
   List<Event> _mapSnapshot(fb.DataSnapshot snapshot) {
@@ -73,6 +108,7 @@ class FirebaseEventManager {
       String? location = eventData['address'];
       String? phoneNumber = eventData['phonenumber'];
       String? customerKey = eventData["customerKey"];
+      EventType eventType = stringToEventType(eventData['eventType']);
       int? customerContactIndex = eventData['customerContactIndex'];
       List<String> timereported = _getTimereported(eventData) ?? [];
       List<String> imageStoragePaths = _getImagesFromEventData(eventData) ?? [];
@@ -84,6 +120,7 @@ class FirebaseEventManager {
           end: endDate,
           start: startDate,
           id: key,
+          eventType: eventType,
           title: title,
           persons: persons,
           color: eventColor,

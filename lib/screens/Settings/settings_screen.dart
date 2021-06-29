@@ -174,7 +174,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   FutureBuilder _profilePicture() {
     var _future = FirebaseStorageManager(company: widget.user.company)
-        .getImage(widget.user.profilePicturePath);
+        .getImage(widget.user.profilePicturePath!);
     return FutureBuilder(
         future: _future,
         builder: (context, snapshot) {

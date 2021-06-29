@@ -22,6 +22,7 @@ class ManagerProvider extends ChangeNotifier {
   late FirebaseUserManager firebaseUserManager;
   late FirebaseTimeReportManager firebaseTimereportManager;
   late TimereportManager timereportManager;
+  Map<String, int>? absenceRequestReadMap;
 }
 
 class ProviderWidget extends InheritedWidget {

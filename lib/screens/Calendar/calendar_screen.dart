@@ -58,6 +58,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   void initState() {
     super.initState();
+    isShowingTimeplan = !widget.user.isAdmin;
     dateAggregator = firstDayOfWeek(DateTime.now());
     firebaseStorageManager =
         FirebaseStorageManager(company: widget.user.company);
@@ -222,25 +223,27 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _drawerKey,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: green,
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 24,
-        ),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddEventScreen(
-                  persons: widget.personManager.persons,
-                  firebaseEventManager: widget.firebaseEventManager,
-                  firebaseStorageManager: this.firebaseStorageManager,
-                ),
-              ));
-        },
-      ),
+      floatingActionButton: widget.user.isAdmin
+          ? FloatingActionButton(
+              backgroundColor: green,
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 24,
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddEventScreen(
+                        persons: widget.personManager.persons,
+                        firebaseEventManager: widget.firebaseEventManager,
+                        firebaseStorageManager: this.firebaseStorageManager,
+                      ),
+                    ));
+              },
+            )
+          : Container(),
       drawer: DrawerWidget(
         setNumberOfDays: _setNumberOfDays,
         toggleTimeplanView: _toggleTimeplanView,

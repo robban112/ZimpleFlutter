@@ -25,7 +25,7 @@ dependencies:
   infinite_listview: ^1.1.0
   image_picker: ^0.7.4
   uuid: ^3.0.3
-  firebase_messaging: ^9.1.1
+  firebase_messaging: ^10.0.2
   provider: ^5.0.0
   maps_launcher: ^2.0.0
   collection: ^1.15.0
@@ -34,6 +34,9 @@ dependencies:
   quiver: ^3.0.1
   url_launcher: ^6.0.6
   flutter_icons: ^1.1.0
+  logger: ^1.0.0
+  fl_chart: ^0.36.2
+  focus_detector: ^2.0.0
 
 dev_dependencies:
   flutter_test:

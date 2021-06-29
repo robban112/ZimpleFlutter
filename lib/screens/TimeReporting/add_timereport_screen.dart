@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:logger/logger.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -34,6 +35,7 @@ class AddTimeReportingScreen extends StatefulWidget {
 }
 
 class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
+  final logger = Logger();
   DateSelectorController startDateController = DateSelectorController();
   DateSelectorController endDateController = DateSelectorController();
   TextEditingController notesController = TextEditingController();
@@ -57,7 +59,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   @override
   void initState() {
-    print("Init State Add Timereport");
+    logger.log(Level.info, "Init State Add Timereport");
     super.initState();
     firebaseTimeReportManager =
         Provider.of<ManagerProvider>(context, listen: false)
@@ -152,7 +154,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      backgroundColor: backgroundColor,
+      backgroundColor: Colors.white,
       body: LoaderOverlay(
         //inAsyncCall: _uploadingTimereport,
         //progressIndicator: CircularProgressIndicator(),
@@ -242,6 +244,10 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                               this
                                   .endDateController
                                   .setDate(selectedEvent!.end);
+                              updateDifference(
+                                  startDateController.getDate(),
+                                  endDateController.getDate(),
+                                  this.minutesBreak);
                             });
                           },
                         ));
@@ -369,14 +375,17 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              StartEndDateSelector(startDateController, endDateController,
-                  (startDate) {
-                updateDifference(
-                    startDate, endDateController.getDate(), this.minutesBreak);
-              }, (endDate) {
-                updateDifference(
-                    startDateController.getDate(), endDate, this.minutesBreak);
-              },
+              StartEndDateSelector(
+                  startDateSelectorController: startDateController,
+                  endDateSelectorController: endDateController,
+                  onChangeStart: (startDate) {
+                    updateDifference(startDate, endDateController.getDate(),
+                        this.minutesBreak);
+                  },
+                  onChangeEnd: (endDate) {
+                    updateDifference(startDateController.getDate(), endDate,
+                        this.minutesBreak);
+                  },
                   datePickerMode: selectedEvent != null
                       ? CupertinoDatePickerMode.time
                       : CupertinoDatePickerMode.dateAndTime),
@@ -481,6 +490,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     }
     setLoading(true);
     var timereport = TimeReport(
+        id: "",
         startDate: startDateController.getDate(),
         endDate: endDateController.getDate(),
         breakTime: this.minutesBreak,

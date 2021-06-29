@@ -6,7 +6,7 @@ class UserParameters {
   String company;
   String name;
   bool isAdmin;
-  String profilePicturePath;
+  String? profilePicturePath;
 
   UserParameters(
       {required this.email,

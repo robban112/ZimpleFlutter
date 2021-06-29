@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:zimple/model/event_layout.dart';
+import 'package:zimple/model/event_type.dart';
 import 'person.dart';
 import '../utils/date_utils.dart';
 
@@ -8,11 +10,15 @@ class Event {
   String title;
   Color color;
   String id;
+  EventType eventType;
   String? customer;
   String? location;
   String? phoneNumber;
   String? notes;
   String? customerKey;
+
+  late EventLayout layout;
+
   int? customerContactIndex;
   List<String>? timereported;
   List<Person>? persons;
@@ -23,8 +29,9 @@ class Event {
       {required this.id,
       required this.start,
       required this.end,
-      this.persons,
       required this.title,
+      required this.eventType,
+      this.persons,
       this.color = Colors.white,
       this.customer,
       this.location,
@@ -49,7 +56,8 @@ class Event {
       'images': originalImageStoragePaths,
       'customerKey': this.customerKey,
       'customerContactIndex': this.customerContactIndex,
-      'timereported': this.timereported
+      'timereported': this.timereported,
+      'eventType': eventType.toString()
     };
   }
 }

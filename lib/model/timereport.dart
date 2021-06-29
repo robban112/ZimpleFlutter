@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'cost.dart';
 
 class TimeReport {
-  String? id;
+  String id;
   String? userId;
 
   final DateTime startDate;
@@ -15,12 +15,13 @@ class TimeReport {
   final String? eventId;
 
   final List<Cost>? costs;
+  bool isCompleted;
   List<String>? imagesList;
 
   Map<String, dynamic>? imageStoragePaths;
 
   TimeReport(
-      {this.id,
+      {required this.id,
       this.userId,
       required this.startDate,
       required this.endDate,
@@ -30,7 +31,8 @@ class TimeReport {
       this.eventId,
       required this.costs,
       this.imagesList,
-      this.imageStoragePaths});
+      this.imageStoragePaths,
+      this.isCompleted = false});
 
   Map<String, dynamic> toJson() {
     return {
@@ -42,6 +44,7 @@ class TimeReport {
       'costs': costsToJson(),
       'comment': this.comment,
       'images': this.imageStoragePaths,
+      'isCompleted': this.isCompleted
     };
   }
 
@@ -69,18 +72,20 @@ class TimeReport {
     return map;
   }
 
-  static TimeReport mapFromSnapshot(dynamic timereportData) {
+  static TimeReport mapFromSnapshot(String key, dynamic timereportData) {
     DateTime startDate = DateTime.parse(timereportData['startDate']);
     DateTime endDate = DateTime.parse(timereportData['endDate']);
     int breakTime = timereportData['breakTime'] ?? 0;
-    int totalTime = timereportData['totalTime'];
+    int totalTime = timereportData['totalTime'] ?? 0;
     List<String> imagesStoragePaths =
         _getImagesFromEventData(timereportData) ?? [];
     print("Came here");
     List<Cost> costs = _getCostsFromTimereportData(timereportData) ?? [];
     String? comment = timereportData['comment'];
     String? eventId = timereportData['eventId'];
+    bool isCompleted = timereportData['isCompleted'] ?? false;
     return TimeReport(
+        id: key,
         startDate: startDate,
         endDate: endDate,
         breakTime: breakTime,
@@ -88,7 +93,8 @@ class TimeReport {
         comment: comment,
         imagesList: imagesStoragePaths,
         eventId: eventId,
-        costs: costs);
+        costs: costs,
+        isCompleted: isCompleted);
   }
 
   static List<String>? _getImagesFromEventData(dynamic eventData) {

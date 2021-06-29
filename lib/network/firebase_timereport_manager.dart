@@ -1,10 +1,8 @@
 import 'package:firebase_database/firebase_database.dart' as fb;
-import 'package:flutter/material.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/managers/person_manager.dart';
-import 'package:firebase_database/firebase_database.dart' as fb;
 
 class FirebaseTimeReportManager {
   String company;
@@ -32,8 +30,20 @@ class FirebaseTimeReportManager {
     return ref.set(timereport.toJson()).then((value) => ref.key);
   }
 
+  Future<void> removeTimereport(TimeReport timereport) {
+    return timereportRef.child(timereport.id).remove().then((value) => value);
+  }
+
+  Future<void>? changeTimereport(TimeReport timereport) {
+    return timereportRef
+        .child(timereport.userId!)
+        .child(timereport.id)
+        .update(timereport.toJson())
+        .then((value) => value);
+  }
+
   Stream<TimereportManager> listenTimereports(UserParameters user) {
-    return timereportRef.onValue.map((tEvent) {
+    return timereportRef.limitToLast(1000).onValue.map((tEvent) {
       var snapshot = tEvent.snapshot;
       return _mapSnapshot(snapshot);
     });
@@ -59,8 +69,7 @@ class FirebaseTimeReportManager {
       for (String key2 in timereportMap.keys) {
         dynamic timereportData = timereportMap[key2];
 
-        var timereport = TimeReport.mapFromSnapshot(timereportData);
-        timereport.id = key2;
+        var timereport = TimeReport.mapFromSnapshot(key2, timereportData);
         timereport.userId = key;
         timereportManager.addTimereport(userId: key, timeReport: timereport);
       }

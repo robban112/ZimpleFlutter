@@ -3,12 +3,15 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/managers/event_manager.dart';
+import 'package:zimple/model/event_type.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:infinite_listview/infinite_listview.dart';
+import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../utils/date_utils.dart';
 import '../utils/weekday_to_string.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 
 class Timeplan extends StatelessWidget {
   final EventManager eventManager;
@@ -212,6 +215,17 @@ class TimeplanEventContainer extends StatelessWidget {
         : Container();
   }
 
+  String buildCustomerLocation() {
+    String agg = "";
+    if (event.customer.isNotBlank()) {
+      agg += event.customer! + ", ";
+    }
+    if (event.location.isNotBlank()) {
+      agg += event.location!;
+    }
+    return agg;
+  }
+
   @override
   Widget build(BuildContext context) {
     var userToken =
@@ -242,27 +256,39 @@ class TimeplanEventContainer extends StatelessWidget {
                         fontSize: 17.0,
                         fontWeight: FontWeight.normal,
                         color: _dynamicBlackWhite(event.color))),
-                SizedBox(height: 2.0),
-                Row(
-                  children: [
-                    Text(
-                        dateToHourMinute(event.start) +
-                            " - " +
-                            dateToHourMinute(event.end),
+                SizedBox(height: 4.0),
+                buildTimeRow(),
+                SizedBox(height: 4.0),
+                event.persons != null
+                    ? ListPersonCircleAvatar(
+                        persons: event.persons!, radius: 8, spacing: 2)
+                    : Container(),
+                SizedBox(height: 4.0),
+                event.location.isNotBlank()
+                    ? Text(
+                        buildCustomerLocation(),
                         style:
-                            TextStyle(color: _dynamicBlackWhite(event.color)))
-                  ],
-                ),
-                SizedBox(height: 2.0),
-                Text(
-                  event.location ?? "",
-                  style: TextStyle(color: _dynamicBlackWhite(event.color)),
-                ),
+                            TextStyle(color: _dynamicBlackWhite(event.color)),
+                      )
+                    : Container(),
                 SizedBox(height: 5.0),
                 _buildTimereportedSection(userToken)
               ],
             ),
           )),
+    );
+  }
+
+  Widget buildTimeRow() {
+    if (event.eventType == EventType.vacation) {
+      return Container();
+    }
+    return Row(
+      children: [
+        Text(
+            dateToHourMinute(event.start) + " - " + dateToHourMinute(event.end),
+            style: TextStyle(color: _dynamicBlackWhite(event.color)))
+      ],
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:zimple/model/event.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
+import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/event_detail_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
@@ -16,7 +17,10 @@ import 'package:zimple/widgets/provider_widget.dart';
 class TimereportingDetails extends StatefulWidget {
   final TimeReport? timereport;
   final List<TimeReport>? listTimereports;
-  TimereportingDetails({this.timereport, this.listTimereports});
+  late bool isViewingSingle;
+  TimereportingDetails({this.timereport, this.listTimereports}) {
+    isViewingSingle = timereport != null;
+  }
 
   @override
   _TimereportingDetailsState createState() => _TimereportingDetailsState();
@@ -24,8 +28,13 @@ class TimereportingDetails extends StatefulWidget {
 
 class _TimereportingDetailsState extends State<TimereportingDetails> {
   final _key = GlobalKey();
+  final List<String> actionsSingleTimereport = ["Markera färdig", "Ta bort"];
+  final List<String> actionsMultipleTimereport = [
+    "Markera färdiga",
+    "Ta bort alla"
+  ];
 
-  AppBar _buildAppbar(BuildContext context) {
+  AppBar _buildAppbar(BuildContext context, UserParameters user) {
     return AppBar(
         backgroundColor: primaryColor,
         elevation: 0.0,
@@ -43,7 +52,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: _buildActions(context));
+        actions: user.isAdmin ? _buildActions(context) : []);
   }
 
   @override
@@ -54,7 +63,8 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
         Provider.of<ManagerProvider>(context, listen: true).eventManager;
 
     return Scaffold(
-      appBar: _buildAppbar(context),
+      appBar: _buildAppbar(context, user),
+      backgroundColor: widget.isViewingSingle ? Colors.white : primaryColor,
       body: widget.listTimereports != null
           ? _buildMultipleBody(user, eventManager)
           : _buildBody(widget.timereport!, user, eventManager),
@@ -63,7 +73,6 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
 
   Widget _buildMultipleBody(UserParameters user, EventManager eventManager) {
     PageController pageController = PageController();
-    var width = MediaQuery.of(context).size.width;
     return Stack(
       children: [
         PageView(
@@ -72,7 +81,16 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
             widget.listTimereports!.length,
             (index) {
               var timereport = widget.listTimereports![index];
-              return _buildBody(timereport, user, eventManager);
+              return Padding(
+                padding: const EdgeInsets.only(
+                    left: 16.0, right: 16, top: 24.0, bottom: 48),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16)),
+                  child: _buildBody(timereport, user, eventManager),
+                ),
+              );
             },
           ),
         ),
@@ -81,7 +99,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
           left: 0,
           bottom: 24,
           child: DotsIndicator(
-            color: Colors.grey.shade500,
+            color: Colors.white,
             controller: pageController,
             itemCount: widget.listTimereports!.length,
           ),
@@ -126,6 +144,9 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
   }
 
   List<Widget> _buildActions(BuildContext context) {
+    List<String> actions = widget.timereport != null
+        ? actionsSingleTimereport
+        : actionsMultipleTimereport;
     return [
       PopupMenuButton<String>(
         onSelected: (value) {
@@ -133,8 +154,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
           Navigator.of(context).pop();
         },
         itemBuilder: (BuildContext context) {
-          return {'Skapa faktura', 'Markera färdig', 'Ta bort'}
-              .map((String choice) {
+          return actions.map((String choice) {
             return PopupMenuItem<String>(
               value: choice,
               child: Text(choice),
@@ -145,10 +165,33 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     ];
   }
 
+  void _markTimereportsDone(List<TimeReport> timereports,
+      FirebaseTimeReportManager fbTimereportManager) async {
+    timereports.forEach((timereport) async {
+      timereport.isCompleted = true;
+      await fbTimereportManager.changeTimereport(timereport);
+    });
+  }
+
+  void _markTimereportDone(TimeReport timereport,
+      FirebaseTimeReportManager fbTimereportManager) async {
+    timereport.isCompleted = true;
+    await fbTimereportManager.changeTimereport(timereport);
+  }
+
   void handleClick(String value) {
     switch (value) {
-      case 'Kopiera event':
+      case 'Markera färdiga':
+        FirebaseTimeReportManager fbTimereportManager =
+            Provider.of<ManagerProvider>(context, listen: false)
+                .firebaseTimereportManager;
         //this.widget.didTapCopyEvent(this.widget.event);
+        break;
+      case 'Markera färdig':
+        FirebaseTimeReportManager fbTimereportManager =
+            Provider.of<ManagerProvider>(context, listen: false)
+                .firebaseTimereportManager;
+        _markTimereportDone(widget.timereport!, fbTimereportManager);
         break;
       case 'Ta bort event':
         //widget.firebaseEventManager.removeEvent(widget.event);

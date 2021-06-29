@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +5,11 @@ import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
+import 'package:focus_detector/focus_detector.dart';
+import 'package:zimple/network/firebase_vacation_manager.dart';
+import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
+import 'package:zimple/screens/TimeReporting/Vacation/report_vacation_screen.dart';
+import 'package:zimple/screens/TimeReporting/Vacation/select_vacation_person_screen.dart';
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
@@ -34,9 +37,18 @@ class TimeReportingScreen extends StatefulWidget {
 
 class _TimeReportingScreenState extends State<TimeReportingScreen> {
   late TimereportManager timereportManager;
+  late FirebaseVacationManager firebaseVacationReportManager;
 
   @override
   void initState() {
+    firebaseVacationReportManager =
+        FirebaseVacationManager(company: widget.user.company);
+    firebaseVacationReportManager.getUnreadAbsenceRequests().then((value) {
+      print("Updated vacation absence");
+      Provider.of<ManagerProvider>(context, listen: false)
+          .absenceRequestReadMap = value;
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -57,50 +69,53 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
     );
   }
 
-  Widget _buildFunctionRow(String title, IconData icon, VoidCallback onTap) {
-    return ListTile(
-      title: Text(title),
-      leading: Icon(icon),
-      trailing: Icon(Icons.chevron_right),
-      onTap: onTap,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     print("Building Timereporting Screen");
     var size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        elevation: 10.0,
-        title: Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Tidrapportering",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25.0))),
-      ),
-      body: Stack(
-        children: [
-          Container(
-              height: size.height, width: size.width, color: Colors.white),
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12.0),
-                _buildLatestTimereports(context),
-                SizedBox(height: 24.0),
-                _buildSectionTitle("Funktioner"),
-                _buildFunctionsListedView(),
-                _buildSectionTitle("Admin"),
-                _buildAdminFunctionsListedView()
-              ],
+    Map<String, int>? absenceMap =
+        Provider.of<ManagerProvider>(context, listen: true)
+            .absenceRequestReadMap;
+    return FocusDetector(
+      onFocusGained: () {
+        setState(() {});
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: primaryColor,
+          elevation: 10.0,
+          title: Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Tidrapportering",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25.0))),
+        ),
+        body: Stack(
+          children: [
+            Container(
+                height: size.height, width: size.width, color: Colors.white),
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 12.0),
+                  _buildLatestTimereports(context),
+                  SizedBox(height: 24.0),
+                  _buildSectionTitle("Funktioner"),
+                  _buildFunctionsListedView(),
+                  widget.user.isAdmin
+                      ? _buildSectionTitle("Admin")
+                      : Container(),
+                  widget.user.isAdmin
+                      ? _buildAdminFunctionsListedView(absenceMap)
+                      : Container()
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -117,18 +132,49 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
             trailingIcon: Icons.chevron_right,
             onTap: goToAddTimereportScreen),
         ListedItem(
-            leadingIcon: Icons.sick_outlined,
-            child: Text("Rapportera sjukdom"),
-            trailingIcon: Icons.chevron_right),
-        ListedItem(
             leadingIcon: Icons.wb_sunny,
-            child: Text("Ansök om ledighet"),
-            trailingIcon: Icons.chevron_right),
+            child: Text("Ansök frånvaro"),
+            trailingIcon: Icons.chevron_right,
+            onTap: () =>
+                pushNewScreen(context, screen: ReportVacationScreen())),
+        ListedItem(
+            leadingIcon: Icons.alarm_off,
+            child: Text("Min frånvaro"),
+            trailingIcon: Icons.chevron_right,
+            onTap: () => pushNewScreen(context,
+                screen: AbsenceScreen(
+                  userId: widget.user.token,
+                  company: widget.user.company,
+                ))),
       ],
     );
   }
 
-  ListedView _buildAdminFunctionsListedView() {
+  Widget _buildAbsenceChild() {
+    double width = MediaQuery.of(context).size.width;
+    return Stack(
+      children: [
+        Text("Visa frånvaroansökningar"),
+      ],
+    );
+  }
+
+  Widget _buildNumberOfUnreadAbsenceRequests(Map<String, int>? absenceMap) {
+    if (absenceMap == null) return Container();
+    int totalUnread =
+        FirebaseVacationManager.getTotalUnreadAbsenceRequests(absenceMap);
+    if (totalUnread <= 0) return Container();
+    return CircleAvatar(
+      radius: 10,
+      backgroundColor: Colors.red,
+      child: Text(
+        "$totalUnread",
+        style: TextStyle(color: Colors.white, fontSize: 12),
+      ),
+    );
+  }
+
+  ListedView _buildAdminFunctionsListedView(Map<String, int>? absenceMap) {
     return ListedView(
       rowInset: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       items: [
@@ -144,9 +190,17 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
             child: Text("Se statistik"),
             trailingIcon: Icons.chevron_right),
         ListedItem(
-            leadingIcon: Icons.payment_outlined,
-            child: Text("Skapa faktura"),
-            trailingIcon: Icons.chevron_right),
+            leadingIcon: Icons.alarm_off,
+            child: _buildAbsenceChild(),
+            trailingWidget: Row(
+              children: [
+                _buildNumberOfUnreadAbsenceRequests(absenceMap),
+                Icon(Icons.chevron_right)
+              ],
+            ),
+            onTap: () => pushNewScreen(context,
+                screen:
+                    SelectVacationPersonScreen(unreadAbsenceMap: absenceMap))),
       ],
     );
   }
@@ -187,10 +241,11 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("Mina senaste tidrapporter",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
           TextButton(
             child: Text("Visa alla",
-                style: TextStyle(color: green, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
             onPressed: () {
               pushNewScreen(context,
                   screen: TimereportingListScreen(
@@ -233,10 +288,6 @@ class TimeReportCard extends StatefulWidget {
 }
 
 class _TimeReportCardState extends State<TimeReportCard> {
-  Widget _ifNotNull(bool condition, Widget widget) {
-    return condition ? widget : Container();
-  }
-
   @override
   Widget build(BuildContext context) {
     var spacing = 8.0;
@@ -303,7 +354,6 @@ class _TimeReportCardState extends State<TimeReportCard> {
     var minutes = widget.timereport.endDate
         .difference(widget.timereport.startDate)
         .inMinutes;
-    var minutesToHours = minutes / 60;
     return "${minutes / 60}";
   }
 

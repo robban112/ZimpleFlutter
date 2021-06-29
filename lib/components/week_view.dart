@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../model/event.dart';
 import 'vertical_time_container.dart';
 import 'week_header.dart';
-import '../utils/event_layout_manager.dart';
+import '../managers/event_layout_manager.dart';
 import '../utils/date_utils.dart';
 import 'package:zimple/utils/constants.dart';
 

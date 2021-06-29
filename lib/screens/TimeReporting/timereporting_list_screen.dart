@@ -6,6 +6,8 @@ import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/timereport.dart';
+import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/screens/TimeReporting/timereport_month_report_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
@@ -125,10 +127,30 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
   }
 
   Widget _buildHeader(String key) {
+    UserParameters user =
+        Provider.of<ManagerProvider>(context, listen: true).user;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
-      child: Text(key,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(key,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+          user.isAdmin
+              ? TextButton(
+                  child: Text("Visa månadsrapport",
+                      style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontWeight: FontWeight.bold)),
+                  onPressed: () {
+                    pushNewScreen(context,
+                        screen: TimereportMonthReportScreen(
+                            timereports: mappedTimereports![key]!, month: key));
+                  },
+                )
+              : Container()
+        ],
+      ),
     );
   }
 
@@ -138,6 +160,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
         Provider.of<ManagerProvider>(context, listen: true).eventManager;
     timereportManager =
         Provider.of<ManagerProvider>(context, listen: true).timereportManager;
+
     if (widget.userId != null) {
       mappedTimereports = groupTimereportsByMonth(
           timereportManager.timereportMap[widget.userId]);
@@ -176,7 +199,6 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                       child: RectangularButton(
                         text: "Visa valda tidrapporter",
                         onTap: () {
-                          print(_getSelectedTimereports());
                           pushNewScreen(context,
                               screen: TimereportingDetails(
                                 listTimereports: _getSelectedTimereports(),
@@ -315,6 +337,29 @@ class _TimereportRowState extends State<TimereportRow> {
     );
   }
 
+  Widget _buildCompletedRow() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: 12.0),
+        Row(
+          children: [
+            CircleAvatar(
+                backgroundColor: green,
+                radius: 10,
+                child: Icon(Icons.check, size: 14, color: Colors.white)),
+            SizedBox(
+              width: 18.0,
+            ),
+            Text(
+              "Färdig",
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Building Timereporting List Screen");
@@ -326,7 +371,9 @@ class _TimereportRowState extends State<TimereportRow> {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: widget.timereport.isCompleted
+                    ? Colors.grey.shade200
+                    : Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(12.0)),
                 boxShadow: standardShadow),
             child: Material(
@@ -338,11 +385,14 @@ class _TimereportRowState extends State<TimereportRow> {
                   widget.didTapTimereport(widget.timereport);
                 },
                 child: SizedBox(
-                    height: 70,
+                    //height: 70,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 12.0),
-                      child: Row(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 12.0),
+                  child: Column(
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
                           _buildColumn(
                               titleWidget: Text(
@@ -386,7 +436,12 @@ class _TimereportRowState extends State<TimereportRow> {
                           ),
                         ],
                       ),
-                    )),
+                      widget.timereport.isCompleted
+                          ? _buildCompletedRow()
+                          : Container()
+                    ],
+                  ),
+                )),
               ),
             ),
           ),

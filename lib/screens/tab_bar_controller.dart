@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/timereport_manager.dart';
@@ -46,7 +45,7 @@ class _TabBarControllerState extends State<TabBarController>
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
   late StreamSubscription<EventManager> eventManagerSubscriber;
-  late StreamSubscription<Void> timereportSubscriper;
+  late StreamSubscription timereportSubscriper;
   late StreamSubscription<List<Customer>> customerSubscriber;
   late ManagerProvider managerProvider;
   TimereportManager timeReportManager = TimereportManager();
@@ -193,6 +192,7 @@ class _TabBarControllerState extends State<TabBarController>
     return LoaderOverlay(
         overlayWidget: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(green),
+          backgroundColor: Colors.grey.shade300,
         ),
         overlayOpacity: 0.8,
         child: PersistentTabView(

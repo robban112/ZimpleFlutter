@@ -24,11 +24,11 @@ PODS:
     - Firebase/Database (= 8.0.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (9.1.1):
+  - firebase_messaging (10.0.2):
     - Firebase/Messaging (= 8.0.0)
     - firebase_core
     - Flutter
-  - firebase_storage (8.0.1):
+  - firebase_storage (8.1.3):
     - Firebase/Storage (= 8.0.0)
     - firebase_core
     - Flutter
@@ -159,8 +159,8 @@ SPEC CHECKSUMS:
   firebase_auth: 6532658f5a4f76be32cd5e7518753ebedd4544d2
   firebase_core: cda81ae37eda6df2bc2d16027fda527987c4bd33
   firebase_database: 0c3f1c61d8fc7dfd5f4e339f85906e24f0121449
-  firebase_messaging: de08a8047daf007a338f1db92fe184ac85a9626d
-  firebase_storage: 5e3f19e9a531a204d1139f151ced83d883725edb
+  firebase_messaging: bdc64f21cd3e9e174164b1417530c723fd128958
+  firebase_storage: 1c82ef47319a51b82b216475b91a102bca2e66d0
   FirebaseAuth: b8cd992fca5b53dc6eec09e873a3f375f000c5a1
   FirebaseCore: 3f09591d51292843e2a46f18358d60bf4e996255
   FirebaseCoreDiagnostics: 3e249cee3de5c5f9cfd6cc2a19997231286fec11
@@ -180,6 +180,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+PODFILE CHECKSUM: ee1ad45d4bb97976550780f6df591ca50024bbcf
 
 COCOAPODS: 1.10.1

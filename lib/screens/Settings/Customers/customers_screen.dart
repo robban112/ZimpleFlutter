@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/screens/Settings/Customers/customer_details_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/provider_widget.dart';
 
 import 'add_customer_screen.dart';
 
@@ -42,6 +44,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
   Widget build(BuildContext context) {
     print("Building Customer Screen");
     var customers = widget.customers;
+    var user = Provider.of<ManagerProvider>(context, listen: false).user;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
@@ -51,17 +54,19 @@ class _CustomerScreenState extends State<CustomerScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add, color: Colors.white),
-        backgroundColor: green,
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddCustomerScreen(),
-              ));
-        },
-      ),
+      floatingActionButton: user.isAdmin
+          ? FloatingActionButton(
+              child: Icon(Icons.add, color: Colors.white),
+              backgroundColor: green,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddCustomerScreen(),
+                    ));
+              },
+            )
+          : Container(),
       body: SingleChildScrollView(
         child: ListedView(
             items: List.generate(customers.length, (index) {
