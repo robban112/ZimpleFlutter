@@ -1,11 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
+import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/screens/Settings/Customers/add_customer_screen.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:zimple/widgets/provider_widget.dart';
 
 class CustomerDetailsScreen extends StatefulWidget {
   final Customer customer;
@@ -18,9 +22,48 @@ class CustomerDetailsScreen extends StatefulWidget {
 }
 
 class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
+  late FirebaseCustomerManager firebaseCustomerManager;
+
+  void onDelete() {
+    context.loaderOverlay.show();
+    firebaseCustomerManager.deleteCustomer(widget.customer).then((value) {
+      context.loaderOverlay.hide();
+      Future.delayed(Duration(milliseconds: 500))
+          .then((value) => Navigator.of(context).pop());
+    });
+  }
+
+  void deleteCustomer() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: new Text("Ta bort kund"),
+              content: new Text(
+                  "Är du säker på att du vill ta bort den här kunden?"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    child: Text("Ja"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      onDelete();
+                    }),
+                CupertinoDialogAction(
+                  child: Text("Nej"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     Customer customer = widget.customer;
+    firebaseCustomerManager =
+        Provider.of<ManagerProvider>(context, listen: true)
+            .firebaseCustomerManager;
     double width = MediaQuery.of(context).size.width;
     double rowHeight = 40;
     return Scaffold(
@@ -32,6 +75,10 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: deleteCustomer,
+          ),
           IconButton(
             splashRadius: 5,
             icon: Icon(Icons.edit, color: Colors.white),
@@ -59,14 +106,17 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
                 Row(children: [
                   Icon(Icons.location_city),
                   SizedBox(width: 12.0),
-                  Text(customer.address,
+                  Text(customer.address ?? "",
                       style: TextStyle(
                           fontSize: 15.0, fontWeight: FontWeight.w400)),
                 ]),
                 SizedBox(height: 12.0),
                 customer.orgNr != ""
                     ? Row(
-                        children: [Text("Org. Nr: "), Text(customer.orgNr)],
+                        children: [
+                          Text("Org. Nr: "),
+                          Text(customer.orgNr ?? "")
+                        ],
                       )
                     : Container()
               ]),
@@ -158,7 +208,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
   }
 
   Future<void> _makeEmail(String email) async {
-    var url = 'mailto://$email';
+    var url = 'mailto:$email';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

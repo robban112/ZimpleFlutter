@@ -174,7 +174,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(
-                  width: 250,
+                  width: 150,
+                  height: 60,
                   child: RoundedButton(
                     text: "Avbryt",
                     color: Colors.red,

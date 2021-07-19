@@ -14,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _loading = false;
+  bool _errorLogin = false;
   final double kPadding = 24.0;
 
   void loginUser(String email, String password) async {
@@ -26,6 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
           context, TabBarController.routeName, (route) => false);
     } catch (e) {
       setLoading(false);
+      setState(() {
+        this._errorLogin = true;
+      });
       print(e);
     }
   }
@@ -93,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: AuthenticationForm(
                     loginRegisterText: 'Logga in',
                     onTapLoginRegister: loginUser,
+                    hasError: this._errorLogin,
                   ),
                 ),
                 SizedBox(height: 5.0),

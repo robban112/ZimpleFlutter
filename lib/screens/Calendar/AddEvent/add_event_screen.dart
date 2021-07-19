@@ -407,7 +407,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
               trailingWidget: Row(
                 children: [
                   Text(selectedCustomer?.name ?? ""),
-                  Icon(Icons.chevron_right),
+                  selectedCustomer != null
+                      ? GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              this.selectedCustomer = null;
+                            });
+                          },
+                          child: Icon(Icons.clear))
+                      : Icon(Icons.chevron_right),
                 ],
               ),
               onTap: () {
@@ -417,7 +425,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     setState(() {
                       selectedCustomerContactPerson = contact;
                       selectedCustomer = customer;
-                      locationController.text = customer.address;
+                      locationController.text = customer.address ?? "";
                       phonenumberController.text =
                           customer.contacts[contact].phoneNumber;
                       companyController.text = customer.name;

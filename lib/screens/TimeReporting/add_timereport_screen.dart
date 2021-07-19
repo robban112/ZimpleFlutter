@@ -11,12 +11,14 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/model/cost.dart';
+import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
+import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_select_screen.dart';
 import 'package:zimple/widgets/image_dialog.dart';
 import 'package:zimple/widgets/listed_view.dart';
@@ -44,6 +46,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   late FirebaseStorageManager firebaseStorageManager;
   late UserParameters user;
   Event? selectedEvent;
+  Customer? selectedCustomer;
   //final <TimereportCostComponentState> _costKey = GlobalKey();
   List<Cost> costs = [];
 
@@ -55,7 +58,6 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   int minutesBreak = 0;
   double _minutesBreak = 0;
   Duration startEndDifference = Duration(hours: 0, minutes: 0);
-  bool _uploadingTimereport = false;
 
   @override
   void initState() {
@@ -75,18 +77,12 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     super.dispose();
   }
 
-  Widget _buildSectionTitle(String title, {IconData? leadingIcon}) {
-    var style = TextStyle(
-        color: primaryColor, fontSize: 18.0, fontWeight: FontWeight.bold);
+  Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
-      child: Row(
-        children: [
-          leadingIcon != null ? Icon(leadingIcon) : Container(),
-          leadingIcon != null ? SizedBox(width: 5.0) : Container(),
-          Text(title, style: style),
-        ],
-      ),
+      padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
+      child: Text(title,
+          style: TextStyle(
+              color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
     );
   }
 
@@ -130,9 +126,11 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   }
 
   void setLoading(bool loading) {
-    setState(() {
-      _uploadingTimereport = loading;
-    });
+    if (loading) {
+      context.loaderOverlay.show();
+    } else {
+      context.loaderOverlay.hide();
+    }
   }
 
   @override
@@ -155,49 +153,48 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: LoaderOverlay(
-        //inAsyncCall: _uploadingTimereport,
-        //progressIndicator: CircularProgressIndicator(),
-        child: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
-          child: Stack(
-            children: [
-              ListView(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
-                children: [
-                  buildChooseWorkOrderComponent(),
-                  SizedBox(height: 24.0),
-                  buildTimeComponent(),
-                  SizedBox(height: 24.0),
-                  buildInfoComponent(),
-                  SizedBox(height: 16.0),
-                  buildCostComponent(),
-                  SizedBox(height: 24.0),
-                  _buildPlannedInfoComponent(),
-                  SizedBox(height: 24.0),
-                  buildDoneButton(context),
-                  SizedBox(height: 175.0),
-                ],
-              ),
-              SelectImagesComponent(
-                isSelectingPhotoProvider: this.isSelectingPhotoProvider,
-                didPickImage: (file) {
-                  setState(() {
-                    this.isSelectingPhotoProvider = false;
-                    this.selectedImages.add(file);
-                  });
-                },
-                didTapCancel: () {
-                  setState(() => this.isSelectingPhotoProvider = false);
-                },
-              )
-            ],
-          ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: Stack(
+          children: [
+            ListView(
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8.0),
+              children: [
+                buildChooseWorkOrderComponent(),
+                SizedBox(height: 12.0),
+                _buildSectionTitle("Eller välj kund"),
+                buildSelectCustomerTile(),
+                SizedBox(height: 24.0),
+                buildTimeComponent(),
+                SizedBox(height: 24.0),
+                buildInfoComponent(),
+                SizedBox(height: 16.0),
+                buildCostComponent(),
+                SizedBox(height: 24.0),
+                _buildPlannedInfoComponent(),
+                SizedBox(height: 24.0),
+                buildDoneButton(context),
+                SizedBox(height: 175.0),
+              ],
+            ),
+            SelectImagesComponent(
+              isSelectingPhotoProvider: this.isSelectingPhotoProvider,
+              didPickImage: (file) {
+                setState(() {
+                  this.isSelectingPhotoProvider = false;
+                  this.selectedImages.add(file);
+                });
+              },
+              didTapCancel: () {
+                setState(() => this.isSelectingPhotoProvider = false);
+              },
+            )
+          ],
         ),
       ),
     );
@@ -209,51 +206,46 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
       children: [
         SizedBox(height: 12.0),
         _buildSectionTitle("Arbetsorder"),
-        _buildContainer(
-          ListedView(
-            items: [
-              ListedItem(
-                  trailingIcon: Icons.work,
-                  child: Text("Välj arbetsorder"),
-                  trailingWidget: Row(
-                    children: [
-                      selectedEvent != null
-                          ? ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(maxWidth: 150, maxHeight: 17),
-                              child: Text(
-                                selectedEvent?.title ?? "",
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                              ),
-                            )
-                          : Container(),
-                      Icon(Icons.chevron_right),
-                    ],
-                  ),
-                  onTap: () {
-                    pushNewScreen(context,
-                        screen: TimeReportingSelectScreen(
-                          eventManager: widget.eventManager,
-                          didSelectEvent: (event) {
-                            setState(() {
-                              this.selectedEvent = event;
-                              this
-                                  .startDateController
-                                  .setDate(selectedEvent!.start);
-                              this
-                                  .endDateController
-                                  .setDate(selectedEvent!.end);
-                              updateDifference(
-                                  startDateController.getDate(),
-                                  endDateController.getDate(),
-                                  this.minutesBreak);
-                            });
-                          },
-                        ));
-                  })
-            ],
-          ),
+        ListedView(
+          hidesFirstLastSeparator: false,
+          items: [
+            ListedItem(
+                trailingIcon: Icons.work,
+                child: Text("Välj arbetsorder"),
+                trailingWidget: Row(
+                  children: [
+                    selectedEvent != null
+                        ? ConstrainedBox(
+                            constraints:
+                                BoxConstraints(maxWidth: 150, maxHeight: 17),
+                            child: Text(
+                              selectedEvent?.title ?? "",
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                            ),
+                          )
+                        : Container(),
+                    Icon(Icons.chevron_right),
+                  ],
+                ),
+                onTap: () {
+                  pushNewScreen(context,
+                      screen: TimeReportingSelectScreen(
+                        eventManager: widget.eventManager,
+                        didSelectEvent: (event) {
+                          setState(() {
+                            this.selectedEvent = event;
+                            this
+                                .startDateController
+                                .setDate(selectedEvent!.start);
+                            this.endDateController.setDate(selectedEvent!.end);
+                            updateDifference(startDateController.getDate(),
+                                endDateController.getDate(), this.minutesBreak);
+                          });
+                        },
+                      ));
+                })
+          ],
         ),
       ],
     );
@@ -262,16 +254,20 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   Column buildInfoComponent() {
     return Column(
       children: [
-        _buildSectionTitle("Information"),
-        _buildContainer(Column(
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NotesComponent(
               controller: notesController,
             ),
-            TimereportRow(
-                "Lägg till bild",
-                Row(
+            ListedItemWidget(
+              rowInset: EdgeInsets.only(right: 16.0, left: 20.0),
+              item: ListedItem(
+                child: Text("Lägg till bild"),
+                onTap: () {
+                  setState(() => this.isSelectingPhotoProvider = true);
+                },
+                trailingWidget: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -281,22 +277,57 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                             maxWidth: 150, minWidth: 0, maxHeight: 50),
                         child: PreviewImagesComponent(
                             selectedImages: this.selectedImages)),
-                    IconButton(
-                      color: primaryColor,
-                      icon: Icon(
-                        Icons.add_circle_outline,
-                        size: 36,
-                      ),
-                      onPressed: () {
-                        setState(() => this.isSelectingPhotoProvider = true);
-                      },
-                    ),
+                    Icon(Icons.chevron_right)
                   ],
-                ))
+                ),
+              ),
+            ),
+            Container(height: 0.5, color: Colors.grey.shade400)
           ],
-        ))
+        )
       ],
     );
+  }
+
+  Widget buildSelectCustomerTile() {
+    return selectedEvent == null
+        ? ListedView(
+            hidesFirstLastSeparator: false,
+            //rowInset: EdgeInsets.symmetric(horizontal: 12),
+            items: [
+              ListedItem(
+                  leadingIcon: Icons.person,
+                  child: Text("Välj kund"),
+                  trailingWidget: Row(
+                    children: [
+                      Text(selectedCustomer?.name ?? ""),
+                      selectedCustomer == null
+                          ? Icon(Icons.chevron_right)
+                          : Container(),
+                      selectedCustomer != null
+                          ? GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  this.selectedCustomer = null;
+                                });
+                              },
+                              child: Icon(Icons.clear))
+                          : Container()
+                    ],
+                  ),
+                  onTap: () {
+                    print("Tapped");
+                    pushNewScreen(context, screen: CustomerSelectScreen(
+                      didSelectCustomer: (customer, contact) {
+                        setState(() {
+                          selectedCustomer = customer;
+                        });
+                      },
+                    ));
+                  }),
+            ],
+          )
+        : Container();
   }
 
   Column buildCostComponent() {
@@ -304,22 +335,25 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
       key: UniqueKey(),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle("Utgifter", leadingIcon: Icons.attach_money),
-        _buildContainer(TimereportCostComponent(
-            costs: this.costs,
-            didAddCost: (cost) {
-              SchedulerBinding.instance?.addPostFrameCallback((_) {
-                Navigator.pop(context);
-                setState(() {
-                  this.costs.add(cost);
+        _buildSectionTitle("Utgifter"),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: _buildContainer(TimereportCostComponent(
+              costs: this.costs,
+              didAddCost: (cost) {
+                SchedulerBinding.instance?.addPostFrameCallback((_) {
+                  Navigator.pop(context);
+                  setState(() {
+                    this.costs.add(cost);
+                  });
                 });
-              });
-            },
-            didRemoveCost: (cost) {
-              setState(() {
-                this.costs.remove(cost);
-              });
-            }))
+              },
+              didRemoveCost: (cost) {
+                setState(() {
+                  this.costs.remove(cost);
+                });
+              })),
+        )
       ],
     );
   }
@@ -332,30 +366,33 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle("Planerad info"),
-        _buildContainer(Column(
-          children: [
-            TimereportRow(
-                "Personer",
-                Text((selectedEvent?.persons ?? [])
-                    .map((e) => e.name)
-                    .toList()
-                    .toString())),
-            TimereportRow("Plats", Text(selectedEvent?.location ?? "")),
-            TimereportRow("Kund", Text(selectedEvent?.customer ?? "")),
-            TimereportRow(
-                "Telefonnummer", Text(selectedEvent?.phoneNumber ?? "")),
-            TimereportRow(
-                "Anteckningar",
-                ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width / 2),
-                    child: Text(
-                      selectedEvent?.notes ?? "",
-                      textAlign: TextAlign.end,
-                    ))),
-            TimereportRow("Bilder", Text(selectedEvent?.phoneNumber ?? "")),
-          ],
-        ))
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: _buildContainer(Column(
+            children: [
+              TimereportRow(
+                  "Personer",
+                  Text((selectedEvent?.persons ?? [])
+                      .map((e) => e.name)
+                      .toList()
+                      .toString())),
+              TimereportRow("Plats", Text(selectedEvent?.location ?? "")),
+              TimereportRow("Kund", Text(selectedEvent?.customer ?? "")),
+              TimereportRow(
+                  "Telefonnummer", Text(selectedEvent?.phoneNumber ?? "")),
+              TimereportRow(
+                  "Anteckningar",
+                  ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width / 2),
+                      child: Text(
+                        selectedEvent?.notes ?? "",
+                        textAlign: TextAlign.end,
+                      ))),
+              TimereportRow("Bilder", Text(selectedEvent?.phoneNumber ?? "")),
+            ],
+          )),
+        )
       ],
     );
   }
@@ -370,31 +407,42 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle("Tid", leadingIcon: Icons.access_time),
-        _buildContainer(
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              StartEndDateSelector(
-                  startDateSelectorController: startDateController,
-                  endDateSelectorController: endDateController,
-                  onChangeStart: (startDate) {
-                    updateDifference(startDate, endDateController.getDate(),
-                        this.minutesBreak);
-                  },
-                  onChangeEnd: (endDate) {
-                    updateDifference(startDateController.getDate(), endDate,
-                        this.minutesBreak);
-                  },
-                  datePickerMode: selectedEvent != null
-                      ? CupertinoDatePickerMode.time
-                      : CupertinoDatePickerMode.dateAndTime),
-              //buildBreakRow(),
-              buildBreakSlider(),
-              TimereportRow(
-                  "Total arbetad tid", Text(_getTotalTime(startEndDifference)))
-            ],
-          ),
+        _buildSectionTitle("Tid"),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(height: 0.5, color: Colors.grey.shade400),
+            StartEndDateSelector(
+              startDateSelectorController: startDateController,
+              endDateSelectorController: endDateController,
+              onChangeStart: (startDate) {
+                updateDifference(
+                    startDate, endDateController.getDate(), this.minutesBreak);
+              },
+              onChangeEnd: (endDate) {
+                updateDifference(
+                    startDateController.getDate(), endDate, this.minutesBreak);
+              },
+              datePickerMode: selectedEvent != null
+                  ? CupertinoDatePickerMode.time
+                  : CupertinoDatePickerMode.dateAndTime,
+              startTitle: "När du började",
+              endTitle: "När du slutade",
+            ),
+            Container(height: 0.5, color: Colors.grey.shade400),
+            //buildBreakRow(),
+            SizedBox(height: 6),
+            buildBreakSlider(),
+            SizedBox(height: 6),
+            Container(height: 0.5, color: Colors.grey.shade400),
+            SizedBox(height: 12),
+            TimereportRow(
+              "Total arbetad tid",
+              Text(_getTotalTime(startEndDifference)),
+              hidesSeparatorByDefault: true,
+            ),
+            Container(height: 0.5, color: Colors.grey.shade400),
+          ],
         ),
       ],
     );
@@ -407,11 +455,16 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Rast:  "),
-              Text("${_minutesBreak.toInt()}",
-                  style: TextStyle(fontSize: 20.0)),
-              Text(" minuter")
+              Row(
+                children: [
+                  Text("${_minutesBreak.toInt()}",
+                      style: TextStyle(fontSize: 20.0)),
+                  Text(" minuter")
+                ],
+              ),
             ],
           ),
         ),
@@ -497,7 +550,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         totalTime: startEndDifference.inMinutes,
         eventId: selectedEvent?.id,
         costs: this.costs,
-        comment: notesController.text);
+        comment: notesController.text,
+        customerKey: selectedCustomer?.id ?? selectedEvent?.id);
     fb.DatabaseReference ref = firebaseTimeReportManager.newTimereportRef();
     var filenames = selectedImages.map((_) => Uuid().v4().toString()).toList();
     timereport.setImagesStoragePaths(ref.key, filenames);
@@ -677,14 +731,26 @@ class NotesComponent extends StatelessWidget {
 
   Widget _buildTextField() {
     return TextFormField(
+      //textInputAction: TextInputAction.done,
       controller: controller,
-      maxLines: 7,
-      //key: _formKey,
-      autocorrect: false,
       enableSuggestions: false,
+      autocorrect: false,
+      minLines: 10,
+      maxLines: 15,
+      keyboardType: TextInputType.multiline,
       decoration: InputDecoration(
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
+        hintText: 'Skriv anteckning ...',
+        hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 1, color: Colors.grey.shade300),
+            borderRadius: BorderRadius.zero),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 1, color: Colors.grey.shade300),
+            borderRadius: BorderRadius.zero),
+        border: OutlineInputBorder(
+            borderSide: const BorderSide(width: 0.5, color: Colors.white),
+            borderRadius: BorderRadius.zero),
+        focusColor: green,
       ),
     );
   }
@@ -692,15 +758,17 @@ class NotesComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Anteckningar",
-              style: TextStyle(color: Colors.grey.shade800, fontSize: 14.0)),
-          divider(),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
+            child: Text("Anteckningar",
+                style: TextStyle(
+                    color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
+          ),
           _buildTextField(),
-          divider(),
         ],
       ),
     );

@@ -25,7 +25,8 @@ class RoundedButton extends StatelessWidget {
       child: ButtonTheme(
         height: 60.0,
         child: ElevatedButton(
-          child: Text(this.text, style: TextStyle(fontSize: fontSize)),
+          child: Text(this.text,
+              style: TextStyle(fontSize: fontSize, color: Colors.black)),
           onPressed: () {
             if (this.onTap == null) return;
             this.onTap!();

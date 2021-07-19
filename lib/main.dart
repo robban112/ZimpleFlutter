@@ -103,7 +103,11 @@ class App extends StatelessWidget {
       builder: (context, AsyncSnapshot<bool> snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          return Container();
+          return Container(
+            child: Center(
+              child: Text("Det blev något fel"),
+            ),
+          );
         }
 
         // Once complete, show your application
@@ -113,7 +117,7 @@ class App extends StatelessWidget {
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
-        return Container();
+        return Container(color: primaryColor);
       },
     );
   }

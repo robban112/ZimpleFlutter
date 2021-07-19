@@ -114,14 +114,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //SizedBox(height: 12.0),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    //   child: Text("Välj start och slut",
-                    //       style: TextStyle(
-                    //           fontSize: 20.0, fontWeight: FontWeight.bold)),
-                    // ),
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 12.0),
                     StartEndDateSelector(
                       startDateSelectorController: startDateController,
                       endDateSelectorController: endDateController,

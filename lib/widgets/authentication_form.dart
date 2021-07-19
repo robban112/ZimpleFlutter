@@ -7,8 +7,11 @@ import '../utils/constants.dart';
 class AuthenticationForm extends StatefulWidget {
   Function(String, String) onTapLoginRegister;
   final String loginRegisterText;
+  final bool? hasError;
   AuthenticationForm(
-      {required this.loginRegisterText, required this.onTapLoginRegister});
+      {required this.loginRegisterText,
+      required this.onTapLoginRegister,
+      this.hasError});
   @override
   _AuthenticationFormFieldState createState() =>
       _AuthenticationFormFieldState();
@@ -79,7 +82,7 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
           key: _passwordFormKey,
           validator: passwordValidator,
           keyboardType: TextInputType.visiblePassword,
-          autovalidate: _autoValidate,
+          autovalidate: _autoValidate || (widget.hasError ?? false),
           style: TextStyle(color: Colors.white),
           onChanged: (value) {
             setState(() {
@@ -90,6 +93,17 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
           obscureText: true,
           decoration: _textfieldDecoration(Icons.lock, 'PASSWORD'),
         ),
+        AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            height: (widget.hasError ?? false) ? 30 : 0,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Text("Fel lösenord",
+                    style: TextStyle(color: Colors.red, fontSize: 17)),
+              ),
+            )),
         SizedBox(
           height: 24.0,
         ),

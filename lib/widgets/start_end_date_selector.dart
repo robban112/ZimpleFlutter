@@ -23,6 +23,8 @@ class StartEndDateSelector extends StatefulWidget {
   final bool hidesLastSeparator;
   final bool startEndFollowSameDay;
   final String dateFormat;
+  final String startTitle;
+  final String endTitle;
   StartEndDateSelector(
       {required this.startDateSelectorController,
       required this.endDateSelectorController,
@@ -34,7 +36,9 @@ class StartEndDateSelector extends StatefulWidget {
       this.hidesLastSeparator = false,
       this.datePickerMode = CupertinoDatePickerMode.dateAndTime,
       this.dateFormat = 'dd MMMM kk:mm',
-      this.startEndFollowSameDay = true});
+      this.startEndFollowSameDay = true,
+      this.startTitle = "Startar",
+      this.endTitle = "Slutar"});
   @override
   _StartEndDateSelectorState createState() => _StartEndDateSelectorState(
       startDateSelectorController, endDateSelectorController);
@@ -101,7 +105,7 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
 
   DateSelector buildEndDateSelector() {
     return DateSelector(
-        "Slutar",
+        widget.endTitle,
         end,
         (date) {
           _onChangeEndDate(date);
@@ -122,7 +126,7 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
 
   DateSelector buildStartDateSelector() {
     return DateSelector(
-        "Startar",
+        widget.startTitle,
         start,
         (date) {
           _onChangeStartDate(date);
@@ -208,7 +212,7 @@ class DateSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     print("build date selector");
     return Column(
-      children: [_buildTimeRow(), buildAnimatedContainer()],
+      children: [_buildTimeRow(), buildAnimatedContainer(context)],
     );
   }
 
@@ -285,29 +289,24 @@ class DateSelector extends StatelessWidget {
     );
   }
 
-  AnimatedContainer buildAnimatedContainer() {
+  AnimatedContainer buildAnimatedContainer(BuildContext context) {
+    MediaQuery.of(context).size.width;
     return AnimatedContainer(
         duration: Duration(milliseconds: 200),
-        height: isShowingDatePicker ? 200 : 0.000000000001,
+        height: isShowingDatePicker ? 250 : 0.000000000001,
+        width: MediaQuery.of(context).size.width,
         child: SizedBox(
-          height: isShowingDatePicker ? 200 : 0.000000000001,
-          child: CupertinoTheme(
-            data: CupertinoThemeData(
-              textTheme: CupertinoTextThemeData(
-                dateTimePickerTextStyle:
-                    TextStyle(fontFamily: 'Poppins', color: Colors.black),
-              ),
-            ),
-            child: CupertinoDatePicker(
-              key: isShowingDatePicker ? null : UniqueKey(),
-              mode: datePickerMode,
-              initialDateTime: date,
-              minuteInterval: 5,
-              onDateTimeChanged: (date) {
-                didSelectDate(date);
-              },
-              use24hFormat: true,
-            ),
+          height: isShowingDatePicker ? 250 : 0.000000000001,
+          width: MediaQuery.of(context).size.width,
+          child: CupertinoDatePicker(
+            key: isShowingDatePicker ? null : UniqueKey(),
+            mode: datePickerMode,
+            initialDateTime: date,
+            minuteInterval: 5,
+            onDateTimeChanged: (date) {
+              didSelectDate(date);
+            },
+            use24hFormat: true,
           ),
         ));
   }

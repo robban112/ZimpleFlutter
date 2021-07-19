@@ -68,8 +68,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
     context.loaderOverlay.show();
 
     await firebaseEventManager
-        .addVacationPeriod(vacationRequest.userId, vacationRequest.startDate,
-            vacationRequest.endDate, vacationRequest.notes, widget.person?.name)
+        .addVacationPeriod(vacationRequest, widget.person?.name)
         .then((List<String> eventIds) {
       print("Uploaded vacation");
 

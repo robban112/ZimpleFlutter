@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
@@ -43,7 +45,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Widget _buildParameter(
       {required IconData iconData,
       required String title,
-      required String subtitle}) {
+      required String subtitle,
+      bool? isRichText,
+      VoidCallback? onTapRichText}) {
     return ListedParameter(
         iconData: iconData,
         child: Expanded(
@@ -58,15 +62,25 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               SizedBox(
                 width: 25,
               ),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 10,
-              )
+              (isRichText ?? false)
+                  ? RichText(
+                      text: TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              if (onTapRichText != null) onTapRichText();
+                            },
+                          text: subtitle,
+                          style: TextStyle(
+                              color: Colors.lightBlue, fontSize: 18.0)))
+                  : (Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.0,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 10,
+                    ))
             ],
           ),
         ));
@@ -191,8 +205,41 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         this.widget.didTapCopyEvent(this.widget.event);
         break;
       case 'Ta bort event':
-        widget.firebaseEventManager.removeEvent(widget.event);
+        handleDeleteEvent();
         break;
+    }
+  }
+
+  void handleDeleteEvent() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: new Text("Ta bort arbetsorder"),
+              content: new Text(
+                  "Är du säker på att du vill ta bort den här arbetsordern?"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    child: Text("Ja"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      widget.firebaseEventManager.removeEvent(widget.event);
+                    }),
+                CupertinoDialogAction(
+                  child: Text("Nej"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ));
+  }
+
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
@@ -264,14 +311,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                           subtitle: customer.name),
                     ],
                   )
-                : Container(),
+                : (widget.event.customer != null
+                    ? _buildParameter(
+                        iconData: Icons.business,
+                        title: 'Kund fritext',
+                        subtitle: widget.event.customer!)
+                    : Container()),
             _buildLocation(),
-            widget.event.phoneNumber.isNotBlank()
-                ? _buildParameter(
-                    iconData: Icons.phone,
-                    title: 'Telefonnummer',
-                    subtitle: widget.event.phoneNumber!)
-                : Container(),
+            _buildPhoneNumber(),
             widget.event.notes.isNotBlank()
                 ? _buildParameter(
                     iconData: Icons.event_note,
@@ -316,26 +363,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   children: [
                     Row(
                       children: [
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     Navigator.pop(context);
-                        //   },
-                        //   child: CircleAvatar(
-                        //     radius: 12,
-                        //     backgroundColor: Colors.grey.shade300,
-                        //     child: Container(
-                        //       height: 8,
-                        //       width: 8,
-                        //       child: Image.asset("images/close.png"),
-                        //     ),
-                        //   ),
-                        // ),
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: width * 0.65),
                           child: Text(widget.event.title,
                               style: TextStyle(
                                   fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
                                   color: textColor)),
                         ),
                       ],
@@ -356,6 +389,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         ),
       ],
     );
+  }
+
+  Widget _buildPhoneNumber() {
+    return widget.event.phoneNumber.isNotBlank()
+        ? _buildParameter(
+            iconData: Icons.phone,
+            title: 'Telefonnummer',
+            subtitle: widget.event.phoneNumber!,
+            isRichText: true,
+            onTapRichText: () {
+              _makePhoneCall('tel:${widget.event.phoneNumber}');
+            })
+        : Container();
   }
 
   Widget buildActions(Color textColor) {

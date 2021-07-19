@@ -4,8 +4,8 @@ class Customer {
   Customer(this.name, this.address, this.orgNr, this.contacts);
   String? id;
   String name;
-  String address;
-  String orgNr;
+  String? address;
+  String? orgNr;
   List<Contact> contacts;
 
   Map<String, dynamic> toJson() {

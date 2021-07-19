@@ -17,6 +17,7 @@ class TimeReport {
   final List<Cost>? costs;
   bool isCompleted;
   List<String>? imagesList;
+  String? customerKey;
 
   Map<String, dynamic>? imageStoragePaths;
 
@@ -32,7 +33,8 @@ class TimeReport {
       required this.costs,
       this.imagesList,
       this.imageStoragePaths,
-      this.isCompleted = false});
+      this.isCompleted = false,
+      this.customerKey});
 
   Map<String, dynamic> toJson() {
     return {
@@ -44,7 +46,8 @@ class TimeReport {
       'costs': costsToJson(),
       'comment': this.comment,
       'images': this.imageStoragePaths,
-      'isCompleted': this.isCompleted
+      'isCompleted': this.isCompleted,
+      'customerKey': this.customerKey
     };
   }
 
@@ -83,6 +86,7 @@ class TimeReport {
     List<Cost> costs = _getCostsFromTimereportData(timereportData) ?? [];
     String? comment = timereportData['comment'];
     String? eventId = timereportData['eventId'];
+    String? customerKey = timereportData['customerKey'];
     bool isCompleted = timereportData['isCompleted'] ?? false;
     return TimeReport(
         id: key,
@@ -94,7 +98,8 @@ class TimeReport {
         imagesList: imagesStoragePaths,
         eventId: eventId,
         costs: costs,
-        isCompleted: isCompleted);
+        isCompleted: isCompleted,
+        customerKey: customerKey);
   }
 
   static List<String>? _getImagesFromEventData(dynamic eventData) {

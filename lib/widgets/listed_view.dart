@@ -14,6 +14,53 @@ class ListedItem {
       this.trailingWidget});
 }
 
+class ListedItemWidget extends StatelessWidget {
+  const ListedItemWidget(
+      {Key? key,
+      required this.item,
+      this.rowInset =
+          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)})
+      : super(key: key);
+
+  final ListedItem item;
+  final EdgeInsets rowInset;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: item.onTap,
+        splashColor: Colors.grey.shade300,
+        child: Padding(
+          padding: this.rowInset,
+          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                item.leadingIcon != null
+                    ? Row(
+                        children: [
+                          Icon(item.leadingIcon,
+                              color: Colors.black.withAlpha(190)),
+                          SizedBox(width: 16.0),
+                        ],
+                      )
+                    : Container(),
+                item.child
+              ],
+            ),
+            Expanded(child: Container()),
+            item.trailingWidget != null
+                ? item.trailingWidget!
+                : Icon(item.trailingIcon)
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
 // class ZimpleTextField extends StatelessWidget {
 //   final String? placeholder;
 //   final Function(String)? onChanged;
@@ -149,36 +196,9 @@ class ListedView extends StatelessWidget {
     if (item is ListedTextField) {
       return _textfieldBuilder(item);
     }
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: item.onTap,
-        splashColor: Colors.grey.shade300,
-        child: Padding(
-          padding: this.rowInset,
-          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                item.leadingIcon != null
-                    ? Row(
-                        children: [
-                          Icon(item.leadingIcon,
-                              color: Colors.black.withAlpha(190)),
-                          SizedBox(width: 16.0),
-                        ],
-                      )
-                    : Container(),
-                item.child
-              ],
-            ),
-            Expanded(child: Container()),
-            item.trailingWidget != null
-                ? item.trailingWidget!
-                : Icon(item.trailingIcon)
-          ]),
-        ),
-      ),
+    return ListedItemWidget(
+      item: item,
+      rowInset: rowInset,
     );
   }
 

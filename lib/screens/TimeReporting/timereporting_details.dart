@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/model/event.dart';
@@ -7,12 +9,14 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/event_detail_screen.dart';
+import 'package:zimple/screens/TimeReporting/Invoice/generate_invoice_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/widgets/conditional_widget.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/page_dots_indicator.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class TimereportingDetails extends StatefulWidget {
   final TimeReport? timereport;
@@ -31,7 +35,8 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
   final List<String> actionsSingleTimereport = ["Markera färdig", "Ta bort"];
   final List<String> actionsMultipleTimereport = [
     "Markera färdiga",
-    "Ta bort alla"
+    "Ta bort alla",
+    "Skapa faktura"
   ];
 
   AppBar _buildAppbar(BuildContext context, UserParameters user) {
@@ -151,7 +156,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
       PopupMenuButton<String>(
         onSelected: (value) {
           this.handleClick(value);
-          Navigator.of(context).pop();
+          //Navigator.of(context).pop();
         },
         itemBuilder: (BuildContext context) {
           return actions.map((String choice) {
@@ -179,6 +184,12 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     await fbTimereportManager.changeTimereport(timereport);
   }
 
+  void goToCreateInvoiceScreen() {
+    Future.delayed(Duration(milliseconds: 800)).then((value) {
+      pushNewScreen(context, screen: GenerateInvoiceScreen());
+    });
+  }
+
   void handleClick(String value) {
     switch (value) {
       case 'Markera färdiga':
@@ -193,10 +204,50 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
                 .firebaseTimereportManager;
         _markTimereportDone(widget.timereport!, fbTimereportManager);
         break;
-      case 'Ta bort event':
+      case 'Ta bort':
+        handleDeleteTimereport();
         //widget.firebaseEventManager.removeEvent(widget.event);
         break;
+      case 'Skapa faktura':
+        goToCreateInvoiceScreen();
     }
+  }
+
+  void onDelete() {
+    context.loaderOverlay.show();
+    Provider.of<ManagerProvider>(context, listen: false)
+        .firebaseTimereportManager
+        .removeTimereport(widget.timereport!)
+        .then((value) {
+      context.loaderOverlay.hide();
+      Future.delayed(Duration(milliseconds: 500))
+          .then((value) => Navigator.of(context).pop());
+    });
+  }
+
+  void handleDeleteTimereport() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: new Text("Ta bort tidrapport"),
+              content: new Text(
+                  "Är du säker på att du vill ta bort den här tidrapporten?"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    child: Text("Ja"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      onDelete();
+                    }),
+                CupertinoDialogAction(
+                  child: Text("Nej"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ));
   }
 
   Widget _buildCost(TimeReport timereport) {

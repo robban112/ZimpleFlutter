@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
@@ -43,78 +44,84 @@ class _CustomerScreenState extends State<CustomerScreen> {
   @override
   Widget build(BuildContext context) {
     print("Building Customer Screen");
-    var customers = widget.customers;
+    var customers =
+        Provider.of<ManagerProvider>(context, listen: true).customers;
     var user = Provider.of<ManagerProvider>(context, listen: false).user;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        elevation: 0.0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+    return FocusDetector(
+      onFocusGained: () {
+        setState(() {});
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: primaryColor,
+          elevation: 0.0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
-      ),
-      floatingActionButton: user.isAdmin
-          ? FloatingActionButton(
-              child: Icon(Icons.add, color: Colors.white),
-              backgroundColor: green,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddCustomerScreen(),
-                    ));
-              },
-            )
-          : Container(),
-      body: SingleChildScrollView(
-        child: ListedView(
-            items: List.generate(customers.length, (index) {
-          Customer customer = customers[index];
-          return ListedItem(
-              trailingIcon: Icons.chevron_right,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(customer.name),
-                  Text(customer.address,
-                      style: TextStyle(
-                          fontSize: 14.0, color: Colors.grey.shade600))
-                ],
-              ),
-              onTap: () {
-                pushNewScreen(context,
-                    screen: CustomerDetailsScreen(customer: customer));
-              });
-        })),
-        // child: Column(
-        //   children: [
-        //     TopHeader(kPadding: kPadding),
-        //     Padding(
-        //       padding: EdgeInsets.symmetric(
-        //           vertical: kPadding, horizontal: kPadding),
-        //       child: Container(),
-        //     ),
-        //     ExpansionPanelList(
-        //       expansionCallback: (int index, bool isExpanded) {
-        //         setState(() {
-        //           customerPanels[index].isExpanded = !isExpanded;
-        //         });
-        //       },
-        //       children: customerPanels.asMap().entries.map((entry) {
-        //         int index = entry.key;
-        //         var panel = entry.value;
-        //         var customer = panel.customer;
-        //         return ExpansionPanel(
-        //             isExpanded: panel.isExpanded,
-        //             headerBuilder: (BuildContext context, bool isExpanded) {
-        //               return expandableHeader(index, isExpanded, customer);
-        //             },
-        //             body: expandableBody(customer));
-        //       }).toList(),
-        //     ),
-        //   ],
-        // ),
+        floatingActionButton: user.isAdmin
+            ? FloatingActionButton(
+                child: Icon(Icons.add, color: Colors.white),
+                backgroundColor: green,
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddCustomerScreen(),
+                      ));
+                },
+              )
+            : Container(),
+        body: SingleChildScrollView(
+          child: ListedView(
+              items: List.generate(customers.length, (index) {
+            Customer customer = customers[index];
+            return ListedItem(
+                trailingIcon: Icons.chevron_right,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(customer.name),
+                    Text(customer.address ?? "",
+                        style: TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade600))
+                  ],
+                ),
+                onTap: () {
+                  pushNewScreen(context,
+                      screen: CustomerDetailsScreen(customer: customer));
+                });
+          })),
+          // child: Column(
+          //   children: [
+          //     TopHeader(kPadding: kPadding),
+          //     Padding(
+          //       padding: EdgeInsets.symmetric(
+          //           vertical: kPadding, horizontal: kPadding),
+          //       child: Container(),
+          //     ),
+          //     ExpansionPanelList(
+          //       expansionCallback: (int index, bool isExpanded) {
+          //         setState(() {
+          //           customerPanels[index].isExpanded = !isExpanded;
+          //         });
+          //       },
+          //       children: customerPanels.asMap().entries.map((entry) {
+          //         int index = entry.key;
+          //         var panel = entry.value;
+          //         var customer = panel.customer;
+          //         return ExpansionPanel(
+          //             isExpanded: panel.isExpanded,
+          //             headerBuilder: (BuildContext context, bool isExpanded) {
+          //               return expandableHeader(index, isExpanded, customer);
+          //             },
+          //             body: expandableBody(customer));
+          //       }).toList(),
+          //     ),
+          //   ],
+          // ),
+        ),
       ),
     );
   }
@@ -135,7 +142,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(customer.name),
-              Text(customer.address,
+              Text(customer.address ?? "",
                   style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600))
             ],
           ),

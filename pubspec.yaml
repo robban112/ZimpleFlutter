@@ -37,8 +37,12 @@ dependencies:
   logger: ^1.0.0
   fl_chart: ^0.36.2
   focus_detector: ^2.0.0
+  pdf: ^3.4.2
+  path_provider: ^2.0.2
+  open_file: ^3.2.1
 
 dev_dependencies:
+  flutter_native_splash: ^1.2.0
   flutter_test:
     sdk: flutter
 

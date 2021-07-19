@@ -31,7 +31,11 @@ class FirebaseTimeReportManager {
   }
 
   Future<void> removeTimereport(TimeReport timereport) {
-    return timereportRef.child(timereport.id).remove().then((value) => value);
+    return timereportRef
+        .child(timereport.userId!)
+        .child(timereport.id)
+        .remove()
+        .then((value) => value);
   }
 
   Future<void>? changeTimereport(TimeReport timereport) {

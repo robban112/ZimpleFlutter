@@ -31,6 +31,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   @override
   void initState() {
     super.initState();
+    print("Init State Add Customer Screen");
     this.isChangingCustomer = widget.customerToChange != null;
     if (isChangingCustomer) initChangeCustomerFields();
     firebaseCustomerManager =
@@ -41,12 +42,13 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   void initChangeCustomerFields() {
     Customer customer = widget.customerToChange!;
     nameController.text = customer.name;
-    addressController.text = customer.address;
-    orgNrController.text = customer.orgNr;
-    contacts = customer.contacts;
+    addressController.text = customer.address ?? "";
+    orgNrController.text = customer.orgNr ?? "";
+    contacts = List.from(customer.contacts);
   }
 
   void updateCustomer() {
+    print("Update customer");
     Customer updateCustomer = widget.customerToChange!;
     updateCustomer.name = nameController.text;
     updateCustomer.address = addressController.text;
@@ -70,6 +72,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Building Add Customer Screen");
     return Scaffold(
         appBar: AppBar(
           title: Text("Lägg till kund"),

@@ -75,7 +75,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
                 Text(customer.name,
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0)),
-                Text(customer.address),
+                Text(customer.address ?? ""),
                 SizedBox(height: 10),
                 ContactSelect(
                   customer: customer,
