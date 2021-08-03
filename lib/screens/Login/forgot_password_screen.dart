@@ -1,9 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:zimple/widgets/authentication_form.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
-import 'package:zimple/widgets/rounded_button.dart';
 import '../../utils/constants.dart';
 import 'package:zimple/utils/constants.dart';
 
