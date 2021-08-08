@@ -159,6 +159,7 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(75.0),
           child: AppBarWidget(
+            hasMenu: true,
             dateStream: streamController.stream,
           )),
       body: NotificationListener<ScrollNotification>(

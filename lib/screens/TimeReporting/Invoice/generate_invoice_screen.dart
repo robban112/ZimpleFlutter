@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/model/customer.dart';
+import 'package:zimple/utils/constants.dart';
 
 import 'api/pdf_api.dart';
 import 'api/pdf_invoice_api.dart';
@@ -32,6 +33,8 @@ class _GenerateInvoiceScreenState extends State<GenerateInvoiceScreen> {
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
+          backgroundColor: primaryColor,
+          brightness: Brightness.dark,
           title: Text("Skapa faktura"),
           centerTitle: true,
         ),

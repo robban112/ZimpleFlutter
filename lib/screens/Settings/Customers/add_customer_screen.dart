@@ -75,6 +75,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
     print("Building Add Customer Screen");
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           title: Text("Lägg till kund"),
           backgroundColor: primaryColor,
           leading: IconButton(

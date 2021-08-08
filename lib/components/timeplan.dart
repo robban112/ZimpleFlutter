@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/model/event_type.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:infinite_listview/infinite_listview.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
@@ -33,11 +35,12 @@ class Timeplan extends StatelessWidget {
           ? PreferredSize(
               preferredSize: Size.fromHeight(75.0),
               child: AppBarWidget(
+                hasMenu: true,
                 title: "Tidsplan",
               ))
           : null,
       body: Container(
-          decoration: BoxDecoration(color: Colors.white),
+          decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
           child: InfiniteListView.separated(
             //controller: _infiniteController,
             itemBuilder: (BuildContext context, int index) {
@@ -63,11 +66,11 @@ class Timeplan extends StatelessWidget {
                 ],
               );
             },
-            separatorBuilder: (BuildContext context, int index) =>
-                const Divider(
+            separatorBuilder: (BuildContext context, int index) => Divider(
+              color: Colors.grey.withOpacity(0.5),
               indent: 15.0,
               endIndent: 15.0,
-              height: 1.0,
+              height: 0.5,
             ),
             anchor: 0.5,
           )),
@@ -108,7 +111,6 @@ class TimeplanDay extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Container(
-        decoration: BoxDecoration(color: Colors.white),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -121,12 +123,14 @@ class TimeplanDay extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 25.0,
                           fontWeight: FontWeight.normal,
-                          color:
-                              isToday(date) ? Colors.lightBlue : Colors.black)),
+                          color: isToday(date)
+                              ? Theme.of(context).accentColor
+                              : null)),
                   Text(dateToAbbreviatedString(date),
                       style: TextStyle(
-                          color:
-                              isToday(date) ? Colors.lightBlue : Colors.black))
+                          color: isToday(date)
+                              ? Theme.of(context).accentColor
+                              : null))
                 ],
               ),
             ),
@@ -228,6 +232,8 @@ class TimeplanEventContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode =
+        Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
     var userToken =
         Provider.of<ManagerProvider>(context, listen: false).user.token;
     return Container(
@@ -236,14 +242,16 @@ class TimeplanEventContainer extends StatelessWidget {
               ? event.color.withAlpha(120)
               : event.color,
           borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(-2, 2), // changes position of shadow
-            ),
-          ]),
+          boxShadow: !isDarkMode
+              ? [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(-2, 2), // changes position of shadow
+                  ),
+                ]
+              : null),
       child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: 75),
           child: Padding(

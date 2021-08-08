@@ -55,6 +55,7 @@ class _TimereportMonthReportScreenState
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            brightness: Brightness.dark,
             backgroundColor: primaryColor,
             title: Text("Månadsrapport ${widget.month}")),
         body: SingleChildScrollView(

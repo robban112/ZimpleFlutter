@@ -22,15 +22,15 @@ class PhotoButtons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildPhotoButton(() {
+            _buildPhotoButton(context, () {
               getImage(ImageSource.camera);
             }, "Ta foto"),
             SizedBox(height: 1.0),
-            _buildPhotoButton(() {
+            _buildPhotoButton(context, () {
               getImage(ImageSource.gallery);
             }, "Välj foto"),
             SizedBox(height: 5.0),
-            _buildPhotoButton(() {
+            _buildPhotoButton(context, () {
               didTapCancel();
             }, "Avbryt"),
           ],
@@ -48,11 +48,13 @@ class PhotoButtons extends StatelessWidget {
     }
   }
 
-  Widget _buildPhotoButton(Function onTap, String text) {
+  Widget _buildPhotoButton(BuildContext context, Function onTap, String text) {
     return Container(
       height: 60.0,
       width: 120,
+      color: Theme.of(context).backgroundColor,
       child: ButtonTheme(
+        buttonColor: Theme.of(context).backgroundColor,
         height: 60.0,
         child: ElevatedButton(
           child: Text(text, style: TextStyle(fontSize: 17.0)),
@@ -62,8 +64,9 @@ class PhotoButtons extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             minimumSize: Size(100.0, 50.0),
             elevation: 5,
-            primary: Colors.white,
-            onPrimary: Colors.black,
+            onPrimary: Theme.of(context).backgroundColor,
+            primary: Theme.of(context).backgroundColor,
+            //onPrimary: Colors.black,
           ),
         ),
       ),

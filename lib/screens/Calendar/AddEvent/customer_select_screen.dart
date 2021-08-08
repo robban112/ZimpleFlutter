@@ -28,6 +28,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           backgroundColor: primaryColor,
           title: Text("Välj kund och kontaktperson"),
           leading: IconButton(

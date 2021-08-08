@@ -14,7 +14,7 @@ class WeekHeader extends StatelessWidget {
     required List<DateTime> dates,
     required double leftPadding,
     required double dayWidth,
-  })   : _numberOfDays = numberOfDays,
+  })  : _numberOfDays = numberOfDays,
         _dates = dates,
         _leftPadding = leftPadding,
         _dayWidth = dayWidth;
@@ -25,7 +25,7 @@ class WeekHeader extends StatelessWidget {
     DateFormat formattedDate = DateFormat(DateFormat.DAY, locale);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).backgroundColor,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
           topLeft: Radius.circular(30),
@@ -43,19 +43,19 @@ class WeekHeader extends StatelessWidget {
                   children: <Widget>[
                     CircleAvatar(
                       backgroundColor: isToday(_dates[index])
-                          ? Colors.lightBlue
-                          : Colors.white,
+                          ? Theme.of(context).accentColor
+                          : Theme.of(context).backgroundColor,
                       child: Text(formattedDate.format(_dates[index]),
                           style: TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,
                               color: isToday(_dates[index])
                                   ? Colors.white
-                                  : Colors.black)),
+                                  : null)),
                     ),
                     SizedBox(height: 2.0),
                     Text(dateToAbbreviatedString(_dates[index]).toUpperCase(),
-                        style: TextStyle(fontSize: 11.0, color: Colors.black)),
+                        style: TextStyle(fontSize: 11.0, color: null)),
                   ],
                 ),
               ),

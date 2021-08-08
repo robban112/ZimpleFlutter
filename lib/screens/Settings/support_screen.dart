@@ -6,6 +6,7 @@ class SupportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           backgroundColor: primaryColor,
           elevation: 0.0,
           leading: IconButton(
@@ -39,7 +40,7 @@ class SupportScreen extends StatelessWidget {
                   Text("zebastian@zimple.se")
                 ],
               ),
-            ),
+            )
           ],
         ));
   }

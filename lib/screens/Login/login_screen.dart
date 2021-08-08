@@ -63,10 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(height: 50, color: primaryColor),
                     Container(
                       height: 180,
-                      child: Image.asset(
-                        "images/clock.png",
-                        width: width / 2,
-                      ),
                     ),
                     SizedBox(height: 12),
                     Container(

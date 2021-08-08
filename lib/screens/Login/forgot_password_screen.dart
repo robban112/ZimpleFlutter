@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 import '../../utils/constants.dart';
@@ -27,7 +28,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       setState(() {
         hasSentEmail = true;
       });
-      //FirebaseAuth.instance.sendPasswordResetEmail(email: _email);
+      FirebaseAuth.instance.sendPasswordResetEmail(email: _email);
     }
   }
 
@@ -36,6 +37,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Scaffold(
         backgroundColor: primaryColor,
         appBar: AppBar(
+          brightness: Brightness.dark,
           title: Text("Glömt lösenord"),
           backgroundColor: primaryColor,
           elevation: 0,

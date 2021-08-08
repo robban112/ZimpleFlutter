@@ -86,11 +86,13 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         elevation: 5,
-        title: Align(alignment: Alignment.centerLeft, child: Text("Semester")),
+        title: Align(
+            alignment: Alignment.centerLeft,
+            child: Text("Ansök om ledighet", style: appBarTitleStyle)),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,

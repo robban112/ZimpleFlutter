@@ -18,7 +18,7 @@ import '../network/firebase_user_manager.dart';
 import '../network/firebase_person_manager.dart';
 import '../managers/event_manager.dart';
 import '../managers/person_manager.dart';
-import 'Settings/settings_screen.dart';
+import 'Settings/more_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class TabBarController extends StatefulWidget {
@@ -157,7 +157,7 @@ class _TabBarControllerState extends State<TabBarController>
               personManager: personManager,
               user: user,
             ),
-            SettingsScreen(
+            MoreScreen(
               user: this.user,
               customers: this.customers,
             )
@@ -169,19 +169,19 @@ class _TabBarControllerState extends State<TabBarController>
       PersistentBottomNavBarItem(
         icon: Icon(Icons.calendar_today),
         title: ("Kalender"),
-        activeColorPrimary: Colors.lightBlueAccent,
+        activeColorPrimary: Theme.of(context).accentColor,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.timer),
         title: ("Tidrapportering"),
-        activeColorPrimary: Colors.lightBlueAccent,
+        activeColorPrimary: Theme.of(context).accentColor,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.settings),
         title: ("Mer"),
-        activeColorPrimary: Colors.lightBlueAccent,
+        activeColorPrimary: Theme.of(context).accentColor,
         inactiveColorPrimary: Colors.grey,
       ),
     ];
@@ -192,16 +192,17 @@ class _TabBarControllerState extends State<TabBarController>
     return LoaderOverlay(
         overlayWidget: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(green),
-          backgroundColor: Colors.grey.shade300,
+          backgroundColor: Colors.black,
         ),
-        overlayOpacity: 0.8,
+        overlayOpacity: 0.1,
         child: PersistentTabView(
           context,
           controller: _controller,
           screens: _buildScreens(),
           items: _navBarsItems(),
           confineInSafeArea: true,
-          backgroundColor: Color(0xffF4F7FB),
+          //backgroundColor: Color(0xffF4F7FB),
+          backgroundColor: Theme.of(context).bottomAppBarColor,
           handleAndroidBackButtonPress: true,
           resizeToAvoidBottomInset:
               true, // This needs to be true if you want to move up the screen when keyboard appears.

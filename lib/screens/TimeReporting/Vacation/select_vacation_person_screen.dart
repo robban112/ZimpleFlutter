@@ -45,10 +45,11 @@ class SelectVacationPersonScreenState
         Provider.of<ManagerProvider>(context, listen: true).user.company;
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         title: Align(
           alignment: Alignment.centerLeft,
-          child: Text("Välj person"),
+          child: Text("Välj person", style: appBarTitleStyle),
         ),
       ),
       body: SingleChildScrollView(

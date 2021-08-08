@@ -53,6 +53,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           backgroundColor: primaryColor,
           elevation: 0.0,
           leading: IconButton(

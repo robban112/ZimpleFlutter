@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zimple/utils/constants.dart';
 
 class ListedItem {
   final Widget child;
@@ -41,8 +42,9 @@ class ListedItemWidget extends StatelessWidget {
                 item.leadingIcon != null
                     ? Row(
                         children: [
-                          Icon(item.leadingIcon,
-                              color: Colors.black.withAlpha(190)),
+                          Icon(
+                            item.leadingIcon,
+                          ),
                           SizedBox(width: 16.0),
                         ],
                       )
@@ -113,8 +115,7 @@ class ListedTitle extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
         child: Text(text,
-            style: TextStyle(
-                color: Colors.grey.shade700, fontWeight: FontWeight.w500)));
+            style: TextStyle(color: textColor, fontWeight: FontWeight.w500)));
   }
 }
 
@@ -149,9 +150,8 @@ class ListedView extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       this.isScrollable = false,
       this.hidesSeparatorByDefault = false,
-      this.separatorHeight = 1,
+      this.separatorHeight = 0.3,
       this.hidesFirstLastSeparator = true});
-  final Color separatorColor = Colors.grey.shade300;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -160,7 +160,9 @@ class ListedView extends StatelessWidget {
         children: [
           hidesFirstLastSeparator
               ? Container()
-              : Container(height: separatorHeight, color: separatorColor),
+              : Container(
+                  height: separatorHeight,
+                  color: Theme.of(context).dividerColor),
           ListView.separated(
             shrinkWrap: true,
             physics: isScrollable
@@ -172,13 +174,15 @@ class ListedView extends StatelessWidget {
           ),
           hidesFirstLastSeparator
               ? Container()
-              : Container(height: separatorHeight, color: separatorColor),
+              : Container(
+                  height: separatorHeight,
+                  color: Theme.of(context).dividerColor),
         ],
       ),
     );
   }
 
-  Widget _separatorBuilder(contex, index) {
+  Widget _separatorBuilder(context, index) {
     ListedItem item = items[index];
     double leftInset =
         item.leadingIcon != null ? rowInset.left + 42 : rowInset.left;
@@ -187,7 +191,8 @@ class ListedView extends StatelessWidget {
         : Padding(
             padding:
                 rowInset.copyWith(top: 0, bottom: 0, left: leftInset, right: 0),
-            child: Container(color: separatorColor, height: separatorHeight),
+            child: Container(
+                color: Theme.of(context).dividerColor, height: separatorHeight),
           );
   }
 
@@ -210,7 +215,7 @@ class ListedView extends StatelessWidget {
           item.leadingIcon != null
               ? Row(
                   children: [
-                    Icon(item.leadingIcon, color: Colors.black.withAlpha(190)),
+                    Icon(item.leadingIcon),
                     SizedBox(width: 16.0),
                   ],
                 )

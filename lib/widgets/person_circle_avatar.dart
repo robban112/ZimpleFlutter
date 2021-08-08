@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
+import 'package:zimple/utils/theme_manager.dart';
 
 class PersonCircleAvatar extends StatelessWidget {
   final Person person;
@@ -9,9 +11,11 @@ class PersonCircleAvatar extends StatelessWidget {
       {required this.person, this.radius = 15, this.fontSize = 11.0});
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode =
+        Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
     return CircleAvatar(
       radius: this.radius,
-      backgroundColor: Colors.grey.shade400,
+      backgroundColor: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400,
       child: Center(
         child: Text(
           person.name.characters.first.toUpperCase(),

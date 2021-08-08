@@ -41,6 +41,7 @@ class _TimeReportingSelectScreenState extends State<TimeReportingSelectScreen> {
       children: [
         Scaffold(
           appBar: AppBar(
+            brightness: Brightness.dark,
             backgroundColor: primaryColor,
             elevation: 0.0,
             toolbarHeight: 75,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/model/person.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/listed_view.dart';
 
@@ -27,7 +28,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).backgroundColor,
         child: buildListMenu(),
       ),
     );
@@ -84,52 +85,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         ],
       ),
     );
-    return ListView(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      children: [
-        DrawerHeader(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
-            child: Container(
-              height: 30.0,
-              child: Image.asset('images/zimple_logo_black.png'),
-            ),
-          ),
-        ),
-        ListTile(
-          title: Text("Tidsplan"),
-          leading: Icon(Icons.view_agenda),
-          onTap: () {
-            this.widget.toggleTimeplanView();
-          },
-        ),
-        ListTile(
-          title: Text("Dag"),
-          leading: Icon(Icons.view_day),
-          onTap: () {
-            this.widget.setNumberOfDays(1);
-          },
-        ),
-        ListTile(
-          title: Text("3 dagar"),
-          leading: Icon(Icons.view_column),
-          onTap: () {
-            this.widget.setNumberOfDays(3);
-          },
-        ),
-        ListTile(
-          title: Text("Vecka"),
-          leading: Icon(Icons.view_column),
-          onTap: () {
-            this.widget.setNumberOfDays(7);
-          },
-        ),
-        SizedBox(height: 30),
-        //buildViewMySchedule(),
-        _buildFilterPersonsItem()
-      ],
-    );
   }
 
   Padding _buildFilterPersonsItem() {
@@ -144,20 +99,26 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         elevation: 0,
         children: [
           ExpansionPanel(
+              backgroundColor: Theme.of(context).backgroundColor,
               canTapOnHeader: true,
               isExpanded: this.isFilteringPersonsExpanded,
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return Container(
-                    color: Colors.transparent,
-                    height: 50,
-                    child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Filtrera personer")));
+                  color: Colors.transparent,
+                  height: 50,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Filtrera personer",
+                    ),
+                  ),
+                );
               },
               body: Column(
                 children: [
                   ListView.separated(
                     shrinkWrap: true,
+                    padding: EdgeInsets.zero,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: widget.persons.length,
                     itemBuilder: (context, index) {
@@ -174,10 +135,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 SizedBox(
                                   width: 100,
                                   child: ClipRRect(
-                                    child: Text(
-                                      person.name,
-                                      overflow: TextOverflow.clip,
-                                    ),
+                                    child: Text(person.name,
+                                        overflow: TextOverflow.clip),
                                   ),
                                 )
                               ],

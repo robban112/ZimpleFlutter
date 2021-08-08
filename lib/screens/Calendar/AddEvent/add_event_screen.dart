@@ -218,13 +218,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
               hintText: 'Skriv anteckning ...',
               hintStyle: TextStyle(color: Colors.grey, fontSize: fontSize),
               enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1, color: Colors.grey.shade300),
+                  borderSide: BorderSide(
+                      width: 0.3, color: Theme.of(context).dividerColor),
                   borderRadius: BorderRadius.zero),
               focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1, color: Colors.grey.shade300),
+                  borderSide: BorderSide(
+                      width: 0.3, color: Theme.of(context).dividerColor),
                   borderRadius: BorderRadius.zero),
               border: OutlineInputBorder(
-                  borderSide: const BorderSide(width: 0.5, color: Colors.white),
+                  borderSide: BorderSide(
+                      width: 0.3, color: Theme.of(context).dividerColor),
                   borderRadius: BorderRadius.zero),
               focusColor: green,
             ),
@@ -307,10 +310,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
       appBar: AppBar(
         //iconTheme: IconThemeData(color: Colors.white),
         elevation: 0.0,
+        brightness: Brightness.dark,
         backgroundColor: primaryColor,
-        title: Text(changingEvent ? "Ändra arbetsorder" : "Ny arbetsorder"),
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(changingEvent ? "Ändra arbetsorder" : "Ny arbetsorder",
+              style: TextStyle(color: Colors.white)),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -362,7 +370,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle("TID"),
-        Container(height: 0.5, color: Colors.grey.shade400),
+        Container(height: 0.3, color: Theme.of(context).dividerColor),
         //SizedBox(height: 10),
         StartEndDateSelector(
             startDateSelectorController: startDateController,
@@ -374,7 +382,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
               setState(() {});
             },
             color: Colors.transparent),
-        Container(height: 0.5, color: Colors.grey.shade400),
+        Container(height: 0.3, color: Theme.of(context).dividerColor),
       ],
     );
   }

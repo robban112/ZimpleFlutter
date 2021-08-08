@@ -112,10 +112,10 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         padding: EdgeInsets.symmetric(vertical: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: Theme.of(context).shadowColor,
               spreadRadius: 2,
               blurRadius: 5,
               offset: Offset(-2, 2), // changes position of shadow
@@ -138,6 +138,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         title: Align(
             alignment: Alignment.centerLeft,
@@ -152,7 +153,6 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      backgroundColor: Colors.white,
       body: GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -585,25 +585,24 @@ class TimereportRow extends StatelessWidget {
     return Padding(
       padding: rowInset,
       child: Container(
-          color: this.color,
           child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(this.title, style: TextStyle(fontSize: 15.0)),
-                  this.leading
-                ],
-              ),
-              Container(height: 15),
-              hidesSeparatorByDefault
-                  ? Container()
-                  : Container(
-                      color: Colors.grey.shade300,
-                      height: 1,
-                    ),
+              Text(this.title, style: TextStyle(fontSize: 15.0)),
+              this.leading
             ],
-          )),
+          ),
+          Container(height: 15),
+          hidesSeparatorByDefault
+              ? Container()
+              : Container(
+                  color: Colors.grey.shade300,
+                  height: 1,
+                ),
+        ],
+      )),
     );
   }
 }

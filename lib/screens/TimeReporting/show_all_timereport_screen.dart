@@ -24,6 +24,7 @@ class _ShowAllTimeReportScreenState extends State<ShowAllTimeReportScreen> {
         .persons;
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         leading: IconButton(
           icon: Icon(

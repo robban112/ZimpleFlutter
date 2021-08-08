@@ -257,7 +257,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
               },
               child: Chip(
                 elevation: 3,
-                backgroundColor: selected ? green : Colors.grey.shade100,
+                backgroundColor: selected ? green : Theme.of(context).cardColor,
                 avatar: PersonCircleAvatar(
                   person: person,
                 ),
@@ -372,10 +372,17 @@ class _TimereportRowState extends State<TimereportRow> {
           Container(
             decoration: BoxDecoration(
                 color: widget.timereport.isCompleted
-                    ? Colors.grey.shade200
-                    : Colors.white,
+                    ? Theme.of(context).cardColor.withOpacity(0.5)
+                    : Theme.of(context).cardColor,
                 borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                boxShadow: standardShadow),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).shadowColor,
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: Offset(-2, 2), // changes position of shadow
+                  )
+                ]),
             child: Material(
               color: Colors.transparent,
               child: InkWell(

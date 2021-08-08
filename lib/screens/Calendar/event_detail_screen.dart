@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../../model/event.dart';
@@ -75,7 +76,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   : (Text(
                       subtitle,
                       style: TextStyle(
-                        color: Colors.black,
                         fontSize: 16.0,
                       ),
                       overflow: TextOverflow.ellipsis,
@@ -95,7 +95,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         Icon(
           Icons.image,
           size: 28.0,
-          color: Colors.grey.shade800,
+          //color: Colors.grey.shade800,
         ),
         SizedBox(
           width: 25.0,
@@ -116,14 +116,17 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  Widget _buildPersonListTile(Person person) {
+  Widget _buildPersonListTile(BuildContext context, Person person) {
+    bool isDarkMode =
+        Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
     return Padding(
       padding: const EdgeInsets.only(left: 10.0),
       child: Row(
         children: [
           CircleAvatar(
             radius: 15,
-            backgroundColor: Colors.grey.shade400,
+            backgroundColor:
+                isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400,
             child: Center(
               child: Text(
                 person.name.characters.first.toUpperCase(),
@@ -188,7 +191,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     var person = persons[index];
                     return Column(
                       children: [
-                        _buildPersonListTile(person),
+                        _buildPersonListTile(context, person),
                         SizedBox(height: 12)
                       ],
                     );
@@ -273,7 +276,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       _buildBody(customer),
                       Expanded(
                         child: Container(
-                          color: Colors.white,
+                          color: Theme.of(context).backgroundColor,
                         ),
                       ),
                     ],
@@ -289,7 +292,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   Widget _buildBody(Customer? customer) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).backgroundColor,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
         child: Column(
@@ -476,7 +479,7 @@ class ListedParameter extends StatelessWidget {
             Icon(
               iconData,
               size: 28.0,
-              color: Colors.grey.shade800,
+              //color: Colors.grey.shade800,
             ),
             SizedBox(
               width: 25.0,

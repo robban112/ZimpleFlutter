@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 class CoworkersScreen extends StatefulWidget {
@@ -32,15 +33,15 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Medarbetare"),
-        backgroundColor: primaryColor,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: StandardAppBar("Medarbetare"),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: ClampingScrollPhysics(),
         child: DataTable(
-          dividerThickness: 0,
+          dividerThickness: 0.1,
           columnSpacing: 25,
           rows: personManager.persons.map((person) {
             print(person.phonenumber);

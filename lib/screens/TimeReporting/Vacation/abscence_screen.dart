@@ -136,9 +136,10 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
 
   Widget buildButton(String title, VoidCallback onTap) {
     return MaterialButton(
-      color: Colors.grey.shade200,
+      //color: Colors.grey.shade200,
+      color: Theme.of(context).buttonColor,
       elevation: 0.0,
-      child: Text(title, style: TextStyle(color: Colors.black)),
+      child: Text(title),
       onPressed: onTap,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -161,7 +162,6 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
         Text(
           subtitle,
           style: TextStyle(
-            color: Colors.black,
             fontSize: 16.0,
           ),
           overflow: TextOverflow.ellipsis,
@@ -182,8 +182,15 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
           //height: 90,
           child: Container(
             decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: standardShadow,
+                color: Theme.of(context).cardColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).shadowColor,
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: Offset(-2, 2), // changes position of shadow
+                  )
+                ],
                 borderRadius: BorderRadius.circular(16.0)),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -248,6 +255,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          brightness: Brightness.dark,
           backgroundColor: primaryColor,
           title: Align(alignment: Alignment.centerLeft, child: Text("")),
           leading: IconButton(

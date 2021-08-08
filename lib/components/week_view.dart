@@ -74,7 +74,7 @@ class WeekView extends StatelessWidget {
                       ),
                       Row(
                         children: _buildHoursAndEvents(
-                            dates, eventLayoutManager, dayWidth),
+                            context, dates, eventLayoutManager, dayWidth),
                       ),
                     ],
                   ),
@@ -92,7 +92,7 @@ class WeekView extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildHoursAndEvents(List<DateTime> dates,
+  List<Widget> _buildHoursAndEvents(BuildContext context, List<DateTime> dates,
       EventLayoutManager eventLayoutManager, double dayWidth) {
     return List.generate(_numberOfDays, (index) {
       List<Widget> events = eventLayoutManager.buildEventContainers(index);
@@ -100,12 +100,13 @@ class WeekView extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              border: const Border(
-                left: BorderSide(width: 0.2),
+              border: Border(
+                left: BorderSide(
+                    width: 0.2, color: Theme.of(context).dividerColor),
               ),
             ),
-            child:
-                Column(children: _buildHourContainer(dates[index], dayWidth)),
+            child: Column(
+                children: _buildHourContainer(context, dates[index], dayWidth)),
           ),
           if (events.isNotEmpty)
             Stack(
@@ -116,7 +117,8 @@ class WeekView extends StatelessWidget {
     });
   }
 
-  List<Widget> _buildHourContainer(DateTime date, double dayWidth) {
+  List<Widget> _buildHourContainer(
+      BuildContext context, DateTime date, double dayWidth) {
     return List.generate(
       24,
       (index) => GestureDetector(
@@ -129,7 +131,11 @@ class WeekView extends StatelessWidget {
         child: HourContainer(
           minuteHeight: _minuteHeight,
           dayWidth: dayWidth,
-          color: isToday(date) ? Colors.lightBlue.shade50 : Colors.white,
+          color: isToday(date)
+              ? Color.alphaBlend(
+                  Theme.of(context).accentColor.withOpacity(0.15),
+                  Theme.of(context).backgroundColor)
+              : Theme.of(context).backgroundColor,
         ),
       ),
     );
@@ -152,8 +158,8 @@ class HourContainer extends StatelessWidget {
       height: 60 * minuteHeight,
       width: dayWidth - 0.2,
       decoration: BoxDecoration(
-        border: const Border(
-          bottom: BorderSide(width: 0.2),
+        border: Border(
+          bottom: BorderSide(width: 0.2, color: Theme.of(context).dividerColor),
         ),
         color: color,
       ),

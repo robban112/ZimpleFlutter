@@ -46,9 +46,16 @@ final TextStyle greyText = TextStyle(
 );
 
 final Color shadedGrey = Color(0xffF5F6F9);
-final Color primaryColor = Color(0xff303E52);
-//final Color primaryColor = Colors.black;
-final Color backgroundColor = Color(0xffF7FAFB);
+//final Color primaryColor = Color(0xff303E52);
+final Color primaryColor = Colors.black;
+final Color backgroundColor = Color(0xff121212);
+final Color cardColor = Color(0xff282828);
+//final Color backgroundColor = Colors.black;
+final Color textColor = Colors.white;
+//final Color dividerColor = Color(4278190080);
+final Color dividerColor = Colors.white;
+//final Color accentBlueColor = Colors.lightBlue.shade50;
+final Color accentBlueColor = Colors.indigo.shade800;
 final Color green = Color(0xff7BC9B5);
 
 final List<BoxShadow> standardShadow = [
@@ -59,6 +66,9 @@ final List<BoxShadow> standardShadow = [
     offset: Offset(-2, 2), // changes position of shadow
   )
 ];
+
+final TextStyle appBarTitleStyle =
+    TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0);
 
 String? emailValidator(String? value) {
   if (value == null) return null;

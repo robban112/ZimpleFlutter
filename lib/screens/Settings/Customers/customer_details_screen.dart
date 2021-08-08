@@ -68,6 +68,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
     double rowHeight = 40;
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         elevation: 0.0,
         leading: IconButton(

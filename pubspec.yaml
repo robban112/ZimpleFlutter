@@ -40,6 +40,8 @@ dependencies:
   pdf: ^3.4.2
   path_provider: ^2.0.2
   open_file: ^3.2.1
+  shared_preferences: ^2.0.6
+
 
 dev_dependencies:
   flutter_native_splash: ^1.2.0
@@ -56,6 +58,15 @@ flutter:
   assets:
   - images/
   fonts:
+  - family: FiraSans
+    fonts:
+      - asset: fonts/FiraSans/FiraSans-Regular.ttf
+      - asset: fonts/FiraSans/FiraSans-Bold.ttf
+      - asset: fonts/FiraSans/FiraSans-ExtraBold.ttf
+      - asset: fonts/FiraSans/FiraSans-Medium.ttf
+      - asset: fonts/FiraSans/FiraSans-Thin.ttf
+      - asset: fonts/FiraSans/FiraSans-Light.ttf
+      - asset: fonts/FiraSans/FiraSans-SemiBold.ttf
   - family: Montserrat
     fonts:
       - asset: fonts/Montserrat/Montserrat-Regular.ttf

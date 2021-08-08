@@ -41,6 +41,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
 
   AppBar _buildAppbar(BuildContext context, UserParameters user) {
     return AppBar(
+        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         elevation: 0.0,
         title: Align(
@@ -69,7 +70,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
 
     return Scaffold(
       appBar: _buildAppbar(context, user),
-      backgroundColor: widget.isViewingSingle ? Colors.white : primaryColor,
+      backgroundColor: widget.isViewingSingle ? null : primaryColor,
       body: widget.listTimereports != null
           ? _buildMultipleBody(user, eventManager)
           : _buildBody(widget.timereport!, user, eventManager),
@@ -90,9 +91,8 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
                 padding: const EdgeInsets.only(
                     left: 16.0, right: 16, top: 24.0, bottom: 48),
                 child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16)),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(16)),
                   child: _buildBody(timereport, user, eventManager),
                 ),
               );
@@ -104,7 +104,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
           left: 0,
           bottom: 24,
           child: DotsIndicator(
-            color: Colors.white,
+            color: Theme.of(context).accentColor,
             controller: pageController,
             itemCount: widget.listTimereports!.length,
           ),
@@ -363,7 +363,6 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
               Text(
                 subtitle,
                 style: TextStyle(
-                  color: Colors.black,
                   fontSize: 16.0,
                 ),
                 overflow: TextOverflow.ellipsis,

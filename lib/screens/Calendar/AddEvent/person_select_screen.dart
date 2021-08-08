@@ -68,6 +68,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
+            brightness: Brightness.dark,
             //iconTheme: IconThemeData(color: Colors.white),
             elevation: 0.0,
             backgroundColor: primaryColor,

@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/screens/Login/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'screens/Login/login_screen.dart';
 import 'screens/tab_bar_controller.dart';
@@ -13,7 +15,10 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(App());
+  runApp(ChangeNotifierProvider<ThemeNotifier>(
+    create: (_) => new ThemeNotifier(),
+    child: App(),
+  ));
 }
 
 // Future<dynamic> _firebaseMessagingBackgroundHandler(
@@ -58,28 +63,38 @@ class _ZimpleState extends State<Zimple> {
   @override
   Widget build(BuildContext context) {
     //initializeDateFormatting('sv_se');
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.white),
+    );
     return ChangeNotifierProvider(
       create: (_) => ManagerProvider(),
-      child: MaterialApp(
-        localizationsDelegates: [
-          GlobalCupertinoLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate
-        ],
-        supportedLocales: [const Locale('sv', 'SV')],
-        locale: Locale.fromSubtags(languageCode: 'sv'),
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            fontFamily: 'Poppins', accentColor: green, focusColor: green),
-        initialRoute: widget.isLoggedIn
-            ? TabBarController.routeName
-            : LoginScreen.routeName,
-        routes: {
-          LoginScreen.routeName: (context) => LoginScreen(),
-          TabBarController.routeName: (context) => TabBarController(),
-          // SettingsScreen.routeName: (context) => SettingsScreen(),
-          // TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
-          ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen()
-        },
+      child: Consumer<ThemeNotifier>(
+        builder: (context, theme, _) => MaterialApp(
+          localizationsDelegates: [
+            GlobalCupertinoLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate
+          ],
+          supportedLocales: [const Locale('sv', 'SV')],
+          locale: Locale.fromSubtags(languageCode: 'sv'),
+          debugShowCheckedModeBanner: false,
+          theme: theme.getTheme(),
+          // theme: ThemeData(
+          //   fontFamily: 'FiraSans',
+          //   accentColor: green,
+          //   focusColor: green,
+          //   scaffoldBackgroundColor: backgroundColor,
+          // ),
+          initialRoute: widget.isLoggedIn
+              ? TabBarController.routeName
+              : LoginScreen.routeName,
+          routes: {
+            LoginScreen.routeName: (context) => LoginScreen(),
+            TabBarController.routeName: (context) => TabBarController(),
+            // SettingsScreen.routeName: (context) => SettingsScreen(),
+            // TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
+            ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen()
+          },
+        ),
       ),
     );
   }

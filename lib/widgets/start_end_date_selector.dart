@@ -212,7 +212,7 @@ class DateSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     print("build date selector");
     return Column(
-      children: [_buildTimeRow(), buildAnimatedContainer(context)],
+      children: [_buildTimeRow(context), buildAnimatedContainer(context)],
     );
   }
 
@@ -221,7 +221,7 @@ class DateSelector extends StatelessWidget {
     return formatter.format(date);
   }
 
-  Widget _buildTimeRow() {
+  Widget _buildTimeRow(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -256,7 +256,8 @@ class DateSelector extends StatelessWidget {
                 ? Container()
                 : Padding(
                     padding: const EdgeInsets.only(left: 16.0),
-                    child: Container(height: 1, color: Colors.grey.shade300),
+                    child: Container(
+                        height: 0.3, color: Theme.of(context).dividerColor),
                   )
           ],
         ),
@@ -298,15 +299,18 @@ class DateSelector extends StatelessWidget {
         child: SizedBox(
           height: isShowingDatePicker ? 250 : 0.000000000001,
           width: MediaQuery.of(context).size.width,
-          child: CupertinoDatePicker(
-            key: isShowingDatePicker ? null : UniqueKey(),
-            mode: datePickerMode,
-            initialDateTime: date,
-            minuteInterval: 5,
-            onDateTimeChanged: (date) {
-              didSelectDate(date);
-            },
-            use24hFormat: true,
+          child: CupertinoTheme(
+            data: CupertinoThemeData(brightness: Theme.of(context).brightness),
+            child: CupertinoDatePicker(
+              key: isShowingDatePicker ? null : UniqueKey(),
+              mode: datePickerMode,
+              initialDateTime: date,
+              minuteInterval: 5,
+              onDateTimeChanged: (date) {
+                didSelectDate(date);
+              },
+              use24hFormat: true,
+            ),
           ),
         ));
   }

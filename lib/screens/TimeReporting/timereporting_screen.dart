@@ -60,10 +60,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
           leadingIcon != null ? Icon(leadingIcon) : Container(),
           leadingIcon != null ? SizedBox(width: 5.0) : Container(),
           Text(title,
-              style: TextStyle(
-                  color: primaryColor,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold)),
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -84,6 +81,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         appBar: AppBar(
           backgroundColor: primaryColor,
           elevation: 10.0,
+          brightness: Brightness.dark,
           title: Align(
               alignment: Alignment.centerLeft,
               child: Text("Tidrapportering",
@@ -94,8 +92,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         ),
         body: Stack(
           children: [
-            Container(
-                height: size.height, width: size.width, color: Colors.white),
+            Container(height: size.height, width: size.width),
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,11 +293,11 @@ class _TimeReportCardState extends State<TimeReportCard> {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.10),
+                color: Theme.of(context).shadowColor,
                 spreadRadius: 4,
                 blurRadius: 4,
                 offset: Offset(-2, 2), // changes position of shadow
