@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/utils.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/listed_view.dart';
 
@@ -35,6 +36,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   }
 
   Widget buildListMenu() {
+    bool isDarkMode = Utils.isDarkMode(context);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -43,7 +45,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             child: Center(
               child: Container(
                 height: 30.0,
-                child: Image.asset('images/zimple_logo_black.png'),
+                child: isDarkMode
+                    ? Image.asset('images/zimple_logo.png')
+                    : Image.asset('images/zimple_logo_black.png'),
               ),
             ),
           ),

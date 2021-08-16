@@ -82,7 +82,6 @@ class TimeReport {
     int totalTime = timereportData['totalTime'] ?? 0;
     List<String> imagesStoragePaths =
         _getImagesFromEventData(timereportData) ?? [];
-    print("Came here");
     List<Cost> costs = _getCostsFromTimereportData(timereportData) ?? [];
     String? comment = timereportData['comment'];
     String? eventId = timereportData['eventId'];

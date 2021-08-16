@@ -14,6 +14,7 @@ import 'package:zimple/screens/Calendar/AddEvent/person_select_screen.dart';
 import 'package:zimple/widgets/image_dialog.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
+import 'package:zimple/widgets/photo_buttons.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 import 'package:flutter/material.dart';
@@ -501,6 +502,25 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   Widget _buildPhotoButtons() {
+    return PhotoButtons(
+        isSelectingPhotoProvider: this.isSelectingPhotoProvider,
+        didTapCancel: () {
+          setState(() {
+            this.isSelectingPhotoProvider = false;
+          });
+        },
+        didReceiveImage: (image) {
+          setState(() {
+            if (image != null) {
+              print("Picked Image");
+              _image = File(image.path);
+              selectedImages.add(_image!);
+            } else {
+              print('No image selected.');
+            }
+            isSelectingPhotoProvider = false;
+          });
+        });
     return AnimatedPositioned(
         duration: Duration(milliseconds: 200),
         bottom: isSelectingPhotoProvider ? 16 : -300,
@@ -539,8 +559,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
           style: ElevatedButton.styleFrom(
             minimumSize: Size(100.0, 50.0),
             elevation: 5,
-            primary: Colors.white,
-            onPrimary: Colors.black,
+            primary: Theme.of(context).primaryColor,
+            onPrimary: Theme.of(context).accentColor,
           ),
         ),
       ),

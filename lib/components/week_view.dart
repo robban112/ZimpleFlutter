@@ -181,8 +181,10 @@ class _CurrentTimeLineState extends State<CurrentTimeLine> {
   @override
   void initState() {
     super.initState();
+
     print("Initiating current time line");
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
+      if (!mounted) return;
       setState(() {
         print("Updating current time line");
         now = DateTime.now();

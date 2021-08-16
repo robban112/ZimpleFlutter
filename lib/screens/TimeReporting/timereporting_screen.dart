@@ -285,23 +285,31 @@ class TimeReportCard extends StatefulWidget {
 }
 
 class _TimeReportCardState extends State<TimeReportCard> {
+  static final highlightColor = Colors.white.withOpacity(0.05);
+  static final softHighlightColor = highlightColor.withOpacity(0.03);
+  static final shadowColor = Colors.black87;
+  static final softShadowColor = shadowColor.withOpacity(0.3);
   @override
   Widget build(BuildContext context) {
     var spacing = 8.0;
     var eventAvailable = widget.event != null;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).backgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).shadowColor,
-                spreadRadius: 4,
-                blurRadius: 4,
-                offset: Offset(-2, 2), // changes position of shadow
-              )
+                  color: softHighlightColor,
+                  offset: Offset(-3, -3),
+                  spreadRadius: 0,
+                  blurRadius: 3),
+              BoxShadow(
+                  color: softShadowColor,
+                  offset: Offset(5, 5),
+                  spreadRadius: 2,
+                  blurRadius: 7)
             ]),
         width: 175,
         child: Material(

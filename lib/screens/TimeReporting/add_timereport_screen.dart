@@ -22,6 +22,7 @@ import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_select_screen.dart';
 import 'package:zimple/widgets/image_dialog.dart';
 import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/photo_buttons.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 import 'package:zimple/widgets/start_end_date_selector.dart';
@@ -167,7 +168,9 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
               children: [
                 buildChooseWorkOrderComponent(),
                 SizedBox(height: 12.0),
-                _buildSectionTitle("Eller välj kund"),
+                selectedEvent == null
+                    ? _buildSectionTitle("Eller välj kund")
+                    : Container(),
                 buildSelectCustomerTile(),
                 SizedBox(height: 24.0),
                 buildTimeComponent(),
@@ -686,28 +689,10 @@ class SelectImagesComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedPositioned(
-        duration: Duration(milliseconds: 200),
-        bottom: isSelectingPhotoProvider ? 16 : -300,
-        right: 16.0,
-        left: 16.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildPhotoButton(() {
-              getImage(ImageSource.camera);
-            }, "Ta foto"),
-            SizedBox(height: 1.0),
-            _buildPhotoButton(() {
-              getImage(ImageSource.gallery);
-            }, "Välj foto"),
-            SizedBox(height: 5.0),
-            _buildPhotoButton(() {
-              didTapCancel();
-            }, "Avbryt"),
-          ],
-        ));
+    return PhotoButtons(
+        isSelectingPhotoProvider: this.isSelectingPhotoProvider,
+        didTapCancel: didTapCancel,
+        didReceiveImage: didPickImage);
   }
 }
 

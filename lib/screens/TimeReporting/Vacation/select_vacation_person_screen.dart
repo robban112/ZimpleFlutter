@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
-import 'package:zimple/network/firebase_vacation_manager.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
-import 'package:zimple/utils/constants.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -44,13 +43,9 @@ class SelectVacationPersonScreenState
     String company =
         Provider.of<ManagerProvider>(context, listen: true).user.company;
     return Scaffold(
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        backgroundColor: primaryColor,
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text("Välj person", style: appBarTitleStyle),
-        ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: StandardAppBar("Välj person"),
       ),
       body: SingleChildScrollView(
           child: ListedView(

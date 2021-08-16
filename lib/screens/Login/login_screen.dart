@@ -18,15 +18,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final double kPadding = 24.0;
 
   void loginUser(String email, String password) async {
-    setLoading(true);
+    context.loaderOverlay.show();
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.trim(), password: password.trim());
-      setLoading(false);
+      context.loaderOverlay.hide();
       Navigator.pushNamedAndRemoveUntil(
           context, TabBarController.routeName, (route) => false);
     } catch (e) {
-      setLoading(false);
+      context.loaderOverlay.hide();
       setState(() {
         this._errorLogin = true;
       });
@@ -46,10 +46,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: primaryColor,
       body: LoaderOverlay(
-        overlayColor: _loading ? Colors.grey : Colors.transparent,
-        // progressIndicator: CircularProgressIndicator(
-        //   backgroundColor: green,
-        // ),
+        overlayWidget: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(green),
+        ),
+        overlayOpacity: 0.5,
         child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(

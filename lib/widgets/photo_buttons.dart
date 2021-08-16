@@ -37,8 +37,11 @@ class PhotoButtons extends StatelessWidget {
         ));
   }
 
-  Future getImage(ImageSource imageSource) async {
-    final pickedFile = await picker.getImage(source: imageSource);
+  Future<void> getImage(ImageSource imageSource) async {
+    final pickedFile =
+        await picker.getImage(source: imageSource).catchError((err) {
+      print("Error retrieving image $err");
+    });
 
     if (pickedFile != null) {
       print("Picked Image");
@@ -46,6 +49,7 @@ class PhotoButtons extends StatelessWidget {
     } else {
       print('No image selected.');
     }
+    return;
   }
 
   Widget _buildPhotoButton(BuildContext context, Function onTap, String text) {
@@ -64,8 +68,8 @@ class PhotoButtons extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             minimumSize: Size(100.0, 50.0),
             elevation: 5,
-            onPrimary: Theme.of(context).backgroundColor,
-            primary: Theme.of(context).backgroundColor,
+            onPrimary: Theme.of(context).accentColor,
+            primary: Theme.of(context).primaryColor,
             //onPrimary: Colors.black,
           ),
         ),

@@ -51,7 +51,10 @@ class WeekHeader extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: isToday(_dates[index])
                                   ? Colors.white
-                                  : null)),
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.color)),
                     ),
                     SizedBox(height: 2.0),
                     Text(dateToAbbreviatedString(_dates[index]).toUpperCase(),

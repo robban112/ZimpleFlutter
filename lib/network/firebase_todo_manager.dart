@@ -48,7 +48,6 @@ class FirebaseTodoManager {
           createdBy: createdBy);
       todos.add(todoObject);
     }
-    print("CAME HERE");
     return todos;
   }
 }

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/utils.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../network/firebase_event_manager.dart';
 import '../network/firebase_user_manager.dart';
@@ -50,6 +51,7 @@ class _TabBarControllerState extends State<TabBarController>
   late ManagerProvider managerProvider;
   TimereportManager timeReportManager = TimereportManager();
   late List<Customer> customers;
+  bool loading = true;
 
   _TabBarControllerState();
 
@@ -58,6 +60,10 @@ class _TabBarControllerState extends State<TabBarController>
     managerProvider = Provider.of<ManagerProvider>(context, listen: false);
 
     firebaseUserManager.getUser()?.then((user) {
+      setState(() {
+        loading = false;
+      });
+      //Utils.setLoading(context, true);
       this.user = user;
       managerProvider.user = user;
 
@@ -88,6 +94,8 @@ class _TabBarControllerState extends State<TabBarController>
         this.timeReportManager = timeReportManager;
         managerProvider.timereportManager = timereportManager;
         this.loadingTimereport = false;
+        if (!loadingTimereport && !loadingEvent)
+          Utils.setLoading(context, false);
       });
 
       //print(timereportManager.getTimereports(user.token).first.breakTime);
@@ -116,6 +124,8 @@ class _TabBarControllerState extends State<TabBarController>
         this.eventManager = eventManager;
         managerProvider.eventManager = eventManager;
         loadingEvent = false;
+        if (!loadingTimereport && !loadingEvent)
+          Utils.setLoading(context, false);
       });
     });
   }
@@ -136,15 +146,7 @@ class _TabBarControllerState extends State<TabBarController>
 
   List<Widget> _buildScreens() {
     return loadingEvent && loadingTimereport
-        ? [
-            Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(green),
-              ),
-            ),
-            Container(),
-            Container()
-          ]
+        ? [_loadingWidget(), _loadingWidget(), _loadingWidget()]
         : [
             CalendarScreen(
               user: user,
@@ -187,48 +189,58 @@ class _TabBarControllerState extends State<TabBarController>
     ];
   }
 
+  Widget _loadingWidget() => Container(
+        color: Colors.black,
+        child: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(green),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
-    return LoaderOverlay(
-        overlayWidget: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(green),
-          backgroundColor: Colors.black,
-        ),
-        overlayOpacity: 0.1,
-        child: PersistentTabView(
-          context,
-          controller: _controller,
-          screens: _buildScreens(),
-          items: _navBarsItems(),
-          confineInSafeArea: true,
-          //backgroundColor: Color(0xffF4F7FB),
-          backgroundColor: Theme.of(context).bottomAppBarColor,
-          handleAndroidBackButtonPress: true,
-          resizeToAvoidBottomInset:
-              true, // This needs to be true if you want to move up the screen when keyboard appears.
-          stateManagement: true,
-          hideNavigationBarWhenKeyboardShows:
-              true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
-          decoration: NavBarDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            colorBehindNavBar: Colors.white,
-          ),
-          navBarHeight: 55,
-          popAllScreensOnTapOfSelectedTab: true,
-          popActionScreens: PopActionScreensType.all,
-          itemAnimationProperties: ItemAnimationProperties(
-            // Navigation Bar's items animation properties.
-            duration: Duration(milliseconds: 200),
-            curve: Curves.ease,
-          ),
-          screenTransitionAnimation: ScreenTransitionAnimation(
-            // Screen transition animation on change of selected tab.
-            animateTabTransition: true,
-            curve: Curves.ease,
-            duration: Duration(milliseconds: 200),
-          ),
-          navBarStyle: NavBarStyle
-              .style8, // Choose the nav bar style with this property.
-        ));
+    return loading
+        ? Container(color: Colors.black)
+        : LoaderOverlay(
+            overlayWidget: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(green),
+            ),
+            overlayOpacity: 0.0,
+            child: PersistentTabView(
+              context,
+              controller: _controller,
+              screens: _buildScreens(),
+              items: _navBarsItems(),
+              confineInSafeArea: true,
+              //backgroundColor: Color(0xffF4F7FB),
+              backgroundColor: Theme.of(context).bottomAppBarColor,
+              handleAndroidBackButtonPress: true,
+              resizeToAvoidBottomInset:
+                  true, // This needs to be true if you want to move up the screen when keyboard appears.
+              stateManagement: true,
+              hideNavigationBarWhenKeyboardShows:
+                  true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
+              decoration: NavBarDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                colorBehindNavBar: Colors.white,
+              ),
+              navBarHeight: 55,
+              popAllScreensOnTapOfSelectedTab: true,
+              popActionScreens: PopActionScreensType.all,
+              itemAnimationProperties: ItemAnimationProperties(
+                // Navigation Bar's items animation properties.
+                duration: Duration(milliseconds: 200),
+                curve: Curves.ease,
+              ),
+              screenTransitionAnimation: ScreenTransitionAnimation(
+                // Screen transition animation on change of selected tab.
+                animateTabTransition: true,
+                curve: Curves.ease,
+                duration: Duration(milliseconds: 200),
+              ),
+              navBarStyle: NavBarStyle
+                  .style8, // Choose the nav bar style with this property.
+            ));
   }
 }
