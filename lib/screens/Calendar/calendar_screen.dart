@@ -60,11 +60,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
     super.initState();
     isShowingTimeplan = !widget.user.isAdmin;
     dateAggregator = firstDayOfWeek(DateTime.now());
-    firebaseStorageManager =
-        FirebaseStorageManager(company: widget.user.company);
+    firebaseStorageManager = FirebaseStorageManager(company: widget.user.company);
     firebaseUserManager = FirebaseUserManager();
-    _filteredPersons = new Map.fromIterable(widget.personManager.persons,
-        key: (person) => person, value: (person) => true);
+    _filteredPersons = new Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
     //filteredPersons = widget.personManager.persons;
   }
 
@@ -91,7 +89,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   minuteHeight: this._minuteHeight,
                   numberOfDays: this._numberOfDays,
                   daysChangedController: daysChangedController,
-                  didTapEvent: this._didTapEvent,
+                  didTapEvent: (Event event) {
+                    if (isCopyingEvent) {
+                      copyEvent(event.start, event.start.hour);
+                    } else
+                      this._didTapEvent(event);
+                  },
                   didTapHour: (date, index) {
                     if (isCopyingEvent) {
                       print("upload new event at $date $index");
@@ -156,11 +159,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void copyEvent(DateTime date, int index) {
     if (eventToCopy == null) return;
-    var start = DateTime(
-        date.year, date.month, date.day, index, eventToCopy!.start.minute);
+    var start = DateTime(date.year, date.month, date.day, index, eventToCopy!.start.minute);
     var diff = eventToCopy!.end.difference(eventToCopy!.start).inHours;
-    var end = DateTime(date.year, date.month, date.day, index + diff,
-        eventToCopy!.start.minute);
+    var end = DateTime(date.year, date.month, date.day, index + diff, eventToCopy!.start.minute);
     eventToCopy!.start = start;
     eventToCopy!.end = end;
     eventToCopy!.timereported = [];
@@ -213,10 +214,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       if (_filteredPersons[person] == null) return;
       this._filteredPersons[person] = !this._filteredPersons[person]!;
       this.widget.eventManager.eventFilter = (events) {
-        return events
-            .where((event) =>
-                event.persons?.any((p) => this._filteredPersons[p]!) ?? false)
-            .toList();
+        return events.where((event) => event.persons?.any((p) => this._filteredPersons[p]!) ?? false).toList();
       };
     });
   }

@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import '../../utils/constants.dart';
 
 class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          backgroundColor: primaryColor,
-          elevation: 0.0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: StandardAppBar("Support")),
         body: Column(
           children: [
-            TopHeader(kPadding: kPadding),
-            SizedBox(height: 48.0),
+            //TopHeader(kPadding: kPadding),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0, top: 12.0),
+              child: Text(
+                "Vi finns här för att hjälpa dig.\nHör av dig genom att kontakta oss på email eller telefon",
+                style: TextStyle(fontSize: 15.0),
+              ),
+            ),
+            SizedBox(height: 12.0),
             Padding(
               padding: const EdgeInsets.only(left: 24.0),
               child: Row(

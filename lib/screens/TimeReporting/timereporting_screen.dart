@@ -27,10 +27,7 @@ class TimeReportingScreen extends StatefulWidget {
   final EventManager eventManager;
   final PersonManager personManager;
   final UserParameters user;
-  TimeReportingScreen(
-      {required this.eventManager,
-      required this.personManager,
-      required this.user});
+  TimeReportingScreen({required this.eventManager, required this.personManager, required this.user});
   @override
   _TimeReportingScreenState createState() => _TimeReportingScreenState();
 }
@@ -41,12 +38,10 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
 
   @override
   void initState() {
-    firebaseVacationReportManager =
-        FirebaseVacationManager(company: widget.user.company);
+    firebaseVacationReportManager = FirebaseVacationManager(company: widget.user.company);
     firebaseVacationReportManager.getUnreadAbsenceRequests().then((value) {
       print("Updated vacation absence");
-      Provider.of<ManagerProvider>(context, listen: false)
-          .absenceRequestReadMap = value;
+      Provider.of<ManagerProvider>(context, listen: false).absenceRequestReadMap = value;
       setState(() {});
     });
     super.initState();
@@ -59,8 +54,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         children: [
           leadingIcon != null ? Icon(leadingIcon) : Container(),
           leadingIcon != null ? SizedBox(width: 5.0) : Container(),
-          Text(title,
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+          Text(title, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -70,9 +64,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
   Widget build(BuildContext context) {
     print("Building Timereporting Screen");
     var size = MediaQuery.of(context).size;
-    Map<String, int>? absenceMap =
-        Provider.of<ManagerProvider>(context, listen: true)
-            .absenceRequestReadMap;
+    Map<String, int>? absenceMap = Provider.of<ManagerProvider>(context, listen: true).absenceRequestReadMap;
     return FocusDetector(
       onFocusGained: () {
         setState(() {});
@@ -84,11 +76,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
           brightness: Brightness.dark,
           title: Align(
               alignment: Alignment.centerLeft,
-              child: Text("Tidrapportering",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25.0))),
+              child: Text("Tidrapportering", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0))),
         ),
         body: Stack(
           children: [
@@ -102,12 +90,8 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
                   SizedBox(height: 24.0),
                   _buildSectionTitle("Funktioner"),
                   _buildFunctionsListedView(),
-                  widget.user.isAdmin
-                      ? _buildSectionTitle("Admin")
-                      : Container(),
-                  widget.user.isAdmin
-                      ? _buildAdminFunctionsListedView(absenceMap)
-                      : Container()
+                  widget.user.isAdmin ? _buildSectionTitle("Admin") : Container(),
+                  widget.user.isAdmin ? _buildAdminFunctionsListedView(absenceMap) : Container()
                 ],
               ),
             ),
@@ -132,8 +116,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
             leadingIcon: Icons.wb_sunny,
             child: Text("Ansök frånvaro"),
             trailingIcon: Icons.chevron_right,
-            onTap: () =>
-                pushNewScreen(context, screen: ReportVacationScreen())),
+            onTap: () => pushNewScreen(context, screen: ReportVacationScreen())),
         ListedItem(
             leadingIcon: Icons.alarm_off,
             child: Text("Min frånvaro"),
@@ -158,8 +141,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
 
   Widget _buildNumberOfUnreadAbsenceRequests(Map<String, int>? absenceMap) {
     if (absenceMap == null) return Container();
-    int totalUnread =
-        FirebaseVacationManager.getTotalUnreadAbsenceRequests(absenceMap);
+    int totalUnread = FirebaseVacationManager.getTotalUnreadAbsenceRequests(absenceMap);
     if (totalUnread <= 0) return Container();
     return CircleAvatar(
       radius: 10,
@@ -182,30 +164,20 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
             ),
             trailingIcon: Icons.chevron_right,
             onTap: goToShowAllTimereportScreen),
-        ListedItem(
-            leadingIcon: Icons.bar_chart,
-            child: Text("Se statistik"),
-            trailingIcon: Icons.chevron_right),
+        ListedItem(leadingIcon: Icons.bar_chart, child: Text("Se statistik"), trailingIcon: Icons.chevron_right),
         ListedItem(
             leadingIcon: Icons.alarm_off,
             child: _buildAbsenceChild(),
             trailingWidget: Row(
-              children: [
-                _buildNumberOfUnreadAbsenceRequests(absenceMap),
-                Icon(Icons.chevron_right)
-              ],
+              children: [_buildNumberOfUnreadAbsenceRequests(absenceMap), Icon(Icons.chevron_right)],
             ),
-            onTap: () => pushNewScreen(context,
-                screen:
-                    SelectVacationPersonScreen(unreadAbsenceMap: absenceMap))),
+            onTap: () => pushNewScreen(context, screen: SelectVacationPersonScreen(unreadAbsenceMap: absenceMap))),
       ],
     );
   }
 
   Widget _buildLatestTimereports(BuildContext context) {
-    var timereports = Provider.of<ManagerProvider>(context, listen: true)
-        .timereportManager
-        .getTimereports(widget.user.token);
+    var timereports = Provider.of<ManagerProvider>(context, listen: true).timereportManager.getTimereports(widget.user.token);
     return timereports.isNotEmpty
         ? Column(
             children: [
@@ -213,9 +185,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
               SizedBox(height: 12.0),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: TimeReportList(
-                    timereports: timereports.take(12).toList(),
-                    eventManager: widget.eventManager),
+                child: TimeReportList(timereports: timereports.take(12).toList(), eventManager: widget.eventManager),
               ),
             ],
           )
@@ -227,8 +197,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
   }
 
   void goToAddTimereportScreen() {
-    pushNewScreen(context,
-        screen: AddTimeReportingScreen(eventManager: widget.eventManager));
+    pushNewScreen(context, screen: AddTimeReportingScreen(eventManager: widget.eventManager));
   }
 
   Widget buildLatestTimereportTitle() {
@@ -237,12 +206,9 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Mina senaste tidrapporter",
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
+          Text("Mina senaste tidrapporter", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
           TextButton(
-            child: Text("Visa alla",
-                style: TextStyle(
-                    color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
+            child: Text("Visa alla", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
             onPressed: () {
               pushNewScreen(context,
                   screen: TimereportingListScreen(
@@ -266,10 +232,8 @@ class TimeReportList extends StatelessWidget {
     return Row(
       children: timereports
           .map(
-            (timereport) => TimeReportCard(
-                timereport: timereport,
-                event:
-                    eventManager.getEventForKey(key: timereport.eventId ?? "")),
+            (timereport) =>
+                TimeReportCard(timereport: timereport, event: eventManager.getEventForKey(key: timereport.eventId ?? "")),
           )
           .toList(),
     );
@@ -300,16 +264,8 @@ class _TimeReportCardState extends State<TimeReportCard> {
             color: Theme.of(context).backgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
             boxShadow: [
-              BoxShadow(
-                  color: softHighlightColor,
-                  offset: Offset(-3, -3),
-                  spreadRadius: 0,
-                  blurRadius: 3),
-              BoxShadow(
-                  color: softShadowColor,
-                  offset: Offset(5, 5),
-                  spreadRadius: 2,
-                  blurRadius: 7)
+              BoxShadow(color: softHighlightColor, offset: Offset(-3, -3), spreadRadius: 0, blurRadius: 3),
+              BoxShadow(color: softShadowColor, offset: Offset(3, 3), spreadRadius: 1, blurRadius: 7)
             ]),
         width: 175,
         child: Material(
@@ -333,10 +289,7 @@ class _TimeReportCardState extends State<TimeReportCard> {
                   Text(widget.event?.customer ?? ""),
                   SizedBox(height: spacing),
                   widget.event != null
-                      ? ListPersonCircleAvatar(
-                          persons: widget.event?.persons ?? [],
-                          radius: 10,
-                          fontSize: 9)
+                      ? ListPersonCircleAvatar(persons: widget.event?.persons ?? [], radius: 10, fontSize: 9)
                       : SizedBox(height: 20),
                   SizedBox(height: spacing),
                   Row(
@@ -356,9 +309,7 @@ class _TimeReportCardState extends State<TimeReportCard> {
   }
 
   String _getHourDiff() {
-    var minutes = widget.timereport.endDate
-        .difference(widget.timereport.startDate)
-        .inMinutes;
+    var minutes = widget.timereport.endDate.difference(widget.timereport.startDate).inMinutes;
     return "${minutes / 60}";
   }
 
@@ -370,10 +321,8 @@ class _TimeReportCardState extends State<TimeReportCard> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(dayNumberInMonth(widget.timereport.startDate),
-                style: TextStyle(fontSize: 21.0)),
-            Text(dateToAbbreviatedString(widget.timereport.startDate),
-                style: TextStyle(color: Colors.grey))
+            Text(dayNumberInMonth(widget.timereport.startDate), style: TextStyle(fontSize: 21.0)),
+            Text(dateToAbbreviatedString(widget.timereport.startDate), style: TextStyle(color: Colors.grey))
           ],
         ),
         Column(

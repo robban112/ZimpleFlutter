@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:nil/nil.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zimple/model/customer.dart';
@@ -40,8 +41,7 @@ class EventDetailScreen extends StatefulWidget {
 class _EventDetailScreenState extends State<EventDetailScreen> {
   final _key = GlobalKey();
 
-  final EdgeInsets contentPadding =
-      EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0);
+  final EdgeInsets contentPadding = EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0);
 
   Widget _buildParameter(
       {required IconData iconData,
@@ -71,8 +71,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                               if (onTapRichText != null) onTapRichText();
                             },
                           text: subtitle,
-                          style: TextStyle(
-                              color: Colors.lightBlue, fontSize: 18.0)))
+                          style: TextStyle(color: Colors.lightBlue, fontSize: 18.0)))
                   : (Text(
                       subtitle,
                       style: TextStyle(
@@ -107,9 +106,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             Text("Bilder"),
             SizedBox(height: 5.0),
             FutureImageListWidget(
-                key: _key,
-                paths: widget.event.imageStoragePaths!,
-                firebaseStorageManager: widget.firebaseStorageManager)
+                key: _key, paths: widget.event.imageStoragePaths!, firebaseStorageManager: widget.firebaseStorageManager)
           ],
         )
       ],
@@ -117,23 +114,18 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Widget _buildPersonListTile(BuildContext context, Person person) {
-    bool isDarkMode =
-        Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
+    bool isDarkMode = Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
     return Padding(
       padding: const EdgeInsets.only(left: 10.0),
       child: Row(
         children: [
           CircleAvatar(
             radius: 15,
-            backgroundColor:
-                isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400,
+            backgroundColor: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400,
             child: Center(
               child: Text(
                 person.name.characters.first.toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11.0),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11.0),
               ),
             ),
           ),
@@ -145,8 +137,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Widget _buildLocation() {
-    if (widget.event.location == null || widget.event.location == "")
-      return Container();
+    if (widget.event.location == null || widget.event.location == "") return Container();
     return ListedParameter(
         iconData: Icons.location_on,
         child: Column(
@@ -158,12 +149,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         print("pressed");
-                        MapsLauncher.launchQuery(
-                            widget.event.location! + ' Sverige');
+                        MapsLauncher.launchQuery(widget.event.location! + ' Sverige');
                       },
                     text: widget.event.location,
-                    style: TextStyle(
-                        color: Colors.lightBlueAccent, fontSize: 18.0)))
+                    style: TextStyle(color: Colors.lightBlueAccent, fontSize: 18.0)))
           ],
         ));
   }
@@ -179,8 +168,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 children: [
                   Icon(Icons.group),
                   SizedBox(width: 25.0),
-                  Text(" ${widget.event.persons!.length} personer",
-                      style: TextStyle(color: Colors.grey)),
+                  Text(" ${widget.event.persons!.length} personer", style: TextStyle(color: Colors.grey)),
                 ],
               ),
               SizedBox(height: 16.0),
@@ -190,10 +178,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   children: List.generate(persons!.length, (index) {
                     var person = persons[index];
                     return Column(
-                      children: [
-                        _buildPersonListTile(context, person),
-                        SizedBox(height: 12)
-                      ],
+                      children: [_buildPersonListTile(context, person), SizedBox(height: 12)],
                     );
                   })),
               SizedBox(height: 12)
@@ -218,8 +203,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
               title: new Text("Ta bort arbetsorder"),
-              content: new Text(
-                  "Är du säker på att du vill ta bort den här arbetsordern?"),
+              content: new Text("Är du säker på att du vill ta bort den här arbetsordern?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                     isDestructiveAction: true,
@@ -249,12 +233,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   @override
   Widget build(BuildContext context) {
     print("Rebuild Event Detail screen");
-    List<Customer> customers =
-        Provider.of<ManagerProvider>(context, listen: false).customers;
+    List<Customer> customers = Provider.of<ManagerProvider>(context, listen: false).customers;
     Customer? customer;
     if (widget.event.customerKey != null) {
-      customer = customers.firstWhereOrNull(
-          (element) => element.id == widget.event.customerKey);
+      customer = customers.firstWhereOrNull((element) => element.id == widget.event.customerKey);
     }
     var width = MediaQuery.of(context).size.width;
     return DraggableScrollableSheet(
@@ -296,6 +278,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //SizedBox(height: 12.0),
             // _buildParameter(
@@ -308,28 +291,17 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ? Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildParameter(
-                          iconData: Icons.business,
-                          title: 'Kund',
-                          subtitle: customer.name),
+                      _buildParameter(iconData: Icons.business, title: 'Kund', subtitle: customer.name),
                     ],
                   )
                 : (widget.event.customer != null
-                    ? _buildParameter(
-                        iconData: Icons.business,
-                        title: 'Kund fritext',
-                        subtitle: widget.event.customer!)
+                    ? _buildParameter(iconData: Icons.business, title: 'Kund fritext', subtitle: widget.event.customer!)
                     : Container()),
             _buildLocation(),
             _buildPhoneNumber(),
-            widget.event.notes.isNotBlank()
-                ? _buildParameter(
-                    iconData: Icons.event_note,
-                    title: 'Anteckningar',
-                    subtitle: widget.event.notes!)
-                : Container(),
+            _buildNotes(),
             _buildImageList(),
-            // SizedBox(height: 15.0),
+            SizedBox(height: 32.0),
           ],
         ),
       ),
@@ -351,12 +323,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         Container(
           //height: 75,
           padding: EdgeInsets.only(left: 0),
-          decoration: BoxDecoration(
-              color: widget.event.color,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+          decoration: BoxDecoration(color: widget.event.color, borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -369,10 +338,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: width * 0.65),
                           child: Text(widget.event.title,
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.w600,
-                                  color: textColor)),
+                              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600, color: textColor)),
                         ),
                       ],
                     ),
@@ -380,16 +346,24 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   ],
                 ),
                 SizedBox(height: 4.0),
-                Text(
-                    '${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}',
-                    style: TextStyle(
-                        color: textColor.withAlpha(120),
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w500))
+                Text('${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}',
+                    style: TextStyle(color: textColor.withAlpha(120), fontSize: 20.0, fontWeight: FontWeight.w500))
               ],
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildNotes() {
+    if (widget.event.notes.isBlank()) return Container();
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.event_note),
+        const SizedBox(width: 25),
+        Container(child: Text(widget.event.notes!, textAlign: TextAlign.left)),
       ],
     );
   }
@@ -408,8 +382,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Widget buildActions(Color textColor) {
-    bool isAdmin =
-        Provider.of<ManagerProvider>(context, listen: false).user.isAdmin;
+    bool isAdmin = Provider.of<ManagerProvider>(context, listen: false).user.isAdmin;
     return isAdmin
         ? Row(children: [
             SizedBox(
@@ -438,8 +411,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   Navigator.of(context).pop();
                 },
                 itemBuilder: (BuildContext context) {
-                  return {'Kopiera event', 'Ta bort event'}
-                      .map((String choice) {
+                  return {'Kopiera event', 'Ta bort event'}.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),

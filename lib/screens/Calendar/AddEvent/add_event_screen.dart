@@ -243,7 +243,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
       child: Text(title,
           style: TextStyle(
-              color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
+              color: Colors.grey.shade500, fontWeight: FontWeight.w500)),
     );
   }
 

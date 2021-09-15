@@ -33,11 +33,7 @@ class TimereportingDetails extends StatefulWidget {
 class _TimereportingDetailsState extends State<TimereportingDetails> {
   final _key = GlobalKey();
   final List<String> actionsSingleTimereport = ["Markera färdig", "Ta bort"];
-  final List<String> actionsMultipleTimereport = [
-    "Markera färdiga",
-    "Ta bort alla",
-    "Skapa faktura"
-  ];
+  final List<String> actionsMultipleTimereport = ["Markera färdiga", "Ta bort alla", "Skapa faktura"];
 
   AppBar _buildAppbar(BuildContext context, UserParameters user) {
     return AppBar(
@@ -48,10 +44,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
           alignment: Alignment.centerLeft,
           child: Text(
             "Tidrapport detaljer",
-            style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
           ),
         ),
         leading: IconButton(
@@ -65,12 +58,10 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
   Widget build(BuildContext context) {
     print("Building Timereporting Details Screen");
     var user = Provider.of<ManagerProvider>(context, listen: false).user;
-    var eventManager =
-        Provider.of<ManagerProvider>(context, listen: true).eventManager;
+    var eventManager = Provider.of<ManagerProvider>(context, listen: true).eventManager;
 
     return Scaffold(
       appBar: _buildAppbar(context, user),
-      backgroundColor: widget.isViewingSingle ? null : primaryColor,
       body: widget.listTimereports != null
           ? _buildMultipleBody(user, eventManager)
           : _buildBody(widget.timereport!, user, eventManager),
@@ -88,11 +79,9 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
             (index) {
               var timereport = widget.listTimereports![index];
               return Padding(
-                padding: const EdgeInsets.only(
-                    left: 16.0, right: 16, top: 24.0, bottom: 48),
+                padding: const EdgeInsets.only(left: 16.0, right: 16, top: 24.0, bottom: 48),
                 child: Container(
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
                   child: _buildBody(timereport, user, eventManager),
                 ),
               );
@@ -113,8 +102,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     );
   }
 
-  Widget _buildBody(
-      TimeReport timereport, UserParameters user, EventManager eventManager) {
+  Widget _buildBody(TimeReport timereport, UserParameters user, EventManager eventManager) {
     Event? event = eventManager.getEventForKey(key: widget.timereport?.eventId);
     return SingleChildScrollView(
       child: Padding(
@@ -127,16 +115,10 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
                 title: dateToYearMonthDay(timereport.startDate),
                 subtitle:
                     '${getHourDiff(timereport.startDate, timereport.endDate)} timmar, ${dateToHourMinute(timereport.startDate)} - ${dateToHourMinute(timereport.endDate)}'),
-            _buildParameter(
-                iconData: Icons.access_alarm,
-                title: "Rast",
-                subtitle: '${timereport.breakTime.toString()} minuter'),
+            _buildParameter(iconData: Icons.access_alarm, title: "Rast", subtitle: '${timereport.breakTime.toString()} minuter'),
             ConditionalWidget(
               condition: timereport.comment != "",
-              childTrue: _buildParameter(
-                  iconData: Icons.event_note,
-                  title: 'Anteckningar',
-                  subtitle: timereport.comment!),
+              childTrue: _buildParameter(iconData: Icons.event_note, title: 'Anteckningar', subtitle: timereport.comment!),
               childFalse: Container(),
             ),
             _buildCost(timereport),
@@ -149,9 +131,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
   }
 
   List<Widget> _buildActions(BuildContext context) {
-    List<String> actions = widget.timereport != null
-        ? actionsSingleTimereport
-        : actionsMultipleTimereport;
+    List<String> actions = widget.timereport != null ? actionsSingleTimereport : actionsMultipleTimereport;
     return [
       PopupMenuButton<String>(
         onSelected: (value) {
@@ -170,16 +150,14 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     ];
   }
 
-  void _markTimereportsDone(List<TimeReport> timereports,
-      FirebaseTimeReportManager fbTimereportManager) async {
+  void _markTimereportsDone(List<TimeReport> timereports, FirebaseTimeReportManager fbTimereportManager) async {
     timereports.forEach((timereport) async {
       timereport.isCompleted = true;
       await fbTimereportManager.changeTimereport(timereport);
     });
   }
 
-  void _markTimereportDone(TimeReport timereport,
-      FirebaseTimeReportManager fbTimereportManager) async {
+  void _markTimereportDone(TimeReport timereport, FirebaseTimeReportManager fbTimereportManager) async {
     timereport.isCompleted = true;
     await fbTimereportManager.changeTimereport(timereport);
   }
@@ -194,14 +172,12 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     switch (value) {
       case 'Markera färdiga':
         FirebaseTimeReportManager fbTimereportManager =
-            Provider.of<ManagerProvider>(context, listen: false)
-                .firebaseTimereportManager;
+            Provider.of<ManagerProvider>(context, listen: false).firebaseTimereportManager;
         //this.widget.didTapCopyEvent(this.widget.event);
         break;
       case 'Markera färdig':
         FirebaseTimeReportManager fbTimereportManager =
-            Provider.of<ManagerProvider>(context, listen: false)
-                .firebaseTimereportManager;
+            Provider.of<ManagerProvider>(context, listen: false).firebaseTimereportManager;
         _markTimereportDone(widget.timereport!, fbTimereportManager);
         break;
       case 'Ta bort':
@@ -220,8 +196,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
         .removeTimereport(widget.timereport!)
         .then((value) {
       context.loaderOverlay.hide();
-      Future.delayed(Duration(milliseconds: 500))
-          .then((value) => Navigator.of(context).pop());
+      Future.delayed(Duration(milliseconds: 500)).then((value) => Navigator.of(context).pop());
     });
   }
 
@@ -230,8 +205,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
               title: new Text("Ta bort tidrapport"),
-              content: new Text(
-                  "Är du säker på att du vill ta bort den här tidrapporten?"),
+              content: new Text("Är du säker på att du vill ta bort den här tidrapporten?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                     isDestructiveAction: true,
@@ -289,8 +263,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 5.0),
-                          Text(cost.description,
-                              style: TextStyle(fontSize: 17.0)),
+                          Text(cost.description, style: TextStyle(fontSize: 17.0)),
                         ],
                       ),
                       SizedBox(width: 16.0),
@@ -301,10 +274,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
                       children: [
                         SizedBox(height: 7.0),
                         Row(
-                          children: [
-                            SizedBox(width: 12),
-                            Text(cost.amount.toString())
-                          ],
+                          children: [SizedBox(width: 12), Text(cost.amount.toString())],
                         ),
                       ],
                     ),
@@ -313,8 +283,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 5.0),
-                      Text(cost.cost.toString() + " kr",
-                          style: TextStyle(fontSize: 17.0)),
+                      Text(cost.cost.toString() + " kr", style: TextStyle(fontSize: 17.0)),
                     ],
                   ),
                 ],
@@ -331,22 +300,13 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     }
     return Column(
       children: [
-        _buildParameter(
-            iconData: Icons.location_city,
-            title: "Plats",
-            subtitle: event.location ?? ""),
-        _buildParameter(
-            iconData: Icons.business,
-            title: "Kund",
-            subtitle: event.customer ?? "")
+        _buildParameter(iconData: Icons.location_city, title: "Plats", subtitle: event.location ?? ""),
+        _buildParameter(iconData: Icons.business, title: "Kund", subtitle: event.customer ?? "")
       ],
     );
   }
 
-  Widget _buildParameter(
-      {required IconData iconData,
-      required String title,
-      required String subtitle}) {
+  Widget _buildParameter({required IconData iconData, required String title, required String subtitle}) {
     return ListedParameter(
         iconData: iconData,
         child: Expanded(
@@ -385,10 +345,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
             Text("Bilder"),
             SizedBox(height: 5.0),
             FutureImageListWidget(
-                key: _key,
-                paths: timereport.imagesList!,
-                firebaseStorageManager:
-                    FirebaseStorageManager(company: user.company))
+                key: _key, paths: timereport.imagesList!, firebaseStorageManager: FirebaseStorageManager(company: user.company))
           ],
         ));
   }

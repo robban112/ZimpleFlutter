@@ -21,15 +21,13 @@ class TimereportingListScreen extends StatefulWidget {
   final String? userId;
   TimereportingListScreen({this.userId});
   @override
-  _TimereportingListScreenState createState() =>
-      _TimereportingListScreenState();
+  _TimereportingListScreenState createState() => _TimereportingListScreenState();
 }
 
 class _TimereportingListScreenState extends State<TimereportingListScreen> {
   var isSelectingMultiple = false;
 
-  Map<String, List<TimeReport>>? mappedTimereports =
-      Map<String, List<TimeReport>>();
+  Map<String, List<TimeReport>>? mappedTimereports = Map<String, List<TimeReport>>();
   Map<TimeReport, bool> selectedTimereports = Map<TimeReport, bool>();
   Map<Person, bool> selectedPersons = Map<Person, bool>();
   late TimereportManager timereportManager;
@@ -39,17 +37,14 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
     super.initState();
   }
 
-  Map<String, List<TimeReport>>? groupTimereportsByMonth(
-      List<TimeReport>? timereports) {
+  Map<String, List<TimeReport>>? groupTimereportsByMonth(List<TimeReport>? timereports) {
     if (timereports == null) {
       return null;
     }
-    return groupBy(
-        timereports, (TimeReport tr) => dateToYearMonth(tr.startDate));
+    return groupBy(timereports, (TimeReport tr) => dateToYearMonth(tr.startDate));
   }
 
-  Widget _buildMonthTimereports(
-      Widget header, List<TimeReport> timereports, EventManager eventManager) {
+  Widget _buildMonthTimereports(Widget header, List<TimeReport> timereports, EventManager eventManager) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -60,17 +55,14 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
             itemCount: timereports.length,
             itemBuilder: (contex, index) {
               TimeReport timereport = timereports[index];
-              Event? event =
-                  eventManager.getEventForKey(key: timereport.eventId ?? "");
+              Event? event = eventManager.getEventForKey(key: timereport.eventId ?? "");
               return TimereportRow(
                 timereport: timereport,
                 event: event,
                 isSelected: selectedTimereports[timereport] ?? false,
                 isSelectingMultiple: this.isSelectingMultiple,
                 didTapTimereport: (timereport) {
-                  isSelectingMultiple
-                      ? handleSelectTimereport(timereport)
-                      : goToTimereportingDetails(timereport);
+                  isSelectingMultiple ? handleSelectTimereport(timereport) : goToTimereportingDetails(timereport);
                 },
               );
             }),
@@ -91,17 +83,12 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
     if (selectedPersons.entries == null) {
       return;
     }
-    var timereportManager =
-        Provider.of<ManagerProvider>(context, listen: false).timereportManager;
-    List<String> personIds = selectedPersons.entries
-        .where((element) => element.value)
-        .map((e) => e.key)
-        .map((e) => e.id)
-        .toList();
+    var timereportManager = Provider.of<ManagerProvider>(context, listen: false).timereportManager;
+    List<String> personIds =
+        selectedPersons.entries.where((element) => element.value).map((e) => e.key).map((e) => e.id).toList();
     print("personIds: $personIds");
     setState(() {
-      mappedTimereports = groupTimereportsByMonth(
-          timereportManager.getTimereportsForMulitple(personIds));
+      mappedTimereports = groupTimereportsByMonth(timereportManager.getTimereportsForMulitple(personIds));
     });
   }
 
@@ -127,25 +114,19 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
   }
 
   Widget _buildHeader(String key) {
-    UserParameters user =
-        Provider.of<ManagerProvider>(context, listen: true).user;
+    UserParameters user = Provider.of<ManagerProvider>(context, listen: true).user;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(key,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+          Text(key, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
           user.isAdmin
               ? TextButton(
-                  child: Text("Visa månadsrapport",
-                      style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontWeight: FontWeight.bold)),
+                  child: Text("Visa månadsrapport", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
                   onPressed: () {
                     pushNewScreen(context,
-                        screen: TimereportMonthReportScreen(
-                            timereports: mappedTimereports![key]!, month: key));
+                        screen: TimereportMonthReportScreen(timereports: mappedTimereports![key]!, month: key));
                   },
                 )
               : Container()
@@ -156,14 +137,11 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    EventManager eventManager =
-        Provider.of<ManagerProvider>(context, listen: true).eventManager;
-    timereportManager =
-        Provider.of<ManagerProvider>(context, listen: true).timereportManager;
+    EventManager eventManager = Provider.of<ManagerProvider>(context, listen: true).eventManager;
+    timereportManager = Provider.of<ManagerProvider>(context, listen: true).timereportManager;
 
     if (widget.userId != null) {
-      mappedTimereports = groupTimereportsByMonth(
-          timereportManager.timereportMap[widget.userId]);
+      mappedTimereports = groupTimereportsByMonth(timereportManager.timereportMap[widget.userId]);
     }
     // var mappedTimereports =
     //     groupTimereportsByMonth(timereportManager.timereportMap[widget.userId]);
@@ -177,14 +155,11 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                          widget.userId != null
-                              ? Container()
-                              : _buildPersonSelectComponent(),
+                          widget.userId != null ? Container() : _buildPersonSelectComponent(),
                         ] +
                         List.generate(mappedTimereports!.length, (index) {
                           String key = mappedTimereports!.keys.elementAt(index);
-                          return _buildMonthTimereports(_buildHeader(key),
-                              mappedTimereports![key]!, eventManager);
+                          return _buildMonthTimereports(_buildHeader(key), mappedTimereports![key]!, eventManager);
                         }) +
                         [SizedBox(height: 150)],
                   ),
@@ -210,9 +185,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                 )
               ],
             )
-          : Center(
-              child: Text("Inga tidrapporter hittade",
-                  style: TextStyle(fontSize: 20.0))),
+          : Center(child: Text("Inga tidrapporter hittade", style: TextStyle(fontSize: 20.0))),
     );
   }
 
@@ -222,8 +195,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Välj personer",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+          Text("Välj personer", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
           SizedBox(height: 12.0),
           _buildPersonChips(),
         ],
@@ -232,9 +204,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
   }
 
   Widget _buildPersonChips() {
-    List<Person> persons = Provider.of<ManagerProvider>(context, listen: true)
-        .personManager
-        .persons;
+    List<Person> persons = Provider.of<ManagerProvider>(context, listen: true).personManager.persons;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -272,8 +242,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
     );
   }
 
-  AppBar _buildAppBar(
-      Map<String, List<TimeReport>>? mappedTimereports, BuildContext context) {
+  AppBar _buildAppBar(Map<String, List<TimeReport>>? mappedTimereports, BuildContext context) {
     return AppBar(
       backgroundColor: primaryColor,
       elevation: 0,
@@ -285,18 +254,13 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
             })
           },
           child: mappedTimereports != null
-              ? Text(isSelectingMultiple ? "Välj en" : "Välj flera",
-                  style: TextStyle(fontSize: 17.0))
+              ? Text(isSelectingMultiple ? "Välj en" : "Välj flera", style: TextStyle(fontSize: 17.0, color: Colors.white))
               : Container(),
         ),
       ],
       title: Align(
           alignment: Alignment.centerLeft,
-          child: Text("",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18.0))),
+          child: Text("", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18.0))),
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back,
@@ -344,10 +308,7 @@ class _TimereportRowState extends State<TimereportRow> {
         SizedBox(height: 12.0),
         Row(
           children: [
-            CircleAvatar(
-                backgroundColor: green,
-                radius: 10,
-                child: Icon(Icons.check, size: 14, color: Colors.white)),
+            CircleAvatar(backgroundColor: green, radius: 10, child: Icon(Icons.check, size: 14, color: Colors.white)),
             SizedBox(
               width: 18.0,
             ),
@@ -371,9 +332,7 @@ class _TimereportRowState extends State<TimereportRow> {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: widget.timereport.isCompleted
-                    ? Theme.of(context).cardColor.withOpacity(0.5)
-                    : Theme.of(context).cardColor,
+                color: widget.timereport.isCompleted ? Theme.of(context).cardColor.withOpacity(0.5) : Theme.of(context).cardColor,
                 borderRadius: BorderRadius.all(Radius.circular(12.0)),
                 boxShadow: [
                   BoxShadow(
@@ -394,29 +353,21 @@ class _TimereportRowState extends State<TimereportRow> {
                 child: SizedBox(
                     //height: 70,
                     child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
                   child: Column(
                     //crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
                           _buildColumn(
-                              titleWidget: Text(
-                                  dayNumberInMonth(widget.timereport.startDate),
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500)),
-                              subtitle: dateToAbbreviatedString(
-                                  widget.timereport.startDate)),
+                              titleWidget: Text(dayNumberInMonth(widget.timereport.startDate),
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                              subtitle: dateToAbbreviatedString(widget.timereport.startDate)),
                           SizedBox(width: 16.0),
                           _buildColumn(
                               titleWidget: ConstrainedBox(
-                                constraints:
-                                    BoxConstraints(maxWidth: width / 2),
-                                child: Text(widget.event?.title ?? "",
-                                    maxLines: 1,
-                                    style: TextStyle(fontSize: 17)),
+                                constraints: BoxConstraints(maxWidth: width / 2),
+                                child: Text(widget.event?.title ?? "", maxLines: 1, style: TextStyle(fontSize: 17)),
                               ),
                               subtitle: widget.event?.customer ?? ""),
                           SizedBox(width: 6.0),
@@ -429,13 +380,8 @@ class _TimereportRowState extends State<TimereportRow> {
                               child: Row(
                                 children: [
                                   _buildColumn(
-                                      titleWidget: Text(
-                                          getHourDiff(
-                                              widget.timereport.startDate,
-                                              widget.timereport.endDate),
-                                          style: TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.w500)),
+                                      titleWidget: Text(getHourDiff(widget.timereport.startDate, widget.timereport.endDate),
+                                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500)),
                                       subtitle: "timmar"),
                                 ],
                               ),
@@ -443,9 +389,7 @@ class _TimereportRowState extends State<TimereportRow> {
                           ),
                         ],
                       ),
-                      widget.timereport.isCompleted
-                          ? _buildCompletedRow()
-                          : Container()
+                      widget.timereport.isCompleted ? _buildCompletedRow() : Container()
                     ],
                   ),
                 )),

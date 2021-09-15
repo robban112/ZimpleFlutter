@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-//import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/screens/Login/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +15,19 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(ChangeNotifierProvider<ThemeNotifier>(
     create: (_) => new ThemeNotifier(),
     child: App(),
   ));
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
 }
 
 // Future<dynamic> _firebaseMessagingBackgroundHandler(
@@ -61,19 +70,57 @@ class _ZimpleState extends State<Zimple> {
   //FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   @override
+  void initState() {
+    askPermissionForPush();
+    super.initState();
+  }
+
+  void askPermissionForPush() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: true,
+      sound: true,
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("PUSH RECEIVED");
+      //bFirebaseMessaging.showPush(message);
+    });
+
+    print('User granted permission: ${settings.authorizationStatus}');
+  }
+
+  Future<void> _throwGetMessage(RemoteMessage message) async {
+    print("PUSH RECEIVED");
+    //await Firebase.initializeApp();
+    //bFirebaseMessaging.showPushFromBackground(message);
+  }
+
+  @override
   Widget build(BuildContext context) {
     //initializeDateFormatting('sv_se');
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.white),
     );
+
+    FirebaseMessaging.onBackgroundMessage(_throwGetMessage);
     return ChangeNotifierProvider(
       create: (_) => ManagerProvider(),
       child: Consumer<ThemeNotifier>(
         builder: (context, theme, _) => MaterialApp(
-          localizationsDelegates: [
-            GlobalCupertinoLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate
-          ],
+          localizationsDelegates: [GlobalCupertinoLocalizations.delegate, GlobalMaterialLocalizations.delegate],
           supportedLocales: [const Locale('sv', 'SV')],
           locale: Locale.fromSubtags(languageCode: 'sv'),
           debugShowCheckedModeBanner: false,
@@ -84,9 +131,7 @@ class _ZimpleState extends State<Zimple> {
           //   focusColor: green,
           //   scaffoldBackgroundColor: backgroundColor,
           // ),
-          initialRoute: widget.isLoggedIn
-              ? TabBarController.routeName
-              : LoginScreen.routeName,
+          initialRoute: widget.isLoggedIn ? TabBarController.routeName : LoginScreen.routeName,
           routes: {
             LoginScreen.routeName: (context) => LoginScreen(),
             TabBarController.routeName: (context) => TabBarController(),
@@ -126,8 +171,7 @@ class App extends StatelessWidget {
         }
 
         // Once complete, show your application
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.data != null) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
           return Zimple(snapshot.data!);
         }
 

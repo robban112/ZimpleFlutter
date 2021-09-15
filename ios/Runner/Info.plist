@@ -33,6 +33,10 @@
 	<string>Tillåt oss att använda kameran så du kan ladda upp bilder till arbetsordrar &amp; tidrapporter</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Tillåt Zimple att få tillgång till bilder Tillåt oss att använda kameran så du kan ladda upp bilder till arbetsordrar &amp; tidrapporter</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

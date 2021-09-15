@@ -5,9 +5,7 @@ import 'package:zimple/widgets/image_dialog.dart';
 class FutureImageListWidget extends StatelessWidget {
   final List<String> paths;
   final FirebaseStorageManager firebaseStorageManager;
-  FutureImageListWidget(
-      {Key? key, required this.paths, required this.firebaseStorageManager})
-      : super(key: key);
+  FutureImageListWidget({Key? key, required this.paths, required this.firebaseStorageManager}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,15 +30,12 @@ class FutureImageListWidget extends StatelessWidget {
 class FutureImageWidget extends StatefulWidget {
   final String path;
   final FirebaseStorageManager firebaseStorageManager;
-  FutureImageWidget(
-      {Key? key, required this.path, required this.firebaseStorageManager})
-      : super(key: key);
+  FutureImageWidget({Key? key, required this.path, required this.firebaseStorageManager}) : super(key: key);
   @override
   _FutureImageWidgetState createState() => _FutureImageWidgetState();
 }
 
-class _FutureImageWidgetState extends State<FutureImageWidget>
-    with AutomaticKeepAliveClientMixin<FutureImageWidget> {
+class _FutureImageWidgetState extends State<FutureImageWidget> with AutomaticKeepAliveClientMixin<FutureImageWidget> {
   @override
   bool get wantKeepAlive => true;
   late Future<Image?> _imageFuture;
@@ -59,13 +54,11 @@ class _FutureImageWidgetState extends State<FutureImageWidget>
       child: FutureBuilder(
           future: _imageFuture,
           builder: (context, AsyncSnapshot<Image?> snapshot) {
-            if (snapshot.data == null) return Container();
+            if (snapshot.data == null) return Center(child: CircularProgressIndicator());
             if (snapshot.connectionState == ConnectionState.done) {
               return GestureDetector(
                 onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => ImageDialog(image: snapshot.data!));
+                  showDialog(context: context, builder: (_) => ImageDialog(image: snapshot.data!));
                 },
                 child: Container(
                   clipBehavior: Clip.hardEdge,

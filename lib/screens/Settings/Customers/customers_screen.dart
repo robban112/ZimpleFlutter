@@ -52,15 +52,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
         setState(() {});
       },
       child: Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          backgroundColor: primaryColor,
-          elevation: 0.0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: StandardAppBar("Kundbas")),
         floatingActionButton: user.isAdmin
             ? FloatingActionButton(
                 child: Icon(Icons.add, color: Colors.white),

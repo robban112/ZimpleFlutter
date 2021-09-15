@@ -10,11 +10,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zimple/managers/event_manager.dart';
-import 'package:zimple/model/cost.dart';
-import 'package:zimple/model/customer.dart';
-import 'package:zimple/model/event.dart';
-import 'package:zimple/model/timereport.dart';
-import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
@@ -60,16 +56,16 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   double _minutesBreak = 0;
   Duration startEndDifference = Duration(hours: 0, minutes: 0);
 
+  DateTime? startDate;
+  DateTime? endDate;
+
   @override
   void initState() {
     logger.log(Level.info, "Init State Add Timereport");
     super.initState();
-    firebaseTimeReportManager =
-        Provider.of<ManagerProvider>(context, listen: false)
-            .firebaseTimereportManager;
+    firebaseTimeReportManager = Provider.of<ManagerProvider>(context, listen: false).firebaseTimereportManager;
     user = Provider.of<ManagerProvider>(context, listen: false).user;
-    firebaseEventManager = Provider.of<ManagerProvider>(context, listen: false)
-        .firebaseEventManager;
+    firebaseEventManager = Provider.of<ManagerProvider>(context, listen: false).firebaseEventManager;
     firebaseStorageManager = FirebaseStorageManager(company: user.company);
   }
 
@@ -81,9 +77,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
-      child: Text(title,
-          style: TextStyle(
-              color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
+      child: Text(title, style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
     );
   }
 
@@ -143,11 +137,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         backgroundColor: primaryColor,
         title: Align(
             alignment: Alignment.centerLeft,
-            child: Text("Tidrapportera",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24.0,
-                    color: Colors.white))),
+            child: Text("Tidrapportera", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0, color: Colors.white))),
         elevation: 0.0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -168,9 +158,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
               children: [
                 buildChooseWorkOrderComponent(),
                 SizedBox(height: 12.0),
-                selectedEvent == null
-                    ? _buildSectionTitle("Eller välj kund")
-                    : Container(),
+                selectedEvent == null ? _buildSectionTitle("Eller välj kund") : Container(),
                 buildSelectCustomerTile(),
                 SizedBox(height: 24.0),
                 buildTimeComponent(),
@@ -219,8 +207,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                   children: [
                     selectedEvent != null
                         ? ConstrainedBox(
-                            constraints:
-                                BoxConstraints(maxWidth: 150, maxHeight: 17),
+                            constraints: BoxConstraints(maxWidth: 150, maxHeight: 17),
                             child: Text(
                               selectedEvent?.title ?? "",
                               overflow: TextOverflow.fade,
@@ -238,12 +225,9 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                         didSelectEvent: (event) {
                           setState(() {
                             this.selectedEvent = event;
-                            this
-                                .startDateController
-                                .setDate(selectedEvent!.start);
+                            this.startDateController.setDate(selectedEvent!.start);
                             this.endDateController.setDate(selectedEvent!.end);
-                            updateDifference(startDateController.getDate(),
-                                endDateController.getDate(), this.minutesBreak);
+                            updateDifference(startDateController.getDate(), endDateController.getDate(), this.minutesBreak);
                           });
                         },
                       ));
@@ -276,10 +260,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: 150, minWidth: 0, maxHeight: 50),
-                        child: PreviewImagesComponent(
-                            selectedImages: this.selectedImages)),
+                        constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 50),
+                        child: PreviewImagesComponent(selectedImages: this.selectedImages)),
                     Icon(Icons.chevron_right)
                   ],
                 ),
@@ -304,9 +286,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                   trailingWidget: Row(
                     children: [
                       Text(selectedCustomer?.name ?? ""),
-                      selectedCustomer == null
-                          ? Icon(Icons.chevron_right)
-                          : Container(),
+                      selectedCustomer == null ? Icon(Icons.chevron_right) : Container(),
                       selectedCustomer != null
                           ? GestureDetector(
                               onTap: () {
@@ -373,21 +353,14 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: _buildContainer(Column(
             children: [
-              TimereportRow(
-                  "Personer",
-                  Text((selectedEvent?.persons ?? [])
-                      .map((e) => e.name)
-                      .toList()
-                      .toString())),
+              TimereportRow("Personer", Text((selectedEvent?.persons ?? []).map((e) => e.name).toList().toString())),
               TimereportRow("Plats", Text(selectedEvent?.location ?? "")),
               TimereportRow("Kund", Text(selectedEvent?.customer ?? "")),
-              TimereportRow(
-                  "Telefonnummer", Text(selectedEvent?.phoneNumber ?? "")),
+              TimereportRow("Telefonnummer", Text(selectedEvent?.phoneNumber ?? "")),
               TimereportRow(
                   "Anteckningar",
                   ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width / 2),
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
                       child: Text(
                         selectedEvent?.notes ?? "",
                         textAlign: TextAlign.end,
@@ -402,11 +375,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   Column buildTimeComponent() {
     var now = DateTime.now();
-    var start = selectedEvent != null
-        ? selectedEvent!.start
-        : DateTime(now.year, now.month, now.day, 8, 0, 0);
-    var end =
-        selectedEvent?.end ?? DateTime(now.year, now.month, now.day, 16, 0, 0);
+    var start = selectedEvent != null ? selectedEvent!.start : DateTime(now.year, now.month, now.day, 8, 0, 0);
+    var end = selectedEvent?.end ?? DateTime(now.year, now.month, now.day, 16, 0, 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -419,16 +389,12 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
               startDateSelectorController: startDateController,
               endDateSelectorController: endDateController,
               onChangeStart: (startDate) {
-                updateDifference(
-                    startDate, endDateController.getDate(), this.minutesBreak);
+                updateDifference(startDate, endDateController.getDate(), this.minutesBreak);
               },
               onChangeEnd: (endDate) {
-                updateDifference(
-                    startDateController.getDate(), endDate, this.minutesBreak);
+                updateDifference(startDateController.getDate(), endDate, this.minutesBreak);
               },
-              datePickerMode: selectedEvent != null
-                  ? CupertinoDatePickerMode.time
-                  : CupertinoDatePickerMode.dateAndTime,
+              datePickerMode: selectedEvent != null ? CupertinoDatePickerMode.time : CupertinoDatePickerMode.dateAndTime,
               startTitle: "När du började",
               endTitle: "När du slutade",
             ),
@@ -462,11 +428,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
             children: [
               Text("Rast:  "),
               Row(
-                children: [
-                  Text("${_minutesBreak.toInt()}",
-                      style: TextStyle(fontSize: 20.0)),
-                  Text(" minuter")
-                ],
+                children: [Text("${_minutesBreak.toInt()}", style: TextStyle(fontSize: 20.0)), Text(" minuter")],
               ),
             ],
           ),
@@ -481,8 +443,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           onChanged: (newValue) {
             setState(() {
               this._minutesBreak = newValue;
-              updateDifference(startDateController.getDate(),
-                  endDateController.getDate(), newValue.toInt());
+              updateDifference(startDateController.getDate(), endDateController.getDate(), newValue.toInt());
             });
           },
         ),
@@ -498,17 +459,14 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         width: 75,
         child: TextField(
           key: _titleFormKey,
-          keyboardType:
-              TextInputType.numberWithOptions(signed: true, decimal: true),
+          keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
           textInputAction: TextInputAction.done,
           onChanged: (minutes) {
             try {
               var intMinutes = int.parse(minutes);
-              updateDifference(startDateController.getDate(),
-                  endDateController.getDate(), intMinutes);
+              updateDifference(startDateController.getDate(), endDateController.getDate(), intMinutes);
             } on FormatException {
-              updateDifference(startDateController.getDate(),
-                  endDateController.getDate(), 0);
+              updateDifference(startDateController.getDate(), endDateController.getDate(), 0);
             }
           },
         ),
@@ -530,8 +488,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     }
   }
 
-  Future<void> _uploadTimereportImages(
-      List<String> filenames, String key) async {
+  Future<void> _uploadTimereportImages(List<String> filenames, String key) async {
     filenames.asMap().forEach((index, filename) async {
       print("Uploading $filename for timereport $key");
       var file = selectedImages[index];
@@ -568,8 +525,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   }
 
   Widget buildDoneButton(BuildContext context) {
-    return RectangularButton(
-        onTap: _addTimeReport, text: "Skicka in tidrapport");
+    return RectangularButton(onTap: _addTimeReport, text: "Skicka in tidrapport");
   }
 }
 
@@ -592,10 +548,7 @@ class TimereportRow extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(this.title, style: TextStyle(fontSize: 15.0)),
-              this.leading
-            ],
+            children: [Text(this.title, style: TextStyle(fontSize: 15.0)), this.leading],
           ),
           Container(height: 15),
           hidesSeparatorByDefault
@@ -627,13 +580,9 @@ class PreviewImagesComponent extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: GestureDetector(
               onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (_) => ImageDialog(image: Image.file(image)));
+                showDialog(context: context, builder: (_) => ImageDialog(image: Image.file(image)));
               },
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: Image.file(image, width: 30, fit: BoxFit.cover)),
+              child: ClipRRect(borderRadius: BorderRadius.circular(6), child: Image.file(image, width: 30, fit: BoxFit.cover)),
             ),
           );
         },
@@ -650,10 +599,7 @@ class SelectImagesComponent extends StatelessWidget {
 
   final picker = ImagePicker();
 
-  SelectImagesComponent(
-      {required this.isSelectingPhotoProvider,
-      required this.didPickImage,
-      required this.didTapCancel});
+  SelectImagesComponent({required this.isSelectingPhotoProvider, required this.didPickImage, required this.didTapCancel});
 
   Widget _buildPhotoButton(Function onTap, String text) {
     return Container(
@@ -690,9 +636,7 @@ class SelectImagesComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PhotoButtons(
-        isSelectingPhotoProvider: this.isSelectingPhotoProvider,
-        didTapCancel: didTapCancel,
-        didReceiveImage: didPickImage);
+        isSelectingPhotoProvider: this.isSelectingPhotoProvider, didTapCancel: didTapCancel, didReceiveImage: didPickImage);
   }
 }
 
@@ -725,15 +669,12 @@ class NotesComponent extends StatelessWidget {
       decoration: InputDecoration(
         hintText: 'Skriv anteckning ...',
         hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-        enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 1, color: Colors.grey.shade300),
-            borderRadius: BorderRadius.zero),
-        focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 1, color: Colors.grey.shade300),
-            borderRadius: BorderRadius.zero),
-        border: OutlineInputBorder(
-            borderSide: const BorderSide(width: 0.5, color: Colors.white),
-            borderRadius: BorderRadius.zero),
+        enabledBorder:
+            OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.grey.shade300), borderRadius: BorderRadius.zero),
+        focusedBorder:
+            OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.grey.shade300), borderRadius: BorderRadius.zero),
+        border:
+            OutlineInputBorder(borderSide: const BorderSide(width: 0.5, color: Colors.white), borderRadius: BorderRadius.zero),
         focusColor: green,
       ),
     );
@@ -748,9 +689,7 @@ class NotesComponent extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
-            child: Text("Anteckningar",
-                style: TextStyle(
-                    color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
+            child: Text("Anteckningar", style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
           ),
           _buildTextField(),
         ],

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class UserParameters {
   String email;
   String token;
@@ -7,6 +5,7 @@ class UserParameters {
   String name;
   bool isAdmin;
   String? profilePicturePath;
+  String? fcmToken;
 
   UserParameters(
       {required this.email,
@@ -14,5 +13,6 @@ class UserParameters {
       required this.company,
       required this.isAdmin,
       required this.name,
-      required this.profilePicturePath});
+      required this.profilePicturePath,
+      required this.fcmToken});
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/customer.dart';
@@ -28,8 +29,7 @@ class TabBarController extends StatefulWidget {
   _TabBarControllerState createState() => _TabBarControllerState();
 }
 
-class _TabBarControllerState extends State<TabBarController>
-    with TickerProviderStateMixin<TabBarController> {
+class _TabBarControllerState extends State<TabBarController> with TickerProviderStateMixin<TabBarController> {
   //final _navigatorKey = GlobalKey<NavigatorState>();
 
   late String userName;
@@ -43,8 +43,7 @@ class _TabBarControllerState extends State<TabBarController>
   late PersonManager personManager;
   bool loadingEvent = true;
   bool loadingTimereport = true;
-  PersistentTabController _controller =
-      PersistentTabController(initialIndex: 0);
+  PersistentTabController _controller = PersistentTabController(initialIndex: 0);
   late StreamSubscription<EventManager> eventManagerSubscriber;
   late StreamSubscription timereportSubscriper;
   late StreamSubscription<List<Customer>> customerSubscriber;
@@ -66,7 +65,7 @@ class _TabBarControllerState extends State<TabBarController>
       //Utils.setLoading(context, true);
       this.user = user;
       managerProvider.user = user;
-
+      updateFCMToken(user);
       setupCustomerSubscriber();
       managerProvider.firebaseCustomerManager = firebaseCustomerManager;
       firebasePersonManager = FirebasePersonManager(company: user.company);
@@ -79,23 +78,40 @@ class _TabBarControllerState extends State<TabBarController>
     super.initState();
   }
 
+  Future<String?> getTokenz() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? token = await messaging.getToken();
+    print('FCM Token: $token');
+    return token;
+  }
+
+  void updateFCMToken(UserParameters user) async {
+    String? token = await getTokenz();
+    if (token == null) return;
+    if (user.fcmToken != token) {
+      print("Updating user fcm token");
+      firebaseUserManager.setUserFCMToken(user, token);
+    }
+  }
+
+  void listenToUserTopic() {
+    print("listening to topic: ${this.user.token}");
+    FirebaseMessaging.instance.subscribeToTopic(this.user.token);
+  }
+
   void setupFirebaseTimereport() {
     FirebaseTimeReportManager firebaseTimeReportManager =
-        FirebaseTimeReportManager(
-            company: user.company, personManager: personManager);
+        FirebaseTimeReportManager(company: user.company, personManager: personManager);
     managerProvider.firebaseTimereportManager = firebaseTimeReportManager;
     managerProvider.timereportManager = TimereportManager();
     timeReportManager = TimereportManager();
-    firebaseTimeReportManager
-        .listenTimereports(user)
-        .listen((timereportManager) {
+    firebaseTimeReportManager.listenTimereports(user).listen((timereportManager) {
       print("listen new timereport");
       setState(() {
         this.timeReportManager = timeReportManager;
         managerProvider.timereportManager = timereportManager;
         this.loadingTimereport = false;
-        if (!loadingTimereport && !loadingEvent)
-          Utils.setLoading(context, false);
+        if (!loadingTimereport && !loadingEvent) Utils.setLoading(context, false);
       });
 
       //print(timereportManager.getTimereports(user.token).first.breakTime);
@@ -104,8 +120,7 @@ class _TabBarControllerState extends State<TabBarController>
 
   void setupCustomerSubscriber() {
     firebaseCustomerManager = FirebaseCustomerManager(company: user.company);
-    customerSubscriber =
-        firebaseCustomerManager.listenCustomers().listen((customers) {
+    customerSubscriber = firebaseCustomerManager.listenCustomers().listen((customers) {
       setState(() {
         managerProvider.customers = customers;
         this.customers = customers;
@@ -114,18 +129,15 @@ class _TabBarControllerState extends State<TabBarController>
   }
 
   void setupFirebaseEventManager() {
-    firebaseEventManager = FirebaseEventManager(
-        company: user.company, personManager: personManager);
+    firebaseEventManager = FirebaseEventManager(company: user.company, personManager: personManager);
     managerProvider.firebaseEventManager = firebaseEventManager;
-    eventManagerSubscriber =
-        firebaseEventManager.listenEvents().listen((eventManager) {
+    eventManagerSubscriber = firebaseEventManager.listenEvents().listen((eventManager) {
       if (!mounted) return;
       setState(() {
         this.eventManager = eventManager;
         managerProvider.eventManager = eventManager;
         loadingEvent = false;
-        if (!loadingTimereport && !loadingEvent)
-          Utils.setLoading(context, false);
+        if (!loadingTimereport && !loadingEvent) Utils.setLoading(context, false);
       });
     });
   }
@@ -216,8 +228,7 @@ class _TabBarControllerState extends State<TabBarController>
               //backgroundColor: Color(0xffF4F7FB),
               backgroundColor: Theme.of(context).bottomAppBarColor,
               handleAndroidBackButtonPress: true,
-              resizeToAvoidBottomInset:
-                  true, // This needs to be true if you want to move up the screen when keyboard appears.
+              resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears.
               stateManagement: true,
               hideNavigationBarWhenKeyboardShows:
                   true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
@@ -239,8 +250,7 @@ class _TabBarControllerState extends State<TabBarController>
                 curve: Curves.ease,
                 duration: Duration(milliseconds: 200),
               ),
-              navBarStyle: NavBarStyle
-                  .style8, // Choose the nav bar style with this property.
+              navBarStyle: NavBarStyle.style8, // Choose the nav bar style with this property.
             ));
   }
 }

@@ -5,6 +5,7 @@ import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rounded_button.dart';
@@ -74,15 +75,9 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   Widget build(BuildContext context) {
     print("Building Add Customer Screen");
     return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          title: Text("Lägg till kund"),
-          backgroundColor: primaryColor,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: StandardAppBar("Lägg till kund")),
         body: Stack(
           children: [
             Padding(

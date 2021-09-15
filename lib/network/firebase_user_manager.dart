@@ -19,8 +19,7 @@ class FirebaseUserManager {
   Future<UserParameters> _getUserParameters(String userToken) async {
     final database = FirebaseDatabase.instance.reference();
     print('USER TOKEN: $userToken');
-    var snapshot =
-        await database.reference().child('Users').child(userToken).once();
+    var snapshot = await database.reference().child('Users').child(userToken).once();
 
     return UserParameters(
         company: snapshot.value['company'],
@@ -28,12 +27,17 @@ class FirebaseUserManager {
         token: userToken,
         email: user?.email ?? "",
         name: snapshot.value['name'],
-        profilePicturePath: snapshot.value['profilePicturePath']);
+        profilePicturePath: snapshot.value['profilePicturePath'],
+        fcmToken: snapshot.value['fcmToken']);
   }
 
   Future<void> setUserProfileImage(UserParameters user, String filePath) async {
-    final ref =
-        FirebaseDatabase.instance.reference().child('Users').child(user.token);
+    final ref = FirebaseDatabase.instance.reference().child('Users').child(user.token);
     return ref.child("profilePicturePath").set(filePath);
+  }
+
+  Future<void> setUserFCMToken(UserParameters user, String fcmToken) async {
+    final ref = FirebaseDatabase.instance.reference().child('Users').child(user.token);
+    return ref.child('fcmToken').set(fcmToken);
   }
 }
