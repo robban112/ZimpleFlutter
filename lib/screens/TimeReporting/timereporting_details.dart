@@ -17,6 +17,7 @@ import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/page_dots_indicator.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 
 class TimereportingDetails extends StatefulWidget {
   final TimeReport? timereport;
@@ -301,7 +302,10 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     return Column(
       children: [
         _buildParameter(iconData: Icons.location_city, title: "Plats", subtitle: event.location ?? ""),
-        _buildParameter(iconData: Icons.business, title: "Kund", subtitle: event.customer ?? "")
+        _buildParameter(iconData: Icons.business, title: "Kund", subtitle: event.customer ?? ""),
+        event.notes.isNotBlank()
+            ? _buildParameter(iconData: Icons.event_note, title: "Arbetsorder anteckning", subtitle: event.notes ?? "")
+            : Container(),
       ],
     );
   }

@@ -34,10 +34,7 @@ class AddEventScreen extends StatefulWidget {
   final FirebaseStorageManager firebaseStorageManager;
   final Event? eventToChange;
   AddEventScreen(
-      {required this.persons,
-      required this.firebaseEventManager,
-      required this.firebaseStorageManager,
-      this.eventToChange});
+      {required this.persons, required this.firebaseEventManager, required this.firebaseStorageManager, this.eventToChange});
   @override
   _AddEventScreenState createState() => _AddEventScreenState();
 }
@@ -45,8 +42,7 @@ class AddEventScreen extends StatefulWidget {
 class _AddEventScreenState extends State<AddEventScreen> {
   late DateTime startDate;
   late DateTime endDate;
-  EdgeInsets contentPadding =
-      EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0);
+  EdgeInsets contentPadding = EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0);
   List<Person> selectedPersons = [];
   String title = "";
   String? phoneNumber;
@@ -99,14 +95,10 @@ class _AddEventScreenState extends State<AddEventScreen> {
       locationController.text = widget.eventToChange?.location ?? "";
       selectedPersons = widget.eventToChange?.persons ?? [];
 
-      List<Customer> customers =
-          Provider.of<ManagerProvider>(context, listen: false).customers;
-      if (widget.eventToChange?.customerKey != null &&
-          widget.eventToChange?.customerKey != "") {
-        selectedCustomer = customers
-            .firstWhereOrNull((c) => c.id == widget.eventToChange?.customerKey);
-        selectedCustomerContactPerson =
-            widget.eventToChange?.customerContactIndex ?? 0;
+      List<Customer> customers = Provider.of<ManagerProvider>(context, listen: false).customers;
+      if (widget.eventToChange?.customerKey != null && widget.eventToChange?.customerKey != "") {
+        selectedCustomer = customers.firstWhereOrNull((c) => c.id == widget.eventToChange?.customerKey);
+        selectedCustomerContactPerson = widget.eventToChange?.customerContactIndex ?? 0;
       }
     } else {
       startDate = DateTime(now.year, now.month, now.day, 8, 0, 0);
@@ -128,16 +120,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
     });
   }
 
-  Widget _buildTextField(
-      String hintText,
-      Widget? leading,
-      TextInputType inputType,
-      double fontSize,
-      Color focusColor,
-      Function(String) onChanged,
-      GlobalKey<FormState> key,
-      String initialValue,
-      TextEditingController? controller) {
+  Widget _buildTextField(String hintText, Widget? leading, TextInputType inputType, double fontSize, Color focusColor,
+      Function(String) onChanged, GlobalKey<FormState> key, String initialValue, TextEditingController? controller) {
     return ListTile(
       leading: leading,
       title: Row(
@@ -219,17 +203,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
               hintText: 'Skriv anteckning ...',
               hintStyle: TextStyle(color: Colors.grey, fontSize: fontSize),
               enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      width: 0.3, color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.zero),
+                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor), borderRadius: BorderRadius.zero),
               focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      width: 0.3, color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.zero),
+                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor), borderRadius: BorderRadius.zero),
               border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      width: 0.3, color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.zero),
+                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor), borderRadius: BorderRadius.zero),
               focusColor: green,
             ),
           ),
@@ -241,20 +219,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
-      child: Text(title,
-          style: TextStyle(
-              color: Colors.grey.shade500, fontWeight: FontWeight.w500)),
+      child: Text(title, style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.w500)),
     );
   }
 
   Event _uploadEventImages(String key) {
-    List<String> fileUids =
-        selectedImages.map((_) => Uuid().v4().toString()).toList();
+    List<String> fileUids = selectedImages.map((_) => Uuid().v4().toString()).toList();
     Map<String, Map<String, String>> map = {};
     fileUids.forEach((fileName) {
-      Map<String, String> inner_map = {
-        'storagePath': "/Events/${key}/${fileName}"
-      };
+      Map<String, String> inner_map = {'storagePath': "/Events/${key}/${fileName}"};
       var uuid = Uuid().v4().toString();
       map[uuid] = inner_map;
     });
@@ -294,12 +267,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 18.0),
         child: Row(
-          children: [
-            Expanded(
-                child: RectangularButton(
-                    onTap: changingEvent ? _changeEvent : _addNewEvent,
-                    text: "Spara"))
-          ],
+          children: [Expanded(child: RectangularButton(onTap: changingEvent ? _changeEvent : _addNewEvent, text: "Spara"))],
         ),
       ),
     );
@@ -315,8 +283,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         backgroundColor: primaryColor,
         title: Align(
           alignment: Alignment.centerLeft,
-          child: Text(changingEvent ? "Ändra arbetsorder" : "Ny arbetsorder",
-              style: TextStyle(color: Colors.white)),
+          child: Text(changingEvent ? "Ändra arbetsorder" : "Ny arbetsorder", style: TextStyle(color: Colors.white)),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -338,9 +305,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTextField(
-                      "Titel", null, TextInputType.text, 24, Colors.orange,
-                      (title) {
+                  _buildTextField("Titel", null, TextInputType.text, 24, Colors.orange, (title) {
                     this.title = title;
                   }, _titleFormKey, title, null),
                   SizedBox(height: 40),
@@ -389,97 +354,90 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   ListedView buildListedView(BuildContext context) {
-    return ListedView(
-        hidesFirstLastSeparator: false,
-        rowInset: EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
-        items: [
-          ListedItem(
-              leadingIcon: Icons.group,
-              child: Text("Välj personer"),
-              trailingWidget: Row(
-                children: [
-                  buildSelectedPersonsAvatars(),
-                  Icon(Icons.chevron_right)
-                ],
-              ),
-              onTap: () {
-                pushNewScreen(context,
-                    screen: PersonSelectScreen(
-                      persons: widget.persons,
-                      personCallback: this.selectPersons,
-                      preSelectedPersons: selectedPersons,
-                    ));
-              }),
-          ListedItem(
-              leadingIcon: Icons.person,
-              child: Text("Välj kund"),
-              trailingWidget: Row(
-                children: [
-                  Text(selectedCustomer?.name ?? ""),
-                  selectedCustomer != null
-                      ? GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              this.selectedCustomer = null;
-                            });
-                          },
-                          child: Icon(Icons.clear))
-                      : Icon(Icons.chevron_right),
-                ],
-              ),
-              onTap: () {
-                print("Tapped");
-                pushNewScreen(context, screen: CustomerSelectScreen(
-                  didSelectCustomer: (customer, contact) {
-                    setState(() {
-                      selectedCustomerContactPerson = contact;
-                      selectedCustomer = customer;
-                      locationController.text = customer.address ?? "";
-                      phonenumberController.text =
-                          customer.contacts[contact].phoneNumber;
-                      companyController.text = customer.name;
-                    });
-                  },
+    return ListedView(hidesFirstLastSeparator: false, rowInset: EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0), items: [
+      ListedItem(
+          leadingIcon: Icons.group,
+          child: Text("Välj personer"),
+          trailingWidget: Row(
+            children: [buildSelectedPersonsAvatars(), Icon(Icons.chevron_right)],
+          ),
+          onTap: () {
+            pushNewScreen(context,
+                screen: PersonSelectScreen(
+                  persons: widget.persons,
+                  personCallback: this.selectPersons,
+                  preSelectedPersons: selectedPersons,
                 ));
-              }),
-          ListedTextField(
-              leadingIcon: Icons.business_center,
-              placeholder: "Kund fritext",
-              onChanged: (customer) {
-                this.customer = customer;
-              },
-              key: _companyFormKey,
-              controller: companyController),
-          ListedTextField(
-              leadingIcon: Icons.location_on,
-              placeholder: "Address",
-              onChanged: (location) {
-                this.location = location;
-              },
-              key: _locationFormKey,
-              controller: locationController),
-          ListedTextField(
-              leadingIcon: Icons.phone,
-              placeholder: "Telefonnummer",
-              onChanged: (number) {
-                this.phoneNumber = number;
-              },
-              key: _phoneNumberFormKey,
-              controller: phonenumberController),
-          ListedItem(
-              leadingIcon: Icons.image_rounded,
-              child: Text("Lägg till bilder"),
-              trailingWidget: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [selectedImagesPreview(), Icon(Icons.chevron_right)],
-              ),
-              onTap: () {
+          }),
+      ListedItem(
+          leadingIcon: Icons.person,
+          child: Text("Välj kund"),
+          trailingWidget: Row(
+            children: [
+              Text(selectedCustomer?.name ?? ""),
+              selectedCustomer != null
+                  ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          this.selectedCustomer = null;
+                        });
+                      },
+                      child: Icon(Icons.clear))
+                  : Icon(Icons.chevron_right),
+            ],
+          ),
+          onTap: () {
+            print("Tapped");
+            pushNewScreen(context, screen: CustomerSelectScreen(
+              didSelectCustomer: (customer, contact) {
                 setState(() {
-                  isSelectingPhotoProvider = !isSelectingPhotoProvider;
+                  selectedCustomerContactPerson = contact;
+                  selectedCustomer = customer;
+                  locationController.text = customer.address ?? "";
+                  phonenumberController.text = customer.contacts[contact].phoneNumber;
+                  companyController.text = customer.name;
                 });
-              }),
-        ]);
+              },
+            ));
+          }),
+      ListedTextField(
+          leadingIcon: Icons.business_center,
+          placeholder: "Kund fritext",
+          onChanged: (customer) {
+            this.customer = customer;
+          },
+          key: _companyFormKey,
+          controller: companyController),
+      ListedTextField(
+          leadingIcon: Icons.location_on,
+          placeholder: "Address",
+          onChanged: (location) {
+            this.location = location;
+          },
+          key: _locationFormKey,
+          controller: locationController),
+      ListedTextField(
+          leadingIcon: Icons.phone,
+          placeholder: "Telefonnummer",
+          onChanged: (number) {
+            this.phoneNumber = number;
+          },
+          key: _phoneNumberFormKey,
+          controller: phonenumberController),
+      ListedItem(
+          leadingIcon: Icons.image_rounded,
+          child: Text("Lägg till bilder"),
+          trailingWidget: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [selectedImagesPreview(), Icon(Icons.chevron_right)],
+          ),
+          onTap: () {
+            setState(() {
+              isSelectingPhotoProvider = !isSelectingPhotoProvider;
+            });
+          }),
+    ]);
   }
 
   ListPersonCircleAvatar buildSelectedPersonsAvatars() {
@@ -521,28 +479,28 @@ class _AddEventScreenState extends State<AddEventScreen> {
             isSelectingPhotoProvider = false;
           });
         });
-    return AnimatedPositioned(
-        duration: Duration(milliseconds: 200),
-        bottom: isSelectingPhotoProvider ? 16 : -300,
-        right: 16.0,
-        left: 16.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildPhotoButton(() {
-              getImage(ImageSource.camera);
-            }, "Ta foto"),
-            SizedBox(height: 1.0),
-            _buildPhotoButton(() {
-              getImage(ImageSource.gallery);
-            }, "Välj foto"),
-            SizedBox(height: 5.0),
-            _buildPhotoButton(() {
-              setState(() => this.isSelectingPhotoProvider = false);
-            }, "Avbryt"),
-          ],
-        ));
+    // return AnimatedPositioned(
+    //     duration: Duration(milliseconds: 200),
+    //     bottom: isSelectingPhotoProvider ? 16 : -300,
+    //     right: 16.0,
+    //     left: 16.0,
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.end,
+    //       crossAxisAlignment: CrossAxisAlignment.stretch,
+    //       children: [
+    //         _buildPhotoButton(() {
+    //           getImage(ImageSource.camera);
+    //         }, "Ta foto"),
+    //         SizedBox(height: 1.0),
+    //         _buildPhotoButton(() {
+    //           getImage(ImageSource.gallery);
+    //         }, "Välj foto"),
+    //         SizedBox(height: 5.0),
+    //         _buildPhotoButton(() {
+    //           setState(() => this.isSelectingPhotoProvider = false);
+    //         }, "Avbryt"),
+    //       ],
+    //     ));
   }
 
   Widget _buildPhotoButton(Function onTap, String text) {
@@ -578,124 +536,28 @@ class _AddEventScreenState extends State<AddEventScreen> {
               height: 50,
               child: GestureDetector(
                   onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (_) => ImageDialog(
-                            image: Image.file(image, fit: BoxFit.cover)));
+                    showDialog(context: context, builder: (_) => ImageDialog(image: Image.file(image, fit: BoxFit.cover)));
                   },
                   child: Image.file(image)))
         ],
       );
     }));
   }
-
-  // Widget _selectedImagesPreview() {
-  //   return ListView.separated(
-  //       physics: const NeverScrollableScrollPhysics(),
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: selectedImages.length,
-  //       shrinkWrap: true,
-  //       itemBuilder: (context, index) {
-  //         var image = selectedImages[index];
-  //         return Padding(
-  //           padding: const EdgeInsets.symmetric(vertical: 0.0),
-  //           child: GestureDetector(
-  //             onTap: () {
-  //               showDialog(
-  //                   context: context,
-  //                   builder: (_) => ImageDialog(image: Image.file(image)));
-  //             },
-  //             child: ClipRRect(
-  //                 borderRadius: BorderRadius.circular(6),
-  //                 child: Image.file(image, width: 30, fit: BoxFit.fitHeight)),
-  //           ),
-  //         );
-  //       },
-  //       separatorBuilder: (context, index) {
-  //         return SizedBox(width: 5.0);
-  //       });
-  // }
-
-  // ListTile selectEnd(BuildContext context) {
-  //   return ListTile(
-  //       title: Text("Slutar", style: TextStyle(fontSize: fontSize)),
-  //       leading: Icon(Icons.access_time),
-  //       trailing: Text(dateStringVerbose(endDate),
-  //           style: TextStyle(fontSize: fontSize)),
-  //       contentPadding: contentPadding,
-  //       key: _endTimeFormKey,
-  //       onTap: () {
-  //         DatePicker.showDateTimePicker(
-  //           context,
-  //           showTitleActions: true,
-  //           minTime: DateTime.now().subtract(
-  //             Duration(days: 20),
-  //           ),
-  //           maxTime: DateTime.now().add(
-  //             Duration(days: 150),
-  //           ),
-  //           onChanged: (date) {
-  //             setState(() {
-  //               endDate = date;
-  //               if (startDate.isAfter(endDate)) {
-  //                 startDate = DateTime(endDate.year, endDate.month, endDate.day,
-  //                     startDate.hour, startDate.minute);
-  //               }
-  //             });
-  //           },
-  //           locale: LocaleType.sv,
-  //           currentTime: endDate,
-  //         );
-  //       });
-  // }
-
-  // ListTile selectStart(BuildContext context) {
-  //   return ListTile(
-  //       title: Text("Startar", style: TextStyle(fontSize: fontSize)),
-  //       leading: Icon(Icons.access_time),
-  //       trailing: Text(dateStringVerbose(startDate),
-  //           style: TextStyle(fontSize: fontSize)),
-  //       contentPadding: contentPadding,
-  //       key: _startTimeFormKey,
-  //       onTap: () {
-  //         DatePicker.showDateTimePicker(
-  //           context,
-  //           showTitleActions: true,
-  //           minTime: DateTime.now().subtract(
-  //             Duration(days: 20),
-  //           ),
-  //           maxTime: DateTime.now().add(
-  //             Duration(days: 150),
-  //           ),
-  //           onChanged: (date) {
-  //             setState(() {
-  //               startDate = date;
-  //               if (startDate.isAfter(endDate)) {
-  //                 endDate = DateTime(startDate.year, startDate.month,
-  //                     startDate.day, endDate.hour, endDate.minute);
-  //               }
-  //             });
-  //           },
-  //           locale: LocaleType.sv,
-  //           currentTime: startDate,
-  //         );
-  //       });
-  // }
 }
 
-class UnResizableContainer extends StatelessWidget {
-  final Widget child;
-  UnResizableContainer({required this.child});
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: MediaQuery.of(context).size.width,
-          minHeight: MediaQuery.of(context).size.height,
-        ),
-        child: IntrinsicHeight(child: child),
-      ),
-    );
-  }
-}
+// class UnResizableContainer extends StatelessWidget {
+//   final Widget child;
+//   UnResizableContainer({required this.child});
+//   @override
+//   Widget build(BuildContext context) {
+//     return SingleChildScrollView(
+//       child: ConstrainedBox(
+//         constraints: BoxConstraints(
+//           minWidth: MediaQuery.of(context).size.width,
+//           minHeight: MediaQuery.of(context).size.height,
+//         ),
+//         child: IntrinsicHeight(child: child),
+//       ),
+//     );
+//   }
+// }

@@ -26,7 +26,8 @@ class StartEndDateSelector extends StatefulWidget {
   final String startTitle;
   final String endTitle;
   StartEndDateSelector(
-      {required this.startDateSelectorController,
+      {Key? key,
+      required this.startDateSelectorController,
       required this.endDateSelectorController,
       required this.onChangeStart,
       required this.onChangeEnd,
@@ -38,13 +39,16 @@ class StartEndDateSelector extends StatefulWidget {
       this.dateFormat = 'dd MMMM kk:mm',
       this.startEndFollowSameDay = true,
       this.startTitle = "Startar",
-      this.endTitle = "Slutar"});
+      this.endTitle = "Slutar"})
+      : super(key: key);
   @override
-  _StartEndDateSelectorState createState() => _StartEndDateSelectorState(
-      startDateSelectorController, endDateSelectorController);
+  _StartEndDateSelectorState createState() => _StartEndDateSelectorState(startDateSelectorController, endDateSelectorController);
 }
 
-class _StartEndDateSelectorState extends State<StartEndDateSelector> {
+class _StartEndDateSelectorState extends State<StartEndDateSelector> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   late DateSelectorController startDateSelectorController;
   late DateSelectorController endDateSelectorController;
   bool isShowingStartSelector = false;
@@ -52,43 +56,30 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
   late DateTime start;
   late DateTime end;
 
-  _StartEndDateSelectorState(DateSelectorController startDateSelectorController,
-      DateSelectorController endDateSelectorController) {
+  _StartEndDateSelectorState(
+      DateSelectorController startDateSelectorController, DateSelectorController endDateSelectorController) {
     this.startDateSelectorController = startDateSelectorController;
     this.endDateSelectorController = endDateSelectorController;
-    startDateSelectorController.getDate = getStartDate;
+    startDateSelectorController.getDate = () => getStartDate;
     startDateSelectorController.setDate = setStartDate;
-    endDateSelectorController.getDate = getEndDate;
+    endDateSelectorController.getDate = () => getEndDate;
     endDateSelectorController.setDate = setEndDate;
   }
 
-  void setStartDate(DateTime start) {
-    setState(() {
-      this.start = start;
-    });
-  }
+  void setStartDate(DateTime start) => setState(() => this.start = start);
 
-  void setEndDate(DateTime end) {
-    setState(() {
-      this.end = end;
-    });
-  }
+  void setEndDate(DateTime end) => setState(() => this.end = end);
 
-  DateTime getStartDate() {
-    return start;
-  }
+  DateTime get getStartDate => start;
 
-  DateTime getEndDate() {
-    return end;
-  }
+  DateTime get getEndDate => end;
 
   @override
   void initState() {
+    print("init state StartEndDateSelector");
     var now = DateTime.now();
-    start = startDateSelectorController.initialDate ??
-        DateTime(now.year, now.month, now.day, 8, 0, 0);
-    end = endDateSelectorController.initialDate ??
-        DateTime(now.year, now.month, now.day, 16, 0, 0);
+    start = startDateSelectorController.initialDate ?? DateTime(now.year, now.month, now.day, 8, 0, 0);
+    end = endDateSelectorController.initialDate ?? DateTime(now.year, now.month, now.day, 16, 0, 0);
     super.initState();
   }
 
@@ -148,12 +139,10 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
     setState(() {
       end = date;
       if (widget.startEndFollowSameDay && !start.isSameDate(end)) {
-        start =
-            DateTime(end.year, end.month, end.day, start.hour, start.minute);
+        start = DateTime(end.year, end.month, end.day, start.hour, start.minute);
       } else if (start.isAfter(end)) {
         setState(() {
-          start =
-              DateTime(end.year, end.month, end.day, start.hour, start.minute);
+          start = DateTime(end.year, end.month, end.day, start.hour, start.minute);
         });
         if (start.isAfter(end)) {
           setState(() {
@@ -170,12 +159,10 @@ class _StartEndDateSelectorState extends State<StartEndDateSelector> {
     setState(() {
       start = date;
       if (widget.startEndFollowSameDay && !start.isSameDate(end)) {
-        end =
-            DateTime(start.year, start.month, start.day, end.hour, end.minute);
+        end = DateTime(start.year, start.month, start.day, end.hour, end.minute);
       } else if (start.isAfter(end)) {
         setState(() {
-          end = DateTime(
-              start.year, start.month, start.day, end.hour, end.minute);
+          end = DateTime(start.year, start.month, start.day, end.hour, end.minute);
         });
         if (start.isAfter(end)) {
           setState(() {
@@ -200,8 +187,7 @@ class DateSelector extends StatelessWidget {
   final EdgeInsets rowInset;
   final bool hidesSeparator;
   final String dateFormat;
-  DateSelector(this.title, this.date, this.didSelectDate,
-      this.isShowingDatePicker, this.didTapDateRow,
+  DateSelector(this.title, this.date, this.didSelectDate, this.isShowingDatePicker, this.didTapDateRow,
       {this.color = Colors.white,
       this.rowInset = EdgeInsets.zero,
       this.hidesSeparator = false,
@@ -229,8 +215,7 @@ class DateSelector extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -244,9 +229,7 @@ class DateSelector extends StatelessWidget {
                   Row(
                     children: [
                       Text(dateString(date), style: TextStyle(fontSize: 15)),
-                      Icon(isShowingDatePicker
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down)
+                      Icon(isShowingDatePicker ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down)
                     ],
                   )
                 ],
@@ -256,8 +239,7 @@ class DateSelector extends StatelessWidget {
                 ? Container()
                 : Padding(
                     padding: const EdgeInsets.only(left: 16.0),
-                    child: Container(
-                        height: 0.3, color: Theme.of(context).dividerColor),
+                    child: Container(height: 0.3, color: Theme.of(context).dividerColor),
                   )
           ],
         ),
@@ -279,9 +261,7 @@ class DateSelector extends StatelessWidget {
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
             ),
             SizedBox(width: 6.0),
-            Icon(isShowingDatePicker
-                ? Icons.keyboard_arrow_up
-                : Icons.keyboard_arrow_down)
+            Icon(isShowingDatePicker ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down)
           ],
         ),
         color: this.color,

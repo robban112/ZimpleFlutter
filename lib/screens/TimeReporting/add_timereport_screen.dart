@@ -49,6 +49,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   final GlobalKey<FormState> _titleFormKey = GlobalKey<FormState>();
 
+  final UniqueKey _startEndKey = UniqueKey();
+
   bool isSelectingPhotoProvider = false;
 
   List<File> selectedImages = [];
@@ -386,25 +388,22 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           children: [
             Container(height: 0.5, color: Colors.grey.shade400),
             StartEndDateSelector(
+              key: _startEndKey,
               startDateSelectorController: startDateController,
               endDateSelectorController: endDateController,
-              onChangeStart: (startDate) {
-                updateDifference(startDate, endDateController.getDate(), this.minutesBreak);
-              },
-              onChangeEnd: (endDate) {
-                updateDifference(startDateController.getDate(), endDate, this.minutesBreak);
-              },
+              onChangeStart: (startDate) => updateDifference(startDate, endDateController.getDate(), this.minutesBreak),
+              onChangeEnd: (endDate) => updateDifference(startDateController.getDate(), endDate, this.minutesBreak),
               datePickerMode: selectedEvent != null ? CupertinoDatePickerMode.time : CupertinoDatePickerMode.dateAndTime,
               startTitle: "När du började",
               endTitle: "När du slutade",
             ),
             Container(height: 0.5, color: Colors.grey.shade400),
             //buildBreakRow(),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             buildBreakSlider(),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             Container(height: 0.5, color: Colors.grey.shade400),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TimereportRow(
               "Total arbetad tid",
               Text(_getTotalTime(startEndDifference)),
@@ -428,7 +427,10 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
             children: [
               Text("Rast:  "),
               Row(
-                children: [Text("${_minutesBreak.toInt()}", style: TextStyle(fontSize: 20.0)), Text(" minuter")],
+                children: [
+                  Text("${_minutesBreak.toInt()}", style: TextStyle(fontSize: 20.0)),
+                  Text(" minuter"),
+                ],
               ),
             ],
           ),
@@ -524,9 +526,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     });
   }
 
-  Widget buildDoneButton(BuildContext context) {
-    return RectangularButton(onTap: _addTimeReport, text: "Skicka in tidrapport");
-  }
+  Widget buildDoneButton(BuildContext context) => RectangularButton(onTap: _addTimeReport, text: "Skicka in tidrapport");
 }
 
 class TimereportRow extends StatelessWidget {
@@ -548,7 +548,10 @@ class TimereportRow extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text(this.title, style: TextStyle(fontSize: 15.0)), this.leading],
+            children: [
+              Text(this.title, style: TextStyle(fontSize: 15.0)),
+              this.leading,
+            ],
           ),
           Container(height: 15),
           hidesSeparatorByDefault
@@ -587,7 +590,7 @@ class PreviewImagesComponent extends StatelessWidget {
           );
         },
         separatorBuilder: (context, index) {
-          return SizedBox(width: 5.0);
+          return const SizedBox(width: 5.0);
         });
   }
 }
