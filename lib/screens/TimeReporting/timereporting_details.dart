@@ -38,7 +38,6 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
 
   AppBar _buildAppbar(BuildContext context, UserParameters user) {
     return AppBar(
-        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         elevation: 0.0,
         title: Align(
@@ -80,7 +79,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
             (index) {
               var timereport = widget.listTimereports![index];
               return Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16, top: 24.0, bottom: 48),
+                padding: const EdgeInsets.only(left: 0.0, right: 0, top: 0.0, bottom: 48),
                 child: Container(
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
                   child: _buildBody(timereport, user, eventManager),
@@ -104,7 +103,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
   }
 
   Widget _buildBody(TimeReport timereport, UserParameters user, EventManager eventManager) {
-    Event? event = eventManager.getEventForKey(key: widget.timereport?.eventId);
+    Event? event = eventManager.getEventForKey(key: timereport.eventId);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(left: 15.0, top: 25.0),
@@ -135,6 +134,8 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     List<String> actions = widget.timereport != null ? actionsSingleTimereport : actionsMultipleTimereport;
     return [
       PopupMenuButton<String>(
+        icon: Icon(Icons.more_horiz, color: Colors.white),
+        color: Colors.white,
         onSelected: (value) {
           this.handleClick(value);
           //Navigator.of(context).pop();

@@ -3,20 +3,16 @@ import 'package:zimple/model/timereport.dart';
 import 'package:zimple/utils/constants.dart';
 
 class TimereportMonthReportScreen extends StatefulWidget {
-  const TimereportMonthReportScreen(
-      {required this.timereports, required this.month, Key? key})
-      : super(key: key);
+  const TimereportMonthReportScreen({required this.timereports, required this.month, Key? key}) : super(key: key);
 
   final List<TimeReport> timereports;
   final String month;
 
   @override
-  _TimereportMonthReportScreenState createState() =>
-      _TimereportMonthReportScreenState();
+  _TimereportMonthReportScreenState createState() => _TimereportMonthReportScreenState();
 }
 
-class _TimereportMonthReportScreenState
-    extends State<TimereportMonthReportScreen> {
+class _TimereportMonthReportScreenState extends State<TimereportMonthReportScreen> {
   String _calculateTotalTime() {
     int time = 0;
     for (TimeReport timereport in widget.timereports) {
@@ -27,13 +23,11 @@ class _TimereportMonthReportScreenState
   }
 
   int totalminutes() {
-    return widget.timereports
-        .fold<int>(0, (prev, timereport) => prev + timereport.totalTime);
+    return widget.timereports.fold<int>(0, (prev, timereport) => prev + timereport.totalTime);
   }
 
   int totalBreak() {
-    return widget.timereports
-        .fold<int>(0, (prev, timereport) => prev + timereport.breakTime);
+    return widget.timereports.fold<int>(0, (prev, timereport) => prev + timereport.breakTime);
   }
 
   Padding _buildRow(String left, String right) {
@@ -42,10 +36,8 @@ class _TimereportMonthReportScreenState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(left,
-              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
-          Text(right,
-              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
+          Text(left, style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
+          Text(right, style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -55,9 +47,15 @@ class _TimereportMonthReportScreenState
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            brightness: Brightness.dark,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
             backgroundColor: primaryColor,
-            title: Text("Månadsrapport ${widget.month}")),
+            title: Text("Månadsrapport ${widget.month}", style: TextStyle(color: Colors.white))),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -66,12 +64,8 @@ class _TimereportMonthReportScreenState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Totaltid: ",
-                        style: TextStyle(
-                            fontSize: 17.0, fontWeight: FontWeight.w500)),
-                    Text(_calculateTotalTime(),
-                        style: TextStyle(
-                            fontSize: 17.0, fontWeight: FontWeight.w500)),
+                    Text("Totaltid: ", style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
+                    Text(_calculateTotalTime(), style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
                   ],
                 ),
               ),
@@ -82,12 +76,8 @@ class _TimereportMonthReportScreenState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Antal rapporter: ",
-                        style: TextStyle(
-                            fontSize: 17.0, fontWeight: FontWeight.w500)),
-                    Text(widget.timereports.length.toString(),
-                        style: TextStyle(
-                            fontSize: 17.0, fontWeight: FontWeight.w500)),
+                    Text("Antal rapporter: ", style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
+                    Text(widget.timereports.length.toString(), style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
                   ],
                 ),
               )

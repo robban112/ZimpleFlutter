@@ -363,7 +363,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       children: [
         Icon(Icons.event_note),
         const SizedBox(width: 25),
-        Container(child: Text(widget.event.notes!, textAlign: TextAlign.left)),
+        SizedBox(
+            width: MediaQuery.of(context).size.width * 0.75,
+            child: Container(
+              child: Text(widget.event.notes!, textAlign: TextAlign.left),
+            )),
       ],
     );
   }

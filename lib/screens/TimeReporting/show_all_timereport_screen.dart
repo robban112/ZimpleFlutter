@@ -11,21 +11,18 @@ class ShowAllTimeReportScreen extends StatefulWidget {
   const ShowAllTimeReportScreen({Key? key}) : super(key: key);
 
   @override
-  _ShowAllTimeReportScreenState createState() =>
-      _ShowAllTimeReportScreenState();
+  _ShowAllTimeReportScreenState createState() => _ShowAllTimeReportScreenState();
 }
 
 class _ShowAllTimeReportScreenState extends State<ShowAllTimeReportScreen> {
   @override
   Widget build(BuildContext context) {
-    print("Building Show All Timereport Screen");
-    List<Person> persons = Provider.of<ManagerProvider>(context, listen: true)
-        .personManager
-        .persons;
+    List<Person> persons = Provider.of<ManagerProvider>(context, listen: true).personManager.persons;
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
         backgroundColor: primaryColor,
+        title: Text("Alla tidrapporter", style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -40,9 +37,7 @@ class _ShowAllTimeReportScreenState extends State<ShowAllTimeReportScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text("Välj person",
-                  style:
-                      TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
+              child: Text("Välj person", style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
             ),
             ListedView(
               items: List.generate(persons.length, (index) {

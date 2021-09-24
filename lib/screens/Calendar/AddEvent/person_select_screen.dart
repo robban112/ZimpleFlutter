@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../model/person.dart';
 import 'package:zimple/utils/constants.dart';
+//import 'package:decorated_icon/cupertino_will_pop_scope.dart';
 
 class PersonSelectScreen extends StatefulWidget {
   static const String routeName = 'person_select_screen';
@@ -8,10 +9,7 @@ class PersonSelectScreen extends StatefulWidget {
   final Function(List<Person>) personCallback;
   final List<Person>? preSelectedPersons;
 
-  PersonSelectScreen(
-      {required this.persons,
-      required this.personCallback,
-      this.preSelectedPersons});
+  PersonSelectScreen({required this.persons, required this.personCallback, this.preSelectedPersons});
   @override
   _PersonSelectScreenState createState() => _PersonSelectScreenState();
 }
@@ -22,8 +20,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
   @override
   void initState() {
     super.initState();
-    selectedPersonsMap = new Map.fromIterable(widget.persons,
-        key: (person) => person, value: (person) => false);
+    selectedPersonsMap = new Map.fromIterable(widget.persons, key: (person) => person, value: (person) => false);
     widget.preSelectedPersons?.forEach((person) {
       selectedPersonsMap[person] = true;
     });
@@ -40,19 +37,16 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
   }
 
   Widget _buildCheckMark(Person person) {
-    if (selectedPersonsMap[person] ?? false) {
+    if (selectedPersonsMap[person] ?? false)
       return Icon(Icons.check_circle, color: green);
-    } else {
+    else
       return Icon(Icons.radio_button_off_outlined, color: green);
-    }
   }
 
-  void _togglePerson(Person person) {
-    setState(() {
-      if (selectedPersonsMap[person] == null) return;
-      selectedPersonsMap[person] = !selectedPersonsMap[person]!;
-    });
-  }
+  void _togglePerson(Person person) => setState(() {
+        if (selectedPersonsMap[person] == null) return;
+        selectedPersonsMap[person] = !selectedPersonsMap[person]!;
+      });
 
   void onPop(BuildContext context) {
     _performCallback();
@@ -70,14 +64,22 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
           appBar: AppBar(
             brightness: Brightness.dark,
             //iconTheme: IconThemeData(color: Colors.white),
+            title: Align(alignment: Alignment.centerLeft, child: Text("Välj personer", style: TextStyle(color: Colors.white))),
             elevation: 0.0,
             backgroundColor: primaryColor,
+            actions: [
+              TextButton(
+                child: Text("Spara", style: TextStyle(color: Colors.white, fontSize: 17)),
+                onPressed: () => onPop(context),
+              ),
+            ],
             leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () => onPop(context),
             ),
           ),
           body: ListView.builder(
+            shrinkWrap: true,
             padding: EdgeInsets.only(top: 8.0),
             itemBuilder: (context, index) {
               var person = widget.persons[index];
@@ -95,8 +97,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
       child: Center(
         child: Text(
           person.name.characters.first.toUpperCase(),
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11.0),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11.0),
         ),
       ),
     );
@@ -104,14 +105,11 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
 
   _buildPersonRow(Person person) {
     return GestureDetector(
-        onTap: () {
-          _togglePerson(person);
-        },
+        onTap: () => _togglePerson(person),
         child: Container(
           color: Colors.transparent,
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
             child: SizedBox(
               height: 25,
               child: Row(

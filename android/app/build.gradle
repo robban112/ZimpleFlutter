@@ -47,7 +47,7 @@ android {
         applicationId "com.zimple.zimple"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 7
+        versionCode 8
         versionName "1.0.4"
     }
 

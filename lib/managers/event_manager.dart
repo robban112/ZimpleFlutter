@@ -23,11 +23,10 @@ class EventManager {
     events.forEach((event) {
       eventKeyMap[event.id] = event;
       String dateKey = eventMapKey(event.start);
-      if (!eventMap.containsKey(dateKey)) {
+      if (!eventMap.containsKey(dateKey))
         eventMap[dateKey] = [event];
-      } else {
+      else
         eventMap[dateKey]?.add(event);
-      }
     });
   }
 
@@ -35,30 +34,28 @@ class EventManager {
     var then = DateTime.now().add(Duration(days: daysMultiplier * weekIndex));
     var weekKey = eventMapKey(then);
 
-    if (eventMap.containsKey(weekKey)) {
+    if (eventMap.containsKey(weekKey))
       return sortEventByStartDate(eventMap[weekKey]!);
-    }
-    return [];
+    else
+      return [];
   }
 
   List<Event> getEventsByDate(DateTime date) {
     var key = eventMapKey(date);
     if (eventMap.containsKey(key)) {
       var sortedEvents = sortEventByStartDate(eventMap[key]!);
-      if (eventFilter != null) {
+      if (eventFilter != null)
         return eventFilter!(sortedEvents);
-      } else {
+      else
         return sortedEvents;
-      }
     }
     return [];
   }
 
   List<Event> getEventByStartDate(DateTime date, int daysForward) {
     List<Event> events = [];
-    for (var i = 0; i < daysForward; i++) {
-      events += getEventsByDate(date.add(Duration(days: i)));
-    }
+    for (var i = 0; i < daysForward; i++) events += getEventsByDate(date.add(Duration(days: i)));
+
     return events;
   }
 
@@ -67,9 +64,7 @@ class EventManager {
     return events;
   }
 
-  String eventMapKey(DateTime date) {
-    return dateString(date);
-  }
+  String eventMapKey(DateTime date) => dateString(date);
 
   Event? getEventForKey({String? key}) {
     if (key == null) return null;

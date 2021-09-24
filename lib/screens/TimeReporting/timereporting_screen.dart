@@ -258,14 +258,14 @@ class _TimeReportCardState extends State<TimeReportCard> {
     var spacing = 8.0;
     var eventAvailable = widget.event != null;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
       child: Container(
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            borderRadius: BorderRadius.all(Radius.circular(18.0)),
             boxShadow: [
               BoxShadow(color: softHighlightColor, offset: Offset(-3, -3), spreadRadius: 0, blurRadius: 3),
-              BoxShadow(color: softShadowColor, offset: Offset(3, 3), spreadRadius: 1, blurRadius: 7)
+              BoxShadow(color: softShadowColor, offset: Offset(3, 3), spreadRadius: 0.5, blurRadius: 8)
             ]),
         width: 175,
         child: Material(

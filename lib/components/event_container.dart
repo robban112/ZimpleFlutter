@@ -27,11 +27,9 @@ class EventContainer extends StatelessWidget {
           borderRadius: BorderRadius.circular(3.0),
         ),
         child: InkWell(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
           splashColor: Colors.white.withAlpha(190),
-          onTap: () {
-            didTapEvent(event);
-          },
+          onTap: () => didTapEvent(event),
           child: isEventTextable
               ? Padding(
                   padding: isEventLarge ? EdgeInsets.all(6.0) : EdgeInsets.zero,

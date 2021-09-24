@@ -92,19 +92,15 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
     });
   }
 
-  void goToTimereportingDetails(TimeReport timereport) {
-    pushNewScreen(context,
-        screen: TimereportingDetails(
-          timereport: timereport,
-        ));
-  }
+  void goToTimereportingDetails(TimeReport timereport) => pushNewScreen(context,
+      screen: TimereportingDetails(
+        timereport: timereport,
+      ));
 
   List<TimeReport> _getSelectedTimereports() {
     List<TimeReport> timereports = [];
     selectedTimereports.forEach((key, value) {
-      if (value) {
-        timereports.add(key);
-      }
+      if (value) timereports.add(key);
     });
     return timereports;
   }
@@ -124,10 +120,8 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
           user.isAdmin
               ? TextButton(
                   child: Text("Visa månadsrapport", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
-                  onPressed: () {
-                    pushNewScreen(context,
-                        screen: TimereportMonthReportScreen(timereports: mappedTimereports![key]!, month: key));
-                  },
+                  onPressed: () => pushNewScreen(context,
+                      screen: TimereportMonthReportScreen(timereports: mappedTimereports![key]!, month: key)),
                 )
               : Container()
         ],
@@ -173,12 +167,10 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                       padding: const EdgeInsets.only(bottom: 24.0),
                       child: RectangularButton(
                         text: "Visa valda tidrapporter",
-                        onTap: () {
-                          pushNewScreen(context,
-                              screen: TimereportingDetails(
-                                listTimereports: _getSelectedTimereports(),
-                              ));
-                        },
+                        onTap: () => pushNewScreen(context,
+                            screen: TimereportingDetails(
+                              listTimereports: _getSelectedTimereports(),
+                            )),
                       ),
                     ),
                   ),
