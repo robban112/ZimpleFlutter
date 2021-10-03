@@ -7,10 +7,12 @@ import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/event_type.dart';
 import 'package:zimple/model/person.dart';
+import 'package:zimple/model/work_category.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/person_select_screen.dart';
+import 'package:zimple/screens/Calendar/AddEvent/work_category_select.dart';
 import 'package:zimple/widgets/image_dialog.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
@@ -26,6 +28,8 @@ import 'package:uuid/uuid.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:collection/collection.dart';
 import 'package:zimple/extensions/string_extensions.dart';
+import 'package:fluttericon/font_awesome_icons.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 
 class AddEventScreen extends StatefulWidget {
   static const String routeName = 'add_event_screen';
@@ -51,6 +55,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   String? location;
   Customer? selectedCustomer;
   int? selectedCustomerContactPerson;
+  WorkCategory? selectedWorkCategory;
 
   late bool changingEvent;
   bool isSelectingPhotoProvider = false;
@@ -94,6 +99,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
       companyController.text = widget.eventToChange?.customer ?? "";
       locationController.text = widget.eventToChange?.location ?? "";
       selectedPersons = widget.eventToChange?.persons ?? [];
+      if (widget.eventToChange?.workCategoryId != null && widget.eventToChange != null) {
+        selectedWorkCategory = WorkCategory(widget.eventToChange!.workCategoryId!);
+      }
 
       List<Customer> customers = Provider.of<ManagerProvider>(context, listen: false).customers;
       if (widget.eventToChange?.customerKey != null && widget.eventToChange?.customerKey != "") {
@@ -180,7 +188,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
         location: locationController.text,
         customer: companyController.text,
         customerKey: customerKey,
-        customerContactIndex: this.selectedCustomerContactPerson);
+        customerContactIndex: this.selectedCustomerContactPerson,
+        workCategoryId: selectedWorkCategory?.id);
   }
 
   Widget _buildNotesTextField() {
@@ -400,28 +409,23 @@ class _AddEventScreenState extends State<AddEventScreen> {
               },
             ));
           }),
+      _buildTypeOfWorkRow(),
       ListedTextField(
           leadingIcon: Icons.business_center,
           placeholder: "Kund fritext",
-          onChanged: (customer) {
-            this.customer = customer;
-          },
+          onChanged: (customer) => this.customer = customer,
           key: _companyFormKey,
           controller: companyController),
       ListedTextField(
           leadingIcon: Icons.location_on,
           placeholder: "Address",
-          onChanged: (location) {
-            this.location = location;
-          },
+          onChanged: (location) => this.location = location,
           key: _locationFormKey,
           controller: locationController),
       ListedTextField(
           leadingIcon: Icons.phone,
           placeholder: "Telefonnummer",
-          onChanged: (number) {
-            this.phoneNumber = number;
-          },
+          onChanged: (number) => this.phoneNumber = number,
           key: _phoneNumberFormKey,
           controller: phonenumberController),
       ListedItem(
@@ -432,17 +436,13 @@ class _AddEventScreenState extends State<AddEventScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [selectedImagesPreview(), Icon(Icons.chevron_right)],
           ),
-          onTap: () {
-            setState(() {
-              isSelectingPhotoProvider = !isSelectingPhotoProvider;
-            });
-          }),
+          onTap: () => setState(() {
+                isSelectingPhotoProvider = !isSelectingPhotoProvider;
+              })),
     ]);
   }
 
-  ListPersonCircleAvatar buildSelectedPersonsAvatars() {
-    return ListPersonCircleAvatar(persons: this.selectedPersons);
-  }
+  ListPersonCircleAvatar buildSelectedPersonsAvatars() => ListPersonCircleAvatar(persons: this.selectedPersons);
 
   Future getImage(ImageSource imageSource) async {
     final pickedFile = await picker.getImage(source: imageSource);
@@ -503,27 +503,31 @@ class _AddEventScreenState extends State<AddEventScreen> {
     //     ));
   }
 
-  Widget _buildPhotoButton(Function onTap, String text) {
-    return Container(
-      height: 60.0,
-      width: 120,
-      child: ButtonTheme(
-        height: 60.0,
-        child: ElevatedButton(
-          child: Text(text, style: TextStyle(fontSize: 17.0)),
-          onPressed: () {
-            onTap();
-          },
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size(100.0, 50.0),
-            elevation: 5,
-            primary: Theme.of(context).primaryColor,
-            onPrimary: Theme.of(context).accentColor,
-          ),
-        ),
+  ListedItem _buildTypeOfWorkRow() => ListedItem(
+      leadingIcon: Icons.widgets,
+      child: Text("Välj arbetskategori"),
+      trailingWidget: Row(
+        children: [
+          _buildSelectedTypeOfWork(),
+          Icon(Icons.chevron_right),
+        ],
       ),
-    );
-  }
+      onTap: () {
+        pushNewScreen(context,
+            screen: WorkCategorySelectScreen(
+                onSelectWorkCategory: (category) => setState(() => this.selectedWorkCategory = category)));
+      });
+
+  Widget _buildSelectedTypeOfWork() => selectedWorkCategory == null
+      ? Container()
+      : Row(
+          children: [
+            //Icon(Linecons.globe),
+            Icon(selectedWorkCategory!.icon, size: 20),
+            SizedBox(width: 12),
+            Text(selectedWorkCategory!.name),
+          ],
+        );
 
   Widget selectedImagesPreview() {
     return Row(

@@ -21,10 +21,7 @@ class FirebaseEventManager {
   }
 
   Future<void> changeEvent(Event event) {
-    return eventRef
-        .child(event.id)
-        .update(event.toJson())
-        .then((value) => value);
+    return eventRef.child(event.id).update(event.toJson()).then((value) => value);
   }
 
   fb.DatabaseReference newEventRef() {
@@ -64,10 +61,8 @@ class FirebaseEventManager {
     return _mapSnapshot(snapshot);
   }
 
-  Future<List<String>> addVacationPeriod(
-      AbsenceRequest absenceRequest, String? name) async {
-    List<DateTime> dates =
-        getDaysInBeteween(absenceRequest.startDate, absenceRequest.endDate);
+  Future<List<String>> addVacationPeriod(AbsenceRequest absenceRequest, String? name) async {
+    List<DateTime> dates = getDaysInBeteween(absenceRequest.startDate, absenceRequest.endDate);
     List<String> eventIds = [];
     for (DateTime date in dates) {
       DateTime _startDate = DateTime(date.year, date.month, date.day, 0, 0, 0);
@@ -76,12 +71,9 @@ class FirebaseEventManager {
           id: "",
           start: _startDate,
           end: _endDate,
-          title:
-              "${absenceToString(absenceRequest.absenceType)} - ${name ?? ""}",
+          title: "${absenceToString(absenceRequest.absenceType)} - ${name ?? ""}",
           notes: absenceRequest.notes,
-          persons: [
-            Person(id: absenceRequest.userId, color: Colors.white, name: "")
-          ],
+          persons: [Person(id: absenceRequest.userId, color: Colors.white, name: "")],
           eventType: EventType.vacation);
       String id = await addEvent(event);
       eventIds.add(id);
@@ -110,12 +102,12 @@ class FirebaseEventManager {
       String? customerKey = eventData["customerKey"];
       EventType eventType = stringToEventType(eventData['eventType']);
       int? customerContactIndex = eventData['customerContactIndex'];
+      int? workCategoryId = eventData['workCategoryId'];
       List<String> timereported = _getTimereported(eventData) ?? [];
       List<String> imageStoragePaths = _getImagesFromEventData(eventData) ?? [];
       List<Person> persons = _getPersonsFromEventData(eventData);
       Color eventColor = _setEventColorFromPersons(persons);
-      Map<String, dynamic>? imageMap =
-          eventData['images'] == null ? null : Map.from(eventData['images']);
+      Map<String, dynamic>? imageMap = eventData['images'] == null ? null : Map.from(eventData['images']);
       Event event = Event(
           end: endDate,
           start: startDate,
@@ -132,7 +124,8 @@ class FirebaseEventManager {
           originalImageStoragePaths: imageMap,
           customerKey: customerKey,
           customerContactIndex: customerContactIndex,
-          timereported: timereported);
+          timereported: timereported,
+          workCategoryId: workCategoryId);
       events.add(event);
     }
     return events;
@@ -145,9 +138,7 @@ class FirebaseEventManager {
     }
     Map<String, dynamic> imageMap = Map.from(imageData);
     var imageKeys = imageMap.keys;
-    List<String> storagePaths = imageKeys
-        .map((key) => imageMap[key]['storagePath'].toString())
-        .toList();
+    List<String> storagePaths = imageKeys.map((key) => imageMap[key]['storagePath'].toString()).toList();
     return storagePaths;
   }
 
@@ -170,8 +161,7 @@ class FirebaseEventManager {
       persons.sort((a, b) => a.id.compareTo(b.id));
       HSVColor? colorAggregator = HSVColor.fromColor(persons[0].color);
       for (var person in persons) {
-        colorAggregator = HSVColor.lerp(
-            colorAggregator, HSVColor.fromColor(person.color), 0.5);
+        colorAggregator = HSVColor.lerp(colorAggregator, HSVColor.fromColor(person.color), 0.5);
       }
       //return persons[1].color;
       return colorAggregator?.toColor() ?? Colors.blue;
@@ -182,8 +172,6 @@ class FirebaseEventManager {
     if (eventData['timereported'] == null) {
       return null;
     }
-    return List.from(eventData['timereported'])
-        .map((e) => e.toString())
-        .toList();
+    return List.from(eventData['timereported']).map((e) => e.toString()).toList();
   }
 }

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/person.dart';
+import 'package:zimple/model/work_category.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
@@ -157,6 +158,17 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         ));
   }
 
+  Widget _buildWorkCategory() {
+    if (widget.event.workCategoryId == null) return Container();
+    WorkCategory category = WorkCategory(widget.event.workCategoryId!);
+    return ListedParameter(
+        iconData: category.icon,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text("Arbetskategori", style: greyText), Text(category.name)],
+        ));
+  }
+
   Widget _buildPersonsList() {
     var persons = widget.event.persons;
     return (persons?.length ?? 0) > 0
@@ -287,6 +299,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             //     subtitle:
             //         '${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}'),
             _buildPersonsList(),
+            _buildWorkCategory(),
             customer != null
                 ? Column(
                     mainAxisSize: MainAxisSize.min,
@@ -294,9 +307,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       _buildParameter(iconData: Icons.business, title: 'Kund', subtitle: customer.name),
                     ],
                   )
-                : (widget.event.customer != null
-                    ? _buildParameter(iconData: Icons.business, title: 'Kund fritext', subtitle: widget.event.customer!)
-                    : Container()),
+                : Container(),
+            (widget.event.customer != null && widget.event.customer != "")
+                ? _buildParameter(iconData: Icons.business, title: 'Kund fritext', subtitle: widget.event.customer!)
+                : Container(),
             _buildLocation(),
             _buildPhoneNumber(),
             _buildNotes(),

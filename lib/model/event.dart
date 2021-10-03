@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/model/event_layout.dart';
 import 'package:zimple/model/event_type.dart';
+import 'package:zimple/model/work_category.dart';
 import 'person.dart';
 import '../utils/date_utils.dart';
 
@@ -16,6 +17,7 @@ class Event {
   String? phoneNumber;
   String? notes;
   String? customerKey;
+  int? workCategoryId;
 
   late EventLayout layout;
 
@@ -41,7 +43,8 @@ class Event {
       this.originalImageStoragePaths,
       this.customerKey,
       this.customerContactIndex,
-      this.timereported});
+      this.timereported,
+      this.workCategoryId});
 
   Map<String, dynamic> toJson() {
     return {
@@ -57,7 +60,8 @@ class Event {
       'customerKey': this.customerKey,
       'customerContactIndex': this.customerContactIndex,
       'timereported': this.timereported,
-      'eventType': eventType.toString()
+      'eventType': eventType.toString(),
+      'workCategoryId': this.workCategoryId
     };
   }
 }

@@ -33,7 +33,7 @@ dependencies:
   snapping_sheet: ^3.1.0
   quiver: ^3.0.1
   url_launcher: ^6.0.6
-  flutter_icons: ^1.1.0
+  fluttericon: ^2.0.0
   logger: ^1.0.0
   fl_chart: ^0.36.2
   focus_detector: ^2.0.0

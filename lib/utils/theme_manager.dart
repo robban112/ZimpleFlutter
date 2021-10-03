@@ -15,6 +15,7 @@ class ThemeNotifier with ChangeNotifier {
       accentIconTheme: IconThemeData(color: Colors.black),
       dividerColor: Colors.white,
       fontFamily: 'FiraSans',
+      iconTheme: IconThemeData(color: Colors.white),
       shadowColor: Colors.black.withOpacity(0.1),
       bottomAppBarColor: Colors.black);
 
@@ -28,6 +29,7 @@ class ThemeNotifier with ChangeNotifier {
     accentIconTheme: IconThemeData(color: Colors.white),
     dividerColor: Colors.black,
     fontFamily: 'FiraSans',
+    iconTheme: IconThemeData(color: Colors.black),
     shadowColor: Colors.grey.withOpacity(0.10),
     bottomAppBarColor: Color(0xffF4F7FB),
   );
