@@ -7,20 +7,12 @@ class ListedItem {
   final IconData? trailingIcon;
   final Widget? trailingWidget;
   final VoidCallback? onTap;
-  ListedItem(
-      {required this.child,
-      this.leadingIcon,
-      this.trailingIcon,
-      this.onTap,
-      this.trailingWidget});
+  ListedItem({required this.child, this.leadingIcon, this.trailingIcon, this.onTap, this.trailingWidget});
 }
 
 class ListedItemWidget extends StatelessWidget {
   const ListedItemWidget(
-      {Key? key,
-      required this.item,
-      this.rowInset =
-          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)})
+      {Key? key, required this.item, this.rowInset = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)})
       : super(key: key);
 
   final ListedItem item;
@@ -53,9 +45,7 @@ class ListedItemWidget extends StatelessWidget {
               ],
             ),
             Expanded(child: Container()),
-            item.trailingWidget != null
-                ? item.trailingWidget!
-                : Icon(item.trailingIcon)
+            item.trailingWidget != null ? item.trailingWidget! : Icon(item.trailingIcon)
           ]),
         ),
       ),
@@ -114,8 +104,7 @@ class ListedTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
-        child: Text(text,
-            style: TextStyle(color: textColor, fontWeight: FontWeight.w500)));
+        child: Text(text, style: TextStyle(fontWeight: FontWeight.w500)));
   }
 }
 
@@ -146,8 +135,7 @@ class ListedView extends StatelessWidget {
   final double separatorHeight;
   ListedView(
       {required this.items,
-      this.rowInset =
-          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      this.rowInset = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       this.isScrollable = false,
       this.hidesSeparatorByDefault = false,
       this.separatorHeight = 0.3,
@@ -158,25 +146,15 @@ class ListedView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          hidesFirstLastSeparator
-              ? Container()
-              : Container(
-                  height: separatorHeight,
-                  color: Theme.of(context).dividerColor),
+          hidesFirstLastSeparator ? Container() : Container(height: separatorHeight, color: Theme.of(context).dividerColor),
           ListView.separated(
             shrinkWrap: true,
-            physics: isScrollable
-                ? AlwaysScrollableScrollPhysics()
-                : NeverScrollableScrollPhysics(),
+            physics: isScrollable ? AlwaysScrollableScrollPhysics() : NeverScrollableScrollPhysics(),
             itemCount: items.length,
             itemBuilder: _itemBuilder,
             separatorBuilder: _separatorBuilder,
           ),
-          hidesFirstLastSeparator
-              ? Container()
-              : Container(
-                  height: separatorHeight,
-                  color: Theme.of(context).dividerColor),
+          hidesFirstLastSeparator ? Container() : Container(height: separatorHeight, color: Theme.of(context).dividerColor),
         ],
       ),
     );
@@ -184,15 +162,12 @@ class ListedView extends StatelessWidget {
 
   Widget _separatorBuilder(context, index) {
     ListedItem item = items[index];
-    double leftInset =
-        item.leadingIcon != null ? rowInset.left + 42 : rowInset.left;
+    double leftInset = item.leadingIcon != null ? rowInset.left + 42 : rowInset.left;
     return hidesSeparatorByDefault
         ? Container()
         : Padding(
-            padding:
-                rowInset.copyWith(top: 0, bottom: 0, left: leftInset, right: 0),
-            child: Container(
-                color: Theme.of(context).dividerColor, height: separatorHeight),
+            padding: rowInset.copyWith(top: 0, bottom: 0, left: leftInset, right: 0),
+            child: Container(color: Theme.of(context).dividerColor, height: separatorHeight),
           );
   }
 
@@ -250,13 +225,7 @@ class ZimpleTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final String? placeholder;
 
-  const ZimpleTextField(
-      {Key? key,
-      this.inputType,
-      this.controller,
-      this.onChanged,
-      this.placeholder})
-      : super(key: key);
+  const ZimpleTextField({Key? key, this.inputType, this.controller, this.onChanged, this.placeholder}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

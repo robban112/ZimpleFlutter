@@ -8,6 +8,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
@@ -34,8 +35,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
   void initState() {
     var now = DateTime.now();
     start = DateTime(now.year, now.month, now.day, 0, 0, 0);
-    end =
-        DateTime(now.year, now.month, now.day, 0, 0, 0).add(Duration(days: 7));
+    end = DateTime(now.year, now.month, now.day, 0, 0, 0).add(Duration(days: 7));
     startDateController.initialDate = start;
     endDateController.initialDate = end;
     startEndDiff = end.difference(start);
@@ -60,14 +60,9 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
   void uploadVacation() {
     if (this.absenceType == null) return; // TODO: Handle error
     context.loaderOverlay.show();
-    UserParameters user =
-        Provider.of<ManagerProvider>(context, listen: false).user;
-    FirebaseVacationManager firebaseVacationManager =
-        FirebaseVacationManager(company: user.company);
-    firebaseVacationManager
-        .addVacationRequest(
-            user, start, end, notesController.text, this.absenceType!)
-        .then((value) {
+    UserParameters user = Provider.of<ManagerProvider>(context, listen: false).user;
+    FirebaseVacationManager firebaseVacationManager = FirebaseVacationManager(company: user.company);
+    firebaseVacationManager.addVacationRequest(user, start, end, notesController.text, this.absenceType!).then((value) {
       context.loaderOverlay.hide();
       Navigator.pop(context);
     });
@@ -90,9 +85,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
         brightness: Brightness.dark,
         backgroundColor: primaryColor,
         elevation: 5,
-        title: Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Ansök om ledighet", style: appBarTitleStyle)),
+        title: Align(alignment: Alignment.centerLeft, child: Text("Ansök om ledighet", style: appBarTitleStyle)),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -129,22 +122,18 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
                     //SizedBox(height: 16.0),
                     ListedView(
                         hidesFirstLastSeparator: false,
-                        rowInset:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        rowInset: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         items: [
                           ListedItem(
                               leadingIcon: Icons.subject,
                               child: Text("Välj typ av frånvaro"),
                               trailingWidget: Row(
                                 children: [
-                                  absenceType != null
-                                      ? Text(absenceToString(absenceType!))
-                                      : Container(),
+                                  absenceType != null ? Text(absenceToString(absenceType!)) : Container(),
                                   Icon(Icons.chevron_right)
                                 ],
                               ),
-                              onTap: () => pushNewScreen(context,
-                                      screen: SelectAbsenceType(
+                              onTap: () => pushNewScreen(context, screen: SelectAbsenceType(
                                     didSelectAbsenceType: (absenceType) {
                                       setState(() {
                                         this.absenceType = absenceType;
@@ -161,12 +150,9 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Antal dagar: ',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 17.0)),
+                          Text('Antal dagar: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0)),
                           Text((startEndDiff.inDays + 1).toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 17.0))
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0))
                         ],
                       ),
                     ),
@@ -178,10 +164,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Container(
-                          child: RectangularButton(
-                              onTap: () => uploadVacation(),
-                              text: "Lägg in semester")),
+                      child: Container(child: RectangularButton(onTap: () => uploadVacation(), text: "Lägg in semester")),
                     ),
                   ],
                 ),
@@ -195,30 +178,19 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
 }
 
 class SelectAbsenceType extends StatelessWidget {
-  const SelectAbsenceType({Key? key, required this.didSelectAbsenceType})
-      : super(key: key);
+  const SelectAbsenceType({Key? key, required this.didSelectAbsenceType}) : super(key: key);
   final Function(AbsenceType) didSelectAbsenceType;
 
   @override
   Widget build(BuildContext context) {
-    List<AbsenceType> absenceTypes = AbsenceType.values
-        .where((absence) => absence != AbsenceType.unknown)
-        .toList();
+    List<AbsenceType> absenceTypes = AbsenceType.values.where((absence) => absence != AbsenceType.unknown).toList();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text("Välj typ av frånvaro"),
-        ),
-      ),
+      appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Välj typ av frånvaro")),
       body: SingleChildScrollView(
         child: ListedView(
           items: List.generate(absenceTypes.length, (index) {
             AbsenceType absenceType = absenceTypes[index];
-            return ListedItem(
-                child: Text(absenceToString(absenceType)),
-                onTap: () => didSelectAbsenceType(absenceType));
+            return ListedItem(child: Text(absenceToString(absenceType)), onTap: () => didSelectAbsenceType(absenceType));
           }),
         ),
       ),

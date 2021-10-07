@@ -8,13 +8,9 @@ class AuthenticationForm extends StatefulWidget {
   Function(String, String) onTapLoginRegister;
   final String loginRegisterText;
   final bool? hasError;
-  AuthenticationForm(
-      {required this.loginRegisterText,
-      required this.onTapLoginRegister,
-      this.hasError});
+  AuthenticationForm({required this.loginRegisterText, required this.onTapLoginRegister, this.hasError});
   @override
-  _AuthenticationFormFieldState createState() =>
-      _AuthenticationFormFieldState();
+  _AuthenticationFormFieldState createState() => _AuthenticationFormFieldState();
 }
 
 class _AuthenticationFormFieldState extends State<AuthenticationForm> {
@@ -33,8 +29,7 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
     setState(() {
       _autoValidate = true;
     });
-    return (emailValidator(_email) == null &&
-        passwordValidator(_password) == null);
+    return (emailValidator(_email) == null && passwordValidator(_password) == null);
   }
 
   InputDecoration _textfieldDecoration(IconData leadingIcon, String hintText) {
@@ -100,8 +95,7 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Text("Fel lösenord",
-                    style: TextStyle(color: Colors.red, fontSize: 17)),
+                child: Text("Fel lösenord", style: TextStyle(color: Colors.red, fontSize: 17)),
               ),
             )),
         SizedBox(

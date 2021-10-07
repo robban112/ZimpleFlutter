@@ -165,7 +165,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         iconData: category.icon,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text("Arbetskategori", style: greyText), Text(category.name)],
+          children: [Text("Kategori", style: greyText), Text(category.name)],
         ));
   }
 
@@ -314,6 +314,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             _buildLocation(),
             _buildPhoneNumber(),
             _buildNotes(),
+            SizedBox(height: 16),
             _buildImageList(),
             SizedBox(height: 32.0),
           ],

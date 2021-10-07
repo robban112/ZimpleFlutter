@@ -14,7 +14,10 @@ class WorkCategory {
 
 List<Map<String, dynamic>> workCategories = [
   {'name': 'Måla', 'icon': FontAwesome5.paint_brush},
-  {'name': 'Hantverk', 'icon': Icons.carpenter},
+  {'name': 'Hantverk', 'icon': FontAwesome.hammer},
   {'name': 'Flytt', 'icon': FontAwesome5.truck},
   {'name': 'Montering', 'icon': FontAwesome5.tools},
+  {'name': 'Möte', 'icon': Icons.groups},
+  {'name': 'El', 'icon': FontAwesome5.bolt},
+  {'name': 'Städ', 'icon': Icons.cleaning_services},
 ];

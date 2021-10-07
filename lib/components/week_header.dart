@@ -42,23 +42,16 @@ class WeekHeader extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundColor: isToday(_dates[index])
-                          ? Theme.of(context).accentColor
-                          : Theme.of(context).backgroundColor,
+                      backgroundColor:
+                          isToday(_dates[index]) ? Theme.of(context).colorScheme.secondary : Theme.of(context).backgroundColor,
                       child: Text(formattedDate.format(_dates[index]),
                           style: TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,
-                              color: isToday(_dates[index])
-                                  ? Colors.white
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.color)),
+                              color: isToday(_dates[index]) ? Colors.white : Theme.of(context).textTheme.bodyText1?.color)),
                     ),
                     SizedBox(height: 2.0),
-                    Text(dateToAbbreviatedString(_dates[index]).toUpperCase(),
-                        style: TextStyle(fontSize: 11.0, color: null)),
+                    Text(dateToAbbreviatedString(_dates[index]).toUpperCase(), style: TextStyle(fontSize: 11.0, color: null)),
                   ],
                 ),
               ),

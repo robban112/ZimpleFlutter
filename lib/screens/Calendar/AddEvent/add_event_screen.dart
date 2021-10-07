@@ -505,7 +505,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   ListedItem _buildTypeOfWorkRow() => ListedItem(
       leadingIcon: Icons.widgets,
-      child: Text("Välj arbetskategori"),
+      child: Text("Välj kategori"),
       trailingWidget: Row(
         children: [
           _buildSelectedTypeOfWork(),

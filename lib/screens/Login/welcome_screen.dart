@@ -11,19 +11,16 @@ class WelcomeScreen extends StatefulWidget {
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen>
-    with SingleTickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation animation;
 
   @override
   void initState() {
     super.initState();
-    animationController =
-        AnimationController(duration: Duration(seconds: 1), vsync: this);
+    animationController = AnimationController(duration: Duration(seconds: 1), vsync: this);
 
-    animation =
-        CurvedAnimation(parent: animationController, curve: Curves.decelerate);
+    animation = CurvedAnimation(parent: animationController, curve: Curves.decelerate);
     animationController.forward();
 
     animationController.addListener(() {
@@ -70,7 +67,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               tag: 'login_button',
               child: RoundedButton(
                 text: 'Logga in',
-                color: Colors.lightBlue,
+                color: Theme.of(context).colorScheme.secondary,
                 textColor: Colors.white,
                 onTap: () {
                   Navigator.pushNamed(context, LoginScreen.routeName);

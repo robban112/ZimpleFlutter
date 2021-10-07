@@ -40,15 +40,9 @@ class WeekView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var dayWidth =
-        (MediaQuery.of(context).size.width - verticalTimeContainerWidth) /
-            _numberOfDays;
+    var dayWidth = (MediaQuery.of(context).size.width - verticalTimeContainerWidth) / _numberOfDays;
     var eventLayoutManager = EventLayoutManager(
-        dayWidth: dayWidth,
-        events: events,
-        minuteHeight: _minuteHeight,
-        datesOfWeek: dates,
-        didTapEvent: didTapEvent);
+        dayWidth: dayWidth, events: events, minuteHeight: _minuteHeight, datesOfWeek: dates, didTapEvent: didTapEvent);
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(color: primaryColor),
@@ -73,8 +67,7 @@ class WeekView extends StatelessWidget {
                         minuteHeight: _minuteHeight,
                       ),
                       Row(
-                        children: _buildHoursAndEvents(
-                            context, dates, eventLayoutManager, dayWidth),
+                        children: _buildHoursAndEvents(context, dates, eventLayoutManager, dayWidth),
                       ),
                     ],
                   ),
@@ -92,8 +85,8 @@ class WeekView extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildHoursAndEvents(BuildContext context, List<DateTime> dates,
-      EventLayoutManager eventLayoutManager, double dayWidth) {
+  List<Widget> _buildHoursAndEvents(
+      BuildContext context, List<DateTime> dates, EventLayoutManager eventLayoutManager, double dayWidth) {
     return List.generate(_numberOfDays, (index) {
       List<Widget> events = eventLayoutManager.buildEventContainers(index);
       return Stack(
@@ -101,12 +94,10 @@ class WeekView extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               border: Border(
-                left: BorderSide(
-                    width: 0.2, color: Theme.of(context).dividerColor),
+                left: BorderSide(width: 0.2, color: Theme.of(context).dividerColor),
               ),
             ),
-            child: Column(
-                children: _buildHourContainer(context, dates[index], dayWidth)),
+            child: Column(children: _buildHourContainer(context, dates[index], dayWidth)),
           ),
           if (events.isNotEmpty)
             Stack(
@@ -117,8 +108,7 @@ class WeekView extends StatelessWidget {
     });
   }
 
-  List<Widget> _buildHourContainer(
-      BuildContext context, DateTime date, double dayWidth) {
+  List<Widget> _buildHourContainer(BuildContext context, DateTime date, double dayWidth) {
     return List.generate(
       24,
       (index) => GestureDetector(
@@ -132,9 +122,7 @@ class WeekView extends StatelessWidget {
           minuteHeight: _minuteHeight,
           dayWidth: dayWidth,
           color: isToday(date)
-              ? Color.alphaBlend(
-                  Theme.of(context).accentColor.withOpacity(0.15),
-                  Theme.of(context).backgroundColor)
+              ? Color.alphaBlend(Theme.of(context).colorScheme.secondary.withOpacity(0.15), Theme.of(context).backgroundColor)
               : Theme.of(context).backgroundColor,
         ),
       ),

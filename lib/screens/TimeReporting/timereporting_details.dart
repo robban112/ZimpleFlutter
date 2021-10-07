@@ -93,7 +93,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
           left: 0,
           bottom: 24,
           child: DotsIndicator(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             controller: pageController,
             itemCount: widget.listTimereports!.length,
           ),

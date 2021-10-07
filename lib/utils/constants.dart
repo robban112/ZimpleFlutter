@@ -21,8 +21,7 @@ const kMessageContainerDecoration = BoxDecoration(
 );
 
 const textFieldInputDecoration = InputDecoration(
-  hintStyle: TextStyle(
-      color: Colors.black38, fontWeight: FontWeight.bold, fontSize: 14.0),
+  hintStyle: TextStyle(color: Colors.black38, fontWeight: FontWeight.bold, fontSize: 14.0),
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   border: OutlineInputBorder(
     borderRadius: BorderRadius.all(
@@ -34,7 +33,7 @@ const textFieldInputDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(25.0)),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.lightBlueAccent, width: 2.0),
+    borderSide: BorderSide(color: Color(0xff3B14C3), width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(25.0)),
   ),
 );
@@ -67,8 +66,7 @@ final List<BoxShadow> standardShadow = [
   )
 ];
 
-final TextStyle appBarTitleStyle =
-    TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0);
+final TextStyle appBarTitleStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0);
 
 String? emailValidator(String? value) {
   if (value == null) return null;

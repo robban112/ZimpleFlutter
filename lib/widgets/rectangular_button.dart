@@ -20,7 +20,7 @@ class RectangularButton extends StatelessWidget {
           },
           style: ElevatedButton.styleFrom(
             elevation: 0,
-            primary: green,
+            primary: Theme.of(context).colorScheme.secondary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),

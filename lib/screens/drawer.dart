@@ -45,9 +45,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             child: Center(
               child: Container(
                 height: 30.0,
-                child: isDarkMode
-                    ? Image.asset('images/zimple_logo.png')
-                    : Image.asset('images/zimple_logo_black.png'),
+                child: isDarkMode ? Image.asset('images/zimple_logo.png') : Image.asset('images/zimple_logo_black.png'),
               ),
             ),
           ),
@@ -97,8 +95,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       child: ExpansionPanelList(
         dividerColor: Colors.transparent,
         expansionCallback: (temp, _) {
-          this.setState(() => this.isFilteringPersonsExpanded =
-              !this.isFilteringPersonsExpanded);
+          this.setState(() => this.isFilteringPersonsExpanded = !this.isFilteringPersonsExpanded);
         },
         elevation: 0,
         children: [
@@ -139,13 +136,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 SizedBox(
                                   width: 100,
                                   child: ClipRRect(
-                                    child: Text(person.name,
-                                        overflow: TextOverflow.clip),
+                                    child: Text(person.name, overflow: TextOverflow.clip),
                                   ),
                                 )
                               ],
                             ),
                             Checkbox(
+                                activeColor: Theme.of(context).colorScheme.secondary,
                                 value: widget.filteredPersons[person],
                                 onChanged: (val) {
                                   widget.didSetFilterForPersons(person);

@@ -50,10 +50,7 @@ class Timeplan extends StatelessWidget {
                   isFirstDayOfMonth(date)
                       ? Padding(
                           padding: const EdgeInsets.only(top: 10.0),
-                          child: Text(dateStringMonth(date),
-                              style: TextStyle(
-                                  fontSize: 24.0,
-                                  fontWeight: FontWeight.normal)),
+                          child: Text(dateStringMonth(date), style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.normal)),
                         )
                       : Container(),
                   TimeplanDay(
@@ -96,11 +93,7 @@ class TimeplanDay extends StatelessWidget {
   List<Event> _filterForUserIfShould() {
     var events = eventManager.getEventsByDate(date);
     if (userIdToOnlyShow != null) {
-      return events
-          .where((event) =>
-              event.persons?.any((person) => person.id == userIdToOnlyShow) ??
-              false)
-          .toList();
+      return events.where((event) => event.persons?.any((person) => person.id == userIdToOnlyShow) ?? false).toList();
     } else {
       return events;
     }
@@ -123,14 +116,9 @@ class TimeplanDay extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 25.0,
                           fontWeight: FontWeight.normal,
-                          color: isToday(date)
-                              ? Theme.of(context).accentColor
-                              : null)),
+                          color: isToday(date) ? Theme.of(context).colorScheme.secondary : null)),
                   Text(dateToAbbreviatedString(date),
-                      style: TextStyle(
-                          color: isToday(date)
-                              ? Theme.of(context).accentColor
-                              : null))
+                      style: TextStyle(color: isToday(date) ? Theme.of(context).colorScheme.secondary : null))
                 ],
               ),
             ),
@@ -154,11 +142,7 @@ class TimeplanEvent extends StatelessWidget {
   final bool shouldShowIsTimereported;
   final String? userIdToOnlyShow;
 
-  TimeplanEvent(
-      {required this.events,
-      required this.didTapEvent,
-      required this.shouldShowIsTimereported,
-      this.userIdToOnlyShow});
+  TimeplanEvent({required this.events, required this.didTapEvent, required this.shouldShowIsTimereported, this.userIdToOnlyShow});
 
   @override
   Widget build(BuildContext context) {
@@ -205,15 +189,11 @@ class TimeplanEventContainer extends StatelessWidget {
     return _shouldShowTimereported(userToken)
         ? Row(
             children: [
-              CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 10,
-                  child: Icon(Icons.check, size: 14, color: green)),
+              CircleAvatar(backgroundColor: Colors.white, radius: 10, child: Icon(Icons.check, size: 14, color: green)),
               SizedBox(
                 width: 5.0,
               ),
-              Text("Tidrapporterat",
-                  style: TextStyle(color: _dynamicBlackWhite(event.color)))
+              Text("Tidrapporterat", style: TextStyle(color: _dynamicBlackWhite(event.color)))
             ],
           )
         : Container();
@@ -232,15 +212,11 @@ class TimeplanEventContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode =
-        Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
-    var userToken =
-        Provider.of<ManagerProvider>(context, listen: false).user.token;
+    bool isDarkMode = Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
+    var userToken = Provider.of<ManagerProvider>(context, listen: false).user.token;
     return Container(
       decoration: BoxDecoration(
-          color: _shouldShowTimereported(userToken)
-              ? event.color.withAlpha(120)
-              : event.color,
+          color: _shouldShowTimereported(userToken) ? event.color.withAlpha(120) : event.color,
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: !isDarkMode
               ? [
@@ -260,23 +236,16 @@ class TimeplanEventContainer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(event.title,
-                    style: TextStyle(
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.normal,
-                        color: _dynamicBlackWhite(event.color))),
+                    style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold, color: _dynamicBlackWhite(event.color))),
                 SizedBox(height: 4.0),
                 buildTimeRow(),
                 SizedBox(height: 4.0),
-                event.persons != null
-                    ? ListPersonCircleAvatar(
-                        persons: event.persons!, radius: 8, spacing: 2)
-                    : Container(),
+                event.persons != null ? ListPersonCircleAvatar(persons: event.persons!, radius: 8, spacing: 2) : Container(),
                 SizedBox(height: 4.0),
                 event.location.isNotBlank()
                     ? Text(
                         buildCustomerLocation(),
-                        style:
-                            TextStyle(color: _dynamicBlackWhite(event.color)),
+                        style: TextStyle(color: _dynamicBlackWhite(event.color)),
                       )
                     : Container(),
                 SizedBox(height: 5.0),
@@ -293,8 +262,7 @@ class TimeplanEventContainer extends StatelessWidget {
     }
     return Row(
       children: [
-        Text(
-            dateToHourMinute(event.start) + " - " + dateToHourMinute(event.end),
+        Text(dateToHourMinute(event.start) + " - " + dateToHourMinute(event.end),
             style: TextStyle(color: _dynamicBlackWhite(event.color)))
       ],
     );

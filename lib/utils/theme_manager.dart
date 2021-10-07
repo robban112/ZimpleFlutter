@@ -6,12 +6,13 @@ class ThemeNotifier with ChangeNotifier {
   final darkTheme = ThemeData(
       primarySwatch: Colors.grey,
       primaryColor: Colors.black,
-      brightness: Brightness.dark,
       backgroundColor: Color(0xff121212),
       scaffoldBackgroundColor: Color(0xff121212),
       cardColor: Color(0xff282828),
-      accentColor: Colors.indigo.shade600,
-      buttonColor: green,
+      colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(
+        secondary: Colors.indigo.shade600,
+        brightness: Brightness.dark,
+      ),
       accentIconTheme: IconThemeData(color: Colors.black),
       dividerColor: Colors.white,
       fontFamily: 'FiraSans',
@@ -22,9 +23,13 @@ class ThemeNotifier with ChangeNotifier {
   final lightTheme = ThemeData(
     primarySwatch: Colors.grey,
     primaryColor: Colors.white,
-    brightness: Brightness.light,
+
     backgroundColor: Colors.white,
-    accentColor: Colors.lightBlue,
+    colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(
+      secondary: Color(0xff3B14C3),
+      brightness: Brightness.light,
+    ),
+    //accentColor: Colors.lightBlue,
     buttonColor: green,
     accentIconTheme: IconThemeData(color: Colors.white),
     dividerColor: Colors.black,

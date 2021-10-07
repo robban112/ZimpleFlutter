@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:provider/provider.dart';
 import 'package:zimple/components/timeplan.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/screens/drawer.dart';
 import 'package:zimple/utils/constants.dart';
@@ -224,7 +222,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       key: _drawerKey,
       floatingActionButton: widget.user.isAdmin
           ? FloatingActionButton(
-              backgroundColor: green,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               child: Icon(
                 Icons.add,
                 color: Colors.white,

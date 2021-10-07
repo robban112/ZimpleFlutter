@@ -35,9 +35,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
     print("Init State Add Customer Screen");
     this.isChangingCustomer = widget.customerToChange != null;
     if (isChangingCustomer) initChangeCustomerFields();
-    firebaseCustomerManager =
-        Provider.of<ManagerProvider>(context, listen: false)
-            .firebaseCustomerManager;
+    firebaseCustomerManager = Provider.of<ManagerProvider>(context, listen: false).firebaseCustomerManager;
   }
 
   void initChangeCustomerFields() {
@@ -55,9 +53,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
     updateCustomer.address = addressController.text;
     updateCustomer.orgNr = orgNrController.text;
     updateCustomer.contacts = contacts;
-    firebaseCustomerManager
-        .changeCustomer(updateCustomer)
-        .then((value) => Navigator.pop(context));
+    firebaseCustomerManager.changeCustomer(updateCustomer).then((value) => Navigator.pop(context));
   }
 
   void addNewCustomer() {
@@ -66,23 +62,18 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
       return;
     }
     var customer = Customer(name!, address ?? "", orgNr ?? "", contacts);
-    firebaseCustomerManager
-        .addCustomer(customer)
-        .then((value) => Navigator.pop(context));
+    firebaseCustomerManager.addCustomer(customer).then((value) => Navigator.pop(context));
   }
 
   @override
   Widget build(BuildContext context) {
     print("Building Add Customer Screen");
     return Scaffold(
-        appBar: PreferredSize(
-            preferredSize: Size.fromHeight(60),
-            child: StandardAppBar("Lägg till kund")),
+        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Lägg till kund")),
         body: Stack(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 0.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 16.0),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,9 +196,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
 }
 
 class SaveCancelActionButtons extends StatelessWidget {
-  const SaveCancelActionButtons(
-      {Key? key, required this.context, required this.didTapSave})
-      : super(key: key);
+  const SaveCancelActionButtons({Key? key, required this.context, required this.didTapSave}) : super(key: key);
 
   final BuildContext context;
   final Function didTapSave;
@@ -235,7 +224,7 @@ class SaveCancelActionButtons extends StatelessWidget {
             Expanded(
               child: RoundedButton(
                 text: "Spara",
-                color: Colors.lightBlue,
+                color: Theme.of(context).colorScheme.secondary,
                 onTap: () {
                   didTapSave();
                 },

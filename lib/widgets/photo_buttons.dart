@@ -7,10 +7,7 @@ class PhotoButtons extends StatelessWidget {
   final Function didTapCancel;
   final Function(File) didReceiveImage;
   final picker = ImagePicker();
-  PhotoButtons(
-      {required this.isSelectingPhotoProvider,
-      required this.didTapCancel,
-      required this.didReceiveImage});
+  PhotoButtons({required this.isSelectingPhotoProvider, required this.didTapCancel, required this.didReceiveImage});
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
@@ -38,8 +35,7 @@ class PhotoButtons extends StatelessWidget {
   }
 
   Future<void> getImage(ImageSource imageSource) async {
-    final pickedFile =
-        await picker.getImage(source: imageSource).catchError((err) {
+    final pickedFile = await picker.getImage(source: imageSource).catchError((err) {
       print("Error retrieving image $err");
     });
 
@@ -68,7 +64,7 @@ class PhotoButtons extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             minimumSize: Size(100.0, 50.0),
             elevation: 5,
-            onPrimary: Theme.of(context).accentColor,
+            onPrimary: Theme.of(context).colorScheme.secondary,
             primary: Theme.of(context).primaryColor,
             //onPrimary: Colors.black,
           ),

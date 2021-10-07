@@ -11,12 +11,7 @@ import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 class AbsenceScreen extends StatefulWidget {
-  const AbsenceScreen(
-      {Key? key,
-      this.isApproving = false,
-      this.person,
-      required this.userId,
-      required this.company})
+  const AbsenceScreen({Key? key, this.isApproving = false, this.person, required this.userId, required this.company})
       : super(key: key);
 
   final Person? person;
@@ -36,17 +31,14 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
     loadVacation = _loadVacation();
     firebaseVacationManager = FirebaseVacationManager(company: widget.company);
     super.initState();
-    firebaseEventManager = Provider.of<ManagerProvider>(context, listen: false)
-        .firebaseEventManager;
+    firebaseEventManager = Provider.of<ManagerProvider>(context, listen: false).firebaseEventManager;
   }
 
   Future<List<AbsenceRequest>> _loadVacation() {
-    return FirebaseVacationManager(company: widget.company)
-        .getVacationRequests(widget.userId);
+    return FirebaseVacationManager(company: widget.company).getVacationRequests(widget.userId);
   }
 
-  Future<void> changeVacation(
-      BuildContext context, AbsenceRequest vacationRequest) async {
+  Future<void> changeVacation(BuildContext context, AbsenceRequest vacationRequest) async {
     return firebaseVacationManager.changeVacationRequest(vacationRequest);
   }
 
@@ -67,9 +59,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
 
     context.loaderOverlay.show();
 
-    await firebaseEventManager
-        .addVacationPeriod(vacationRequest, widget.person?.name)
-        .then((List<String> eventIds) {
+    await firebaseEventManager.addVacationPeriod(vacationRequest, widget.person?.name).then((List<String> eventIds) {
       print("Uploaded vacation");
 
       vacationRequest.approved = true;
@@ -81,8 +71,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
 
   void afterVacationStateChange() async {
     await firebaseVacationManager.getUnreadAbsenceRequests().then((absenceMap) {
-      Provider.of<ManagerProvider>(context, listen: false)
-          .absenceRequestReadMap = absenceMap;
+      Provider.of<ManagerProvider>(context, listen: false).absenceRequestReadMap = absenceMap;
     });
     setState(() {
       loadVacation = _loadVacation();
@@ -93,10 +82,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
   Widget approvedRequest() {
     return Row(
       children: [
-        CircleAvatar(
-            backgroundColor: Colors.green,
-            radius: 10,
-            child: Icon(Icons.check, size: 14, color: Colors.white)),
+        CircleAvatar(backgroundColor: Colors.green, radius: 10, child: Icon(Icons.check, size: 14, color: Colors.white)),
         SizedBox(width: 12.0),
         _buildTextColumn("Status", "Godkänd")
       ],
@@ -107,9 +93,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
     return Row(
       children: [
         CircleAvatar(
-            backgroundColor: Colors.yellow,
-            radius: 10,
-            child: Icon(Icons.hourglass_bottom, size: 12, color: Colors.black)),
+            backgroundColor: Colors.yellow, radius: 10, child: Icon(Icons.hourglass_bottom, size: 12, color: Colors.black)),
         SizedBox(width: 12.0),
         _buildTextColumn("Status", "Väntar")
       ],
@@ -119,10 +103,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
   Widget deniedRequest() {
     return Row(
       children: [
-        CircleAvatar(
-            backgroundColor: Colors.red,
-            radius: 10,
-            child: Icon(Icons.clear, size: 14, color: Colors.white)),
+        CircleAvatar(backgroundColor: Colors.red, radius: 10, child: Icon(Icons.clear, size: 14, color: Colors.white)),
         SizedBox(width: 12.0),
         _buildTextColumn("Status", "Obeviljad")
       ],
@@ -137,7 +118,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
   Widget buildButton(String title, VoidCallback onTap) {
     return MaterialButton(
       //color: Colors.grey.shade200,
-      color: Theme.of(context).buttonColor,
+      color: Theme.of(context).colorScheme.secondary,
       elevation: 0.0,
       child: Text(title),
       onPressed: onTap,
@@ -202,13 +183,11 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
                   vacationRequest.notes.isNotBlank()
                       ? Row(
                           children: [
-                            _buildTextColumn(
-                                "Anteckningar", vacationRequest.notes!),
+                            _buildTextColumn("Anteckningar", vacationRequest.notes!),
                           ],
                         )
                       : Container(),
-                  SizedBox(
-                      height: vacationRequest.notes.isNotBlank() ? 12.0 : 0.0),
+                  SizedBox(height: vacationRequest.notes.isNotBlank() ? 12.0 : 0.0),
                   Row(
                     children: [
                       buildStatus(vacationRequest),
@@ -219,8 +198,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
                     children: [
                       getAbsenceTypeWidget(vacationRequest.absenceType),
                       SizedBox(width: 12.0),
-                      _buildTextColumn(
-                          "Typ", absenceToString(vacationRequest.absenceType))
+                      _buildTextColumn("Typ", absenceToString(vacationRequest.absenceType))
                     ],
                   ),
                   SizedBox(height: 8.0),
@@ -228,11 +206,9 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            buildButton("Godkänn",
-                                () => approveVacation(vacationRequest)),
+                            buildButton("Godkänn", () => approveVacation(vacationRequest)),
                             SizedBox(width: 12.0),
-                            buildButton("Neka",
-                                () => disapproveVacation(vacationRequest))
+                            buildButton("Neka", () => disapproveVacation(vacationRequest))
                           ],
                         )
                       : Container()
@@ -246,8 +222,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
   }
 
   Text buildTitle(AbsenceRequest vacationRequest) {
-    return Text(
-        "${dateString(vacationRequest.startDate)} - ${dateString(vacationRequest.endDate)}",
+    return Text("${dateString(vacationRequest.startDate)} - ${dateString(vacationRequest.endDate)}",
         style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold));
   }
 

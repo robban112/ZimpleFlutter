@@ -441,7 +441,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           max: 100,
           divisions: 480,
           label: '${_minutesBreak.toInt()}',
-          activeColor: green,
+          activeColor: Theme.of(context).colorScheme.secondary,
+          inactiveColor: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
           onChanged: (newValue) {
             setState(() {
               this._minutesBreak = newValue;

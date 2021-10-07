@@ -16,7 +16,7 @@ class StandardAppBar extends StatelessWidget {
       backgroundColor: primaryColor,
       title: Align(
         alignment: Alignment.centerLeft,
-        child: Text(title, style: TextStyle(color: Colors.white)),
+        child: Text(title, style: appBarTitleStyle),
       ),
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -31,8 +31,7 @@ class AppBarWidget extends StatelessWidget {
   final String title;
   final bool hasMenu;
   AppBarWidget({this.dateStream, this.title = "", this.hasMenu = false});
-  TextStyle _titleStyle() => TextStyle(
-      color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold);
+  TextStyle _titleStyle() => TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -41,20 +40,13 @@ class AppBarWidget extends StatelessWidget {
         builder: (context, AsyncSnapshot<DateTime> snapshot) {
           return AppBar(
             title: dateStream != null
-                ? Text(
-                    dateStringMonth(snapshot.data!) +
-                        "  |  V." +
-                        weekNumber(snapshot.data!).toString(),
-                    style: _titleStyle())
+                ? Text(dateStringMonth(snapshot.data!) + "  |  V." + weekNumber(snapshot.data!).toString(), style: _titleStyle())
                 : Text(title, style: _titleStyle()),
             leading: hasMenu
                 ? IconButton(
                     icon: Icon(Icons.menu, color: Colors.white),
                     onPressed: () {
-                      ProviderWidget.of(context)
-                          .drawerKey
-                          .currentState
-                          ?.openDrawer();
+                      ProviderWidget.of(context).drawerKey.currentState?.openDrawer();
                     },
                   )
                 : Container(),

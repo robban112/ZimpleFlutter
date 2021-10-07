@@ -12,8 +12,10 @@ class EventContainer extends StatelessWidget {
   EventContainer({required this.event, required this.eventLayout, required this.didTapEvent});
   @override
   Widget build(BuildContext context) {
-    var isEventLarge = (eventLayout.width > 80 && eventLayout.height > 200);
-    var isEventTextable = (eventLayout.width > 18 && eventLayout.height > 30);
+    double screenWidth = MediaQuery.of(context).size.width;
+    //if (eventLayout.width > screenWidth / 5) isEventLarge = true;
+    bool isEventLarge = (eventLayout.width > screenWidth / 5 && eventLayout.height > 200);
+    bool isEventTextable = (eventLayout.width > 18 && eventLayout.height > 30);
 
     return Padding(
       padding: EdgeInsets.only(right: 1.0),
@@ -33,25 +35,26 @@ class EventContainer extends StatelessWidget {
           child: isEventTextable
               ? Padding(
                   padding: isEventLarge ? EdgeInsets.all(6.0) : EdgeInsets.zero,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                            minHeight: 0,
-                            maxHeight: isEventLarge ? eventLayout.height * 0.4 : eventLayout.height - 12,
-                            maxWidth: eventLayout.width - 10),
-                        child: SingleChildScrollView(
-                          child: Column(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: eventLayout.height - 12),
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Column(
                             //clipBehavior: Clip.antiAlias,
-                            //mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 event.title,
-                                style: TextStyle(fontWeight: FontWeight.w300, fontSize: isEventLarge ? 17 : 11),
+                                overflow: TextOverflow.fade,
+                                style: TextStyle(
+                                    fontWeight: isEventLarge ? FontWeight.bold : FontWeight.w500,
+                                    fontSize: isEventLarge ? 17 : 11),
                               ),
                               SizedBox(height: 6),
                               isEventLarge
@@ -59,13 +62,13 @@ class EventContainer extends StatelessWidget {
                                   : Text(event.customer ?? "", style: TextStyle(fontWeight: FontWeight.w300, fontSize: 11))
                             ],
                           ),
-                        ),
+                          isEventLarge ? SizedBox(height: 8.0) : Container(),
+                          isEventLarge ? Text(event.customer ?? "") : Container(),
+                          isEventLarge ? SizedBox(height: 8.0) : Container(),
+                          isEventLarge ? ListPersonCircleAvatar(persons: event.persons ?? []) : Container()
+                        ],
                       ),
-                      isEventLarge ? SizedBox(height: 8.0) : Container(),
-                      isEventLarge ? Text(event.customer ?? "") : Container(),
-                      isEventLarge ? SizedBox(height: 8.0) : Container(),
-                      isEventLarge ? ListPersonCircleAvatar(persons: event.persons ?? []) : Container()
-                    ],
+                    ),
                   ),
                 )
               : null,

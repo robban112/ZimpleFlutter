@@ -71,8 +71,7 @@ class InnerWeekPageController extends StatefulWidget {
       required this.daysChangedController})
       : super(key: key);
   @override
-  _InnerWeekPageControllerState createState() =>
-      _InnerWeekPageControllerState(UniqueKey(), daysChangedController);
+  _InnerWeekPageControllerState createState() => _InnerWeekPageControllerState(UniqueKey(), daysChangedController);
 }
 
 typedef Widget WidgetBuilder(DateTime date);
@@ -88,16 +87,14 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   StreamController<DateTime> streamController = StreamController<DateTime>();
 
-  _InnerWeekPageControllerState(
-      Key? key, WeekPageController daysChangedController) {
+  _InnerWeekPageControllerState(Key? key, WeekPageController daysChangedController) {
     daysChangedController.daysChanged = daysChanged;
   }
 
   @override
   void initState() {
     this.dateAggregator = firstDayOfWeek(DateTime.now());
-    this.sc = ScrollController(
-        initialScrollOffset: widget.screenWidth * (pageOffset));
+    this.sc = ScrollController(initialScrollOffset: widget.screenWidth * (pageOffset));
     this.key = key;
     super.initState();
   }
@@ -109,22 +106,20 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
     print("disposed Inner Week Page Controller");
   }
 
-  void daysChanged(
-      int prevNumberOfDays, int newNumberOfDays, DateTime? zoomDate) {
+  void daysChanged(int prevNumberOfDays, int newNumberOfDays, DateTime? zoomDate) {
     if (!sc.hasClients) {
       return;
     }
 
-    print(
-        "currentPage: $currentPage, prevNumberOfDays: $prevNumberOfDays, newNumberOfDays: $newNumberOfDays");
+    print("currentPage: $currentPage, prevNumberOfDays: $prevNumberOfDays, newNumberOfDays: $newNumberOfDays");
     if (prevNumberOfDays == 1 && newNumberOfDays == 7) {}
     var pageToJump = (currentPage * prevNumberOfDays ~/ newNumberOfDays);
     pageToJump += pageOffset;
 
     if (zoomDate != null && newNumberOfDays == 1) {
-      var date =
-          dateAggregator.add(Duration(days: widget.numberOfDays * currentPage));
+      var date = dateAggregator.add(Duration(days: widget.numberOfDays * currentPage));
       var dates = getDateRange(date, widget.numberOfDays);
+
       var startDate = dates[0];
       var diff = zoomDate.difference(startDate).inDays;
       if (currentPage < 0) {
@@ -135,13 +130,13 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
     }
 
     _jumpToPage(pageToJump);
+    if (zoomDate != null) streamController.add(zoomDate);
     print("1, Jump to page: $pageToJump");
   }
 
   void scrollToOffset(double offset) {
     Future.delayed(Duration(milliseconds: 1), () {
-      sc.animateTo(offset,
-          duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+      sc.animateTo(offset, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
     });
   }
 
@@ -167,7 +162,7 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
           if (notification is ScrollEndNotification) {
             var page = sc.offset / widget.screenWidth;
             currentPage = page.toInt() - this.pageOffset;
-            var diffDaysCurrentDate = currentPage * widget.numberOfDays;
+            var diffDaysCurrentDate = currentPage * widget.numberOfDays - 6;
             var first = DateTime.now().add(Duration(days: diffDaysCurrentDate));
             streamController.add(first);
             print("Page: $currentPage");
@@ -181,8 +176,7 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             var _index = index - pageOffset;
-            return this.widget.widgetBuilder(dateAggregator
-                .add(Duration(days: widget.numberOfDays * _index)));
+            return this.widget.widgetBuilder(dateAggregator.add(Duration(days: widget.numberOfDays * _index)));
           },
         ),
       ),

@@ -36,29 +36,25 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
   @override
   void initState() {
-    this.customerPanels =
-        widget.customers.map((e) => CustomerPanel(e, false)).toList();
+    this.customerPanels = widget.customers.map((e) => CustomerPanel(e, false)).toList();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     print("Building Customer Screen");
-    var customers =
-        Provider.of<ManagerProvider>(context, listen: true).customers;
+    var customers = Provider.of<ManagerProvider>(context, listen: true).customers;
     var user = Provider.of<ManagerProvider>(context, listen: false).user;
     return FocusDetector(
       onFocusGained: () {
         setState(() {});
       },
       child: Scaffold(
-        appBar: PreferredSize(
-            preferredSize: Size.fromHeight(60),
-            child: StandardAppBar("Kundbas")),
+        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Kundbas")),
         floatingActionButton: user.isAdmin
             ? FloatingActionButton(
                 child: Icon(Icons.add, color: Colors.white),
-                backgroundColor: green,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -78,14 +74,11 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(customer.name),
-                    Text(customer.address ?? "",
-                        style: TextStyle(
-                            fontSize: 14.0, color: Colors.grey.shade600))
+                    Text(customer.address ?? "", style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600))
                   ],
                 ),
                 onTap: () {
-                  pushNewScreen(context,
-                      screen: CustomerDetailsScreen(customer: customer));
+                  pushNewScreen(context, screen: CustomerDetailsScreen(customer: customer));
                 });
           })),
           // child: Column(
@@ -123,8 +116,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
   Widget expandableHeader(int index, bool isExpanded, Customer customer) {
     return Theme(
-      data: ThemeData(
-          splashColor: Colors.transparent, highlightColor: Colors.transparent),
+      data: ThemeData(splashColor: Colors.transparent, highlightColor: Colors.transparent),
       child: ListTile(
         onTap: () {
           setState(() {
@@ -137,8 +129,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(customer.name),
-              Text(customer.address ?? "",
-                  style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600))
+              Text(customer.address ?? "", style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600))
             ],
           ),
         ),
@@ -182,9 +173,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(contact.name,
-                        style: TextStyle(
-                            fontSize: 15.0, fontWeight: FontWeight.bold)),
+                    Text(contact.name, style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)),
                     SizedBox(height: 2),
                     Text(contact.email),
                     SizedBox(height: 2),
@@ -211,9 +200,7 @@ class TopHeader extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
             color: primaryColor,
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20.0),
-                bottomRight: Radius.circular(20.0))),
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0))),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: kPadding),
           child: Column(
@@ -221,20 +208,14 @@ class TopHeader extends StatelessWidget {
             children: [
               Text(
                 "Kunder",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 21.0,
-                    fontWeight: FontWeight.w600),
+                style: TextStyle(color: Colors.white, fontSize: 21.0, fontWeight: FontWeight.w600),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0, top: 12.0),
                 child: Text(
                   "Här kan du enkelt lägga till ditt företags kunder och kontaktpersoner. " +
                       "\nLägg sedan till dom enkelt i planeringen.",
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w100),
+                  style: TextStyle(fontSize: 15.0, color: Colors.white, fontWeight: FontWeight.w100),
                 ),
               )
             ],
