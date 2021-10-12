@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/managers/timereport_manager.dart';
+import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
@@ -21,21 +23,25 @@ class ManagerProvider extends ChangeNotifier {
   late FirebaseEventManager firebaseEventManager;
   late FirebaseUserManager firebaseUserManager;
   late FirebaseTimeReportManager firebaseTimereportManager;
+  late FirebaseContactManager firebaseContactManager;
   late TimereportManager timereportManager;
+  List<Contact> contacts = [];
   Map<String, int>? absenceRequestReadMap;
+
+  void setContacts(List<Contact> contacts) {
+    this.contacts = contacts;
+    notifyListeners();
+  }
 }
 
 class ProviderWidget extends InheritedWidget {
-  const ProviderWidget(
-      {required this.drawerKey, required this.child, required this.didTapEvent})
-      : super(child: child);
+  const ProviderWidget({required this.drawerKey, required this.child, required this.didTapEvent}) : super(child: child);
   final GlobalKey<ScaffoldState> drawerKey;
   final Function(Event) didTapEvent;
   final Widget child;
 
   static ProviderWidget of(BuildContext context) {
-    final ProviderWidget result =
-        context.dependOnInheritedWidgetOfExactType<ProviderWidget>()!;
+    final ProviderWidget result = context.dependOnInheritedWidgetOfExactType<ProviderWidget>()!;
     assert(result != null, '');
     return result;
   }

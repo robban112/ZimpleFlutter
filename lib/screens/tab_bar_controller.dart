@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/timereport_manager.dart';
+import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
@@ -47,6 +49,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   late StreamSubscription<EventManager> eventManagerSubscriber;
   late StreamSubscription timereportSubscriper;
   late StreamSubscription<List<Customer>> customerSubscriber;
+  late StreamSubscription<List<Contact>> contactSubscriber;
   late ManagerProvider managerProvider;
   TimereportManager timeReportManager = TimereportManager();
   late List<Customer> customers;
@@ -67,6 +70,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
       managerProvider.user = user;
       updateFCMToken(user);
       setupCustomerSubscriber();
+      setupContactListener(user);
       managerProvider.firebaseCustomerManager = firebaseCustomerManager;
       firebasePersonManager = FirebasePersonManager(company: user.company);
       firebasePersonManager.getPersons().then((persons) {
@@ -97,6 +101,15 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   void listenToUserTopic() {
     print("listening to topic: ${this.user.token}");
     FirebaseMessaging.instance.subscribeToTopic(this.user.token);
+  }
+
+  void setupContactListener(UserParameters user) {
+    FirebaseContactManager firebaseContactManager = FirebaseContactManager(user.company);
+    managerProvider.firebaseContactManager = firebaseContactManager;
+    contactSubscriber = firebaseContactManager.listenContacts().listen((event) {
+      print("Listening new contacts");
+      managerProvider.setContacts(event);
+    });
   }
 
   void setupFirebaseTimereport() {
@@ -213,44 +226,56 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Container(color: Colors.black)
+        ? Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            color: Theme.of(context).primaryColor)
         : LoaderOverlay(
             overlayWidget: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(green),
             ),
             overlayOpacity: 0.0,
-            child: PersistentTabView(
-              context,
-              controller: _controller,
-              screens: _buildScreens(),
-              items: _navBarsItems(),
-              confineInSafeArea: true,
-              //backgroundColor: Color(0xffF4F7FB),
-              backgroundColor: Theme.of(context).bottomAppBarColor,
-              handleAndroidBackButtonPress: true,
-              resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears.
-              stateManagement: true,
-              hideNavigationBarWhenKeyboardShows:
-                  true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
-              decoration: NavBarDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                colorBehindNavBar: Colors.white,
-              ),
-              navBarHeight: 55,
-              popAllScreensOnTapOfSelectedTab: true,
-              popActionScreens: PopActionScreensType.all,
-              itemAnimationProperties: ItemAnimationProperties(
-                // Navigation Bar's items animation properties.
-                duration: Duration(milliseconds: 200),
-                curve: Curves.ease,
-              ),
-              screenTransitionAnimation: ScreenTransitionAnimation(
-                // Screen transition animation on change of selected tab.
-                animateTabTransition: true,
-                curve: Curves.ease,
-                duration: Duration(milliseconds: 200),
-              ),
-              navBarStyle: NavBarStyle.style8, // Choose the nav bar style with this property.
+            child: Stack(
+              children: [
+                Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    color: Theme.of(context).primaryColor),
+                PersistentTabView(
+                  context,
+                  controller: _controller,
+                  screens: _buildScreens(),
+                  items: _navBarsItems(),
+                  confineInSafeArea: true,
+                  //backgroundColor: Color(0xffF4F7FB),
+                  backgroundColor: Theme.of(context).bottomAppBarColor,
+                  handleAndroidBackButtonPress: true,
+                  resizeToAvoidBottomInset:
+                      true, // This needs to be true if you want to move up the screen when keyboard appears.
+                  stateManagement: true,
+                  hideNavigationBarWhenKeyboardShows:
+                      true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
+                  decoration: NavBarDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    colorBehindNavBar: Colors.white,
+                  ),
+                  navBarHeight: 55,
+                  popAllScreensOnTapOfSelectedTab: true,
+                  popActionScreens: PopActionScreensType.all,
+                  itemAnimationProperties: ItemAnimationProperties(
+                    // Navigation Bar's items animation properties.
+                    duration: Duration(milliseconds: 200),
+                    curve: Curves.ease,
+                  ),
+                  screenTransitionAnimation: ScreenTransitionAnimation(
+                    // Screen transition animation on change of selected tab.
+                    animateTabTransition: true,
+                    curve: Curves.ease,
+                    duration: Duration(milliseconds: 200),
+                  ),
+                  navBarStyle: NavBarStyle.style8, // Choose the nav bar style with this property.
+                ),
+              ],
             ));
   }
 }

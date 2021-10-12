@@ -5,6 +5,7 @@ import 'package:nil/nil.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zimple/model/customer.dart';
+import 'package:zimple/model/models.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/work_category.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
@@ -313,6 +314,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 : Container(),
             _buildLocation(),
             _buildPhoneNumber(),
+            _buildContactPerson(),
             _buildNotes(),
             SizedBox(height: 16),
             _buildImageList(),
@@ -398,6 +400,23 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               _makePhoneCall('tel:${widget.event.phoneNumber}');
             })
         : Container();
+  }
+
+  Widget _buildContactPerson() {
+    String? contactKey = widget.event.contactKey;
+    if (contactKey.isBlank()) return Container();
+
+    List<Contact> contacts = context.read<ManagerProvider>().contacts;
+    Contact? contact = contacts.firstWhereOrNull((c) => c.id == contactKey);
+    if (contact == null) return Container();
+    return _buildParameter(
+        iconData: Icons.contact_phone,
+        title: '${contact.name}',
+        isRichText: true,
+        subtitle: contact.phoneNumber,
+        onTapRichText: () {
+          _makePhoneCall('tel:${contact.phoneNumber}');
+        });
   }
 
   Widget buildActions(Color textColor) {

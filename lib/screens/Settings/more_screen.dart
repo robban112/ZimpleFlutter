@@ -54,8 +54,7 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   ListTile buildMenuTile(String title, VoidCallback onTap) {
-    return ListTile(
-        title: Text(title), trailing: Icon(Icons.chevron_right), onTap: onTap);
+    return ListTile(title: Text(title), trailing: Icon(Icons.chevron_right), onTap: onTap);
   }
 
   @override
@@ -71,9 +70,7 @@ class _MoreScreenState extends State<MoreScreen> {
               width: width,
               decoration: BoxDecoration(
                   color: primaryColor,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(0),
-                      bottomRight: Radius.circular(0))),
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0))),
             ),
           ),
           SingleChildScrollView(
@@ -84,9 +81,7 @@ class _MoreScreenState extends State<MoreScreen> {
                 SizedBox(height: 80),
                 _buildProfile(),
                 SizedBox(height: 10),
-                Text(widget.user.email,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18.0)),
+                Text(widget.user.email, textAlign: TextAlign.center, style: TextStyle(fontSize: 18.0)),
                 SizedBox(height: 15),
                 widget.user.isAdmin
                     ? Text(
@@ -113,8 +108,7 @@ class _MoreScreenState extends State<MoreScreen> {
             trailingIcon: Icons.chevron_right,
             child: Text("Kunder"),
             onTap: () {
-              pushNewScreen(context,
-                  screen: CustomerScreen(customers: widget.customers));
+              pushNewScreen(context, screen: CustomerScreen(customers: widget.customers));
             }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
@@ -171,8 +165,7 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   Future<void> _uploadProfileImage(File file) async {
-    final fbStorageManager =
-        FirebaseStorageManager(company: widget.user.company);
+    final fbStorageManager = FirebaseStorageManager(company: widget.user.company);
     final fbUserManager = FirebaseUserManager();
     final fbPersonManager = FirebasePersonManager(company: widget.user.company);
     var url = await fbStorageManager.uploadUserProfileImage(file, widget.user);
@@ -181,8 +174,7 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   FutureBuilder _profilePicture() {
-    var _future = FirebaseStorageManager(company: widget.user.company)
-        .getImage(widget.user.profilePicturePath!);
+    var _future = FirebaseStorageManager(company: widget.user.company).getImage(widget.user.profilePicturePath!);
     return FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -209,18 +201,11 @@ class _MoreScreenState extends State<MoreScreen> {
         children: [
           Center(
             child: imageNull
-                ? Text(widget.user.name,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 21.0))
+                ? Text(widget.user.name, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 21.0))
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(150),
                     child: Container(
-                        width: 150,
-                        height: 150,
-                        decoration: BoxDecoration(shape: BoxShape.circle),
-                        child: _profilePicture()),
+                        width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle), child: _profilePicture()),
                   ),
           ),
           Padding(
@@ -228,13 +213,13 @@ class _MoreScreenState extends State<MoreScreen> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: FloatingActionButton(
+                heroTag: 'photo_button',
                 backgroundColor: Colors.grey.shade300,
                 mini: true,
                 child: Icon(Icons.photo_camera),
                 onPressed: () {
                   setState(() {
-                    this.isSelectingPhotoProvider =
-                        !this.isSelectingPhotoProvider;
+                    this.isSelectingPhotoProvider = !this.isSelectingPhotoProvider;
                   });
                 },
               ),

@@ -22,10 +22,8 @@ import 'package:zimple/extensions/string_extensions.dart';
 class TimereportingDetails extends StatefulWidget {
   final TimeReport? timereport;
   final List<TimeReport>? listTimereports;
-  late bool isViewingSingle;
-  TimereportingDetails({this.timereport, this.listTimereports}) {
-    isViewingSingle = timereport != null;
-  }
+  final bool isViewingSingle;
+  TimereportingDetails({this.timereport, this.listTimereports}) : isViewingSingle = timereport != null;
 
   @override
   _TimereportingDetailsState createState() => _TimereportingDetailsState();
@@ -113,8 +111,8 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
             _buildParameter(
                 iconData: Icons.access_time,
                 title: dateToYearMonthDay(timereport.startDate),
-                subtitle:
-                    '${getHourDiff(timereport.startDate, timereport.endDate)} timmar, ${dateToHourMinute(timereport.startDate)} - ${dateToHourMinute(timereport.endDate)}'),
+                subtitle: '${dateToHourMinute(timereport.startDate)} - ${dateToHourMinute(timereport.endDate)}'),
+            _buildParameter(iconData: Icons.access_time, title: "Tid", subtitle: _getTimeSubtitle(timereport)),
             _buildParameter(iconData: Icons.access_alarm, title: "Rast", subtitle: '${timereport.breakTime.toString()} minuter'),
             ConditionalWidget(
               condition: timereport.comment != "",
@@ -150,6 +148,17 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
         },
       ),
     ];
+  }
+
+  String _getTimeSubtitle(TimeReport timereport) {
+    int hours = timereport.endDate.difference(timereport.startDate).inHours;
+    String hourString = hours == 1 ? '1 timme' : '$hours timmar';
+
+    int minutes = timereport.endDate.difference(timereport.startDate).inMinutes - (hours * 60);
+    String minuteString = '$minutes minuter';
+    if (minutes == 0) return hourString;
+    if (hours == 0) return minuteString;
+    return '$hourString $minutes minuter';
   }
 
   void _markTimereportsDone(List<TimeReport> timereports, FirebaseTimeReportManager fbTimereportManager) async {

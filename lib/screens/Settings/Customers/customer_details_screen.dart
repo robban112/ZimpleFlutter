@@ -14,8 +14,7 @@ import 'package:zimple/widgets/provider_widget.dart';
 class CustomerDetailsScreen extends StatefulWidget {
   final Customer customer;
 
-  const CustomerDetailsScreen({Key? key, required this.customer})
-      : super(key: key);
+  const CustomerDetailsScreen({Key? key, required this.customer}) : super(key: key);
 
   @override
   _CustomerDetailsScreenState createState() => _CustomerDetailsScreenState();
@@ -28,8 +27,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
     context.loaderOverlay.show();
     firebaseCustomerManager.deleteCustomer(widget.customer).then((value) {
       context.loaderOverlay.hide();
-      Future.delayed(Duration(milliseconds: 500))
-          .then((value) => Navigator.of(context).pop());
+      Future.delayed(Duration(milliseconds: 500)).then((value) => Navigator.of(context).pop());
     });
   }
 
@@ -38,8 +36,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
               title: new Text("Ta bort kund"),
-              content: new Text(
-                  "Är du säker på att du vill ta bort den här kunden?"),
+              content: new Text("Är du säker på att du vill ta bort den här kunden?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                     isDestructiveAction: true,
@@ -61,9 +58,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     Customer customer = widget.customer;
-    firebaseCustomerManager =
-        Provider.of<ManagerProvider>(context, listen: true)
-            .firebaseCustomerManager;
+    firebaseCustomerManager = Provider.of<ManagerProvider>(context, listen: true).firebaseCustomerManager;
     double width = MediaQuery.of(context).size.width;
     double rowHeight = 40;
     return Scaffold(
@@ -100,37 +95,24 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
             children: [
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 SizedBox(height: 6.0),
-                Text(customer.name,
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                Text(customer.name, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                 SizedBox(height: 12.0),
                 Row(children: [
                   Icon(Icons.location_city),
                   SizedBox(width: 12.0),
-                  Text(customer.address ?? "",
-                      style: TextStyle(
-                          fontSize: 15.0, fontWeight: FontWeight.w400)),
+                  Text(customer.address ?? "", style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400)),
                 ]),
                 SizedBox(height: 12.0),
                 customer.orgNr != ""
                     ? Row(
-                        children: [
-                          Text("Org. Nr: "),
-                          Text(customer.orgNr ?? "")
-                        ],
+                        children: [Text("Org. Nr: "), Text(customer.orgNr ?? "")],
                       )
                     : Container()
               ]),
               SizedBox(height: 24.0),
-              Text("Kontakter",
-                  style:
-                      TextStyle(fontSize: 17.0, fontWeight: FontWeight.w400)),
+              Text("Kontakter", style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w400)),
               Table(
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: FlexColumnWidth(),
-                    1: FlexColumnWidth(),
-                    2: FlexColumnWidth()
-                  },
+                  columnWidths: const <int, TableColumnWidth>{0: FlexColumnWidth(), 1: FlexColumnWidth(), 2: FlexColumnWidth()},
                   children: [
                         TableRow(children: [
                           Container(
@@ -165,10 +147,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
                       List.generate(customer.contacts.length, (index) {
                         var contact = customer.contacts[index];
                         return TableRow(children: [
-                          TableCell(
-                              child: Container(
-                                  height: rowHeight,
-                                  child: Text(contact.name))),
+                          TableCell(child: Container(height: rowHeight, child: Text(contact.name))),
                           TableCell(
                               child: RichText(
                             text: TextSpan(
@@ -176,7 +155,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
                                 style: TextStyle(color: Colors.lightBlue),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    _makeEmail(contact.email);
+                                    _makeEmail(contact.email ?? "");
                                   }),
                           )),
                           TableCell(
@@ -185,12 +164,10 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
                                           print("Tapped phone");
-                                          _makePhoneCall(
-                                              'tel:${contact.phoneNumber}');
+                                          _makePhoneCall('tel:${contact.phoneNumber}');
                                         },
                                       text: contact.phoneNumber,
-                                      style:
-                                          TextStyle(color: Colors.lightBlue))))
+                                      style: TextStyle(color: Colors.lightBlue))))
                         ]);
                       }))
             ],

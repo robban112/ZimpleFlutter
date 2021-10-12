@@ -309,8 +309,7 @@ class _TimeReportCardState extends State<TimeReportCard> {
   }
 
   String _getHourDiff() {
-    var minutes = widget.timereport.endDate.difference(widget.timereport.startDate).inMinutes;
-    return "${minutes / 60}";
+    return getHourDiff(widget.timereport.startDate, widget.timereport.endDate);
   }
 
   Row buildFirstRow() {
@@ -321,14 +320,14 @@ class _TimeReportCardState extends State<TimeReportCard> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(dayNumberInMonth(widget.timereport.startDate), style: TextStyle(fontSize: 21.0)),
+            Text(dayNumberInMonth(widget.timereport.startDate), style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
             Text(dateToAbbreviatedString(widget.timereport.startDate), style: TextStyle(color: Colors.grey))
           ],
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(_getHourDiff(), style: TextStyle(fontSize: 21.0)),
+            Text(_getHourDiff(), style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
             Text("timmar", style: TextStyle(color: Colors.grey))
           ],
         )

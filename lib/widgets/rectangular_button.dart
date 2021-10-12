@@ -14,7 +14,7 @@ class RectangularButton extends StatelessWidget {
       child: ButtonTheme(
         height: 60,
         child: ElevatedButton(
-          child: Text(text, style: TextStyle(fontSize: 17.0)),
+          child: Text(text, style: TextStyle(fontSize: 17.0, color: Colors.white)),
           onPressed: () {
             this.onTap();
           },

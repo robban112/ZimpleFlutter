@@ -18,6 +18,7 @@ class Event {
   String? notes;
   String? customerKey;
   int? workCategoryId;
+  String? contactKey;
 
   late EventLayout layout;
 
@@ -44,7 +45,8 @@ class Event {
       this.customerKey,
       this.customerContactIndex,
       this.timereported,
-      this.workCategoryId});
+      this.workCategoryId,
+      this.contactKey});
 
   Map<String, dynamic> toJson() {
     return {
@@ -61,7 +63,8 @@ class Event {
       'customerContactIndex': this.customerContactIndex,
       'timereported': this.timereported,
       'eventType': eventType.toString(),
-      'workCategoryId': this.workCategoryId
+      'workCategoryId': this.workCategoryId,
+      'contactKey': this.contactKey
     };
   }
 }

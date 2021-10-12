@@ -197,41 +197,35 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
 
   Widget _buildPersonChips() {
     List<Person> persons = Provider.of<ManagerProvider>(context, listen: true).personManager.persons;
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-          children: List.generate(persons.length, (index) {
-        var person = persons[index];
-        var selected = selectedPersons[person] ?? false;
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  print("selected person!");
-                  if (!selectedPersons.containsKey(person)) {
-                    selectedPersons[person] = true;
-                  } else {
-                    selectedPersons[person] = !selectedPersons[person]!;
-                  }
-                });
-                handleSelectPerson();
-              },
-              child: Chip(
-                elevation: 3,
-                backgroundColor: selected ? green : Theme.of(context).cardColor,
-                avatar: PersonCircleAvatar(
-                  person: person,
-                ),
-                label: Text(person.name),
-                //useDeleteButtonTooltip: true,
+    return Wrap(
+        spacing: 12,
+        runSpacing: 0,
+        children: List.generate(persons.length, (index) {
+          var person = persons[index];
+          var selected = selectedPersons[person] ?? false;
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                print("selected person!");
+                if (!selectedPersons.containsKey(person)) {
+                  selectedPersons[person] = true;
+                } else {
+                  selectedPersons[person] = !selectedPersons[person]!;
+                }
+              });
+              handleSelectPerson();
+            },
+            child: Chip(
+              elevation: 3,
+              backgroundColor: selected ? green : Theme.of(context).cardColor,
+              avatar: PersonCircleAvatar(
+                person: person,
               ),
+              label: Text(person.name),
+              //useDeleteButtonTooltip: true,
             ),
-            SizedBox(width: 6.0)
-          ],
-        );
-      })),
-    );
+          );
+        }));
   }
 
   AppBar _buildAppBar(Map<String, List<TimeReport>>? mappedTimereports, BuildContext context) {
@@ -282,9 +276,10 @@ class TimereportRow extends StatefulWidget {
 }
 
 class _TimereportRowState extends State<TimereportRow> {
-  Column _buildColumn({required Widget titleWidget, required String subtitle}) {
+  Column _buildColumn(
+      {required Widget titleWidget, required String subtitle, CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start}) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         titleWidget,
@@ -373,8 +368,9 @@ class _TimereportRowState extends State<TimereportRow> {
                                 children: [
                                   _buildColumn(
                                       titleWidget: Text(getHourDiff(widget.timereport.startDate, widget.timereport.endDate),
-                                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500)),
-                                      subtitle: "timmar"),
+                                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                                      subtitle: "timmar",
+                                      crossAxisAlignment: CrossAxisAlignment.center)
                                 ],
                               ),
                             ),

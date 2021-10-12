@@ -175,7 +175,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   children: [
                     Text(contact.name, style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)),
                     SizedBox(height: 2),
-                    Text(contact.email),
+                    Text(contact.email ?? ""),
                     SizedBox(height: 2),
                     Text(contact.phoneNumber)
                   ],

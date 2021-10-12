@@ -12,9 +12,7 @@ bool isSameWeek(DateTime date1, DateTime date2) {
 
 extension DateOnlyCompare on DateTime {
   bool isSameDate(DateTime other) {
-    return this.year == other.year &&
-        this.month == other.month &&
-        this.day == other.day;
+    return this.year == other.year && this.month == other.month && this.day == other.day;
   }
 }
 
@@ -22,9 +20,7 @@ bool isCurrentWeek(DateTime date) {
   var now = DateTime.now();
   var _weekNumber = weekNumber(date);
   var nowWeekNumber = weekNumber(now);
-  return now.year == date.year &&
-      now.month == date.month &&
-      _weekNumber == nowWeekNumber;
+  return now.year == date.year && now.month == date.month && _weekNumber == nowWeekNumber;
 }
 
 bool isFirstDayOfMonth(DateTime date) {
@@ -63,9 +59,7 @@ String dateStringMonth(DateTime date) {
 
 bool isToday(DateTime date) {
   DateTime now = DateTime.now();
-  return (now.year == date.year &&
-      now.month == date.month &&
-      now.day == date.day);
+  return (now.year == date.year && now.month == date.month && now.day == date.day);
 }
 
 String dateToHourMinute(DateTime date) {
@@ -93,9 +87,10 @@ List<DateTime> getDateRange(DateTime startDate, int daysForward) {
 }
 
 String getHourDiff(DateTime startDate, DateTime endDate) {
-  var minutes = endDate.difference(startDate).inMinutes;
-  var minutesToHours = (minutes / 60);
-  return "$minutesToHours";
+  int minutes = endDate.difference(startDate).inMinutes;
+  String minutesToHours = (minutes / 60).toStringAsFixed(2);
+  if (minutesToHours.endsWith("00")) return (minutes / 60).round().toString();
+  return minutesToHours;
 }
 
 List<DateTime> getDaysInBeteween(DateTime startDate, DateTime endDate) {

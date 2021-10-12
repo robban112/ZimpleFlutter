@@ -100,6 +100,7 @@ class FirebaseEventManager {
       String? location = eventData['address'];
       String? phoneNumber = eventData['phonenumber'];
       String? customerKey = eventData["customerKey"];
+      String? contactKey = eventData["contactKey"];
       EventType eventType = stringToEventType(eventData['eventType']);
       int? customerContactIndex = eventData['customerContactIndex'];
       int? workCategoryId = eventData['workCategoryId'];
@@ -125,7 +126,8 @@ class FirebaseEventManager {
           customerKey: customerKey,
           customerContactIndex: customerContactIndex,
           timereported: timereported,
-          workCategoryId: workCategoryId);
+          workCategoryId: workCategoryId,
+          contactKey: contactKey);
       events.add(event);
     }
     return events;

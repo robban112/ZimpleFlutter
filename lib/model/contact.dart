@@ -1,8 +1,9 @@
 class Contact {
-  Contact(this.name, this.phoneNumber, this.email);
+  Contact(this.id, this.name, this.phoneNumber, this.email);
+  String id;
   String name;
   String phoneNumber;
-  String email;
+  String? email;
 
   Map<String, dynamic> toJson() {
     return {
@@ -10,5 +11,12 @@ class Contact {
       'phoneNumber': this.phoneNumber == null ? "" : this.phoneNumber,
       'email': this.email == null ? "" : this.email,
     };
+  }
+
+  static Contact fromJson(String id, Map<String, dynamic> json) {
+    String name = json['name'];
+    String phoneNumber = json['phoneNumber'];
+    String email = json['email'];
+    return Contact(id, name, phoneNumber, email);
   }
 }

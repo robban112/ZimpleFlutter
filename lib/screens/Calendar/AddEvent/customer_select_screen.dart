@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/utils/constants.dart';
 
@@ -19,24 +20,14 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
   @override
   void initState() {
     customers = Provider.of<ManagerProvider>(context, listen: false).customers;
-    selectedContact = Map.fromIterable(customers,
-        key: (customer) => customer, value: (val) => 0);
+    selectedContact = Map.fromIterable(customers, key: (customer) => customer, value: (val) => 0);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          backgroundColor: primaryColor,
-          title: Text("Välj kund och kontaktperson"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
-        body: buildBody());
+        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Välj kund")), body: buildBody());
   }
 
   Widget buildBody() {
@@ -47,9 +38,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Text("Inga kunder kunde hittas i kundbasen",
-                    style:
-                        TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold)),
+                Text("Inga kunder kunde hittas i kundbasen", style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold)),
                 SizedBox(height: 12.0),
                 Text(
                     "Lägg till kunder genom att gå till Verktyg i appen. Tryck sedan på kunder och här kan du enkelt lägga till kunder.",
@@ -68,14 +57,11 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
         itemBuilder: (context, index) {
           var customer = customers[index];
           return ListTile(
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 16.0, horizontal: 18.0),
+            contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 18.0),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(customer.name,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0)),
+                Text(customer.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0)),
                 Text(customer.address ?? ""),
                 SizedBox(height: 10),
                 ContactSelect(
@@ -98,9 +84,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
 }
 
 class ContactSelect extends StatefulWidget {
-  const ContactSelect(
-      {Key? key, required this.customer, required this.didSelectContact})
-      : super(key: key);
+  const ContactSelect({Key? key, required this.customer, required this.didSelectContact}) : super(key: key);
 
   final Customer customer;
   final Function(int) didSelectContact;
@@ -139,12 +123,8 @@ class _ContactSelectState extends State<ContactSelect> {
                             children: [
                               index == 0
                                   ? Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 4.0),
-                                      child: Text("Kontaktperson",
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 14.0)),
+                                      padding: const EdgeInsets.only(bottom: 4.0),
+                                      child: Text("Kontaktperson", style: TextStyle(color: Colors.grey, fontSize: 14.0)),
                                     )
                                   : Container(),
                               Text(contact.name),

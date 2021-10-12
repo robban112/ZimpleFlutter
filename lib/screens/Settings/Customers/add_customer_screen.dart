@@ -112,7 +112,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
             fontSize: 14.0,
             onTap: () {
               setState(() {
-                contacts.add(Contact("", "", ""));
+                contacts.add(Contact("", "", "", ""));
               });
             },
           ),

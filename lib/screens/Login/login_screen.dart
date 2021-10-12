@@ -20,11 +20,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void loginUser(String email, String password) async {
     context.loaderOverlay.show();
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email.trim(), password: password.trim());
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
       context.loaderOverlay.hide();
-      Navigator.pushNamedAndRemoveUntil(
-          context, TabBarController.routeName, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, TabBarController.routeName, (route) => false);
     } catch (e) {
       context.loaderOverlay.hide();
       setState(() {
@@ -79,9 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       decoration: BoxDecoration(
                           color: primaryColor,
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(200),
-                              bottomRight: Radius.circular(200))),
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(200), bottomRight: Radius.circular(200))),
                     ),
                   ],
                 ),
@@ -100,11 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40.0),
                   child: TextButton(
-                    child: Text("Glöm ditt lösenord?",
-                        style: TextStyle(color: Colors.white)),
+                    child: Text("Glömt ditt lösenord?", style: TextStyle(color: Colors.white)),
                     onPressed: () {
-                      Navigator.pushNamed(
-                          context, ForgotPasswordScreen.routeName);
+                      Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
                     },
                   ),
                 ),

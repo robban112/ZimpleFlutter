@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/event_type.dart';
@@ -10,9 +11,11 @@ import 'package:zimple/model/person.dart';
 import 'package:zimple/model/work_category.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
+import 'package:zimple/screens/Calendar/AddEvent/contact_person_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/person_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/work_category_select.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/image_dialog.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
@@ -28,8 +31,6 @@ import 'package:uuid/uuid.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:collection/collection.dart';
 import 'package:zimple/extensions/string_extensions.dart';
-import 'package:fluttericon/font_awesome_icons.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
 
 class AddEventScreen extends StatefulWidget {
   static const String routeName = 'add_event_screen';
@@ -56,6 +57,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   Customer? selectedCustomer;
   int? selectedCustomerContactPerson;
   WorkCategory? selectedWorkCategory;
+  Contact? selectedContactPerson;
 
   late bool changingEvent;
   bool isSelectingPhotoProvider = false;
@@ -101,6 +103,10 @@ class _AddEventScreenState extends State<AddEventScreen> {
       selectedPersons = widget.eventToChange?.persons ?? [];
       if (widget.eventToChange?.workCategoryId != null && widget.eventToChange != null) {
         selectedWorkCategory = WorkCategory(widget.eventToChange!.workCategoryId!);
+      }
+      if (widget.eventToChange?.contactKey != null) {
+        selectedContactPerson =
+            context.read<ManagerProvider>().contacts.firstWhereOrNull((c) => c.id == widget.eventToChange?.contactKey);
       }
 
       List<Customer> customers = Provider.of<ManagerProvider>(context, listen: false).customers;
@@ -149,8 +155,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 hintText: hintText,
                 hintStyle: TextStyle(fontSize: fontSize),
                 focusColor: focusColor,
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor),
+                ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.lightBlue),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                 ),
               ),
             ),
@@ -189,7 +198,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
         customer: companyController.text,
         customerKey: customerKey,
         customerContactIndex: this.selectedCustomerContactPerson,
-        workCategoryId: selectedWorkCategory?.id);
+        workCategoryId: selectedWorkCategory?.id,
+        contactKey: selectedContactPerson?.id);
   }
 
   Widget _buildNotesTextField() {
@@ -285,20 +295,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        //iconTheme: IconThemeData(color: Colors.white),
-        elevation: 0.0,
-        brightness: Brightness.dark,
-        backgroundColor: primaryColor,
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(changingEvent ? "Ändra arbetsorder" : "Ny arbetsorder", style: TextStyle(color: Colors.white)),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60), child: StandardAppBar(changingEvent ? "Ändra arbetsorder" : "Ny arbetsorder")),
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -410,6 +408,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
             ));
           }),
       _buildTypeOfWorkRow(),
+      _buildContactPersonRow(),
       ListedTextField(
           leadingIcon: Icons.business_center,
           placeholder: "Kund fritext",
@@ -422,12 +421,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
           onChanged: (location) => this.location = location,
           key: _locationFormKey,
           controller: locationController),
-      ListedTextField(
-          leadingIcon: Icons.phone,
-          placeholder: "Telefonnummer",
-          onChanged: (number) => this.phoneNumber = number,
-          key: _phoneNumberFormKey,
-          controller: phonenumberController),
+      // ListedTextField(
+      //     leadingIcon: Icons.phone,
+      //     placeholder: "Telefonnummer",
+      //     onChanged: (number) => this.phoneNumber = number,
+      //     key: _phoneNumberFormKey,
+      //     controller: phonenumberController),
       ListedItem(
           leadingIcon: Icons.image_rounded,
           child: Text("Lägg till bilder"),
@@ -479,29 +478,22 @@ class _AddEventScreenState extends State<AddEventScreen> {
             isSelectingPhotoProvider = false;
           });
         });
-    // return AnimatedPositioned(
-    //     duration: Duration(milliseconds: 200),
-    //     bottom: isSelectingPhotoProvider ? 16 : -300,
-    //     right: 16.0,
-    //     left: 16.0,
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.end,
-    //       crossAxisAlignment: CrossAxisAlignment.stretch,
-    //       children: [
-    //         _buildPhotoButton(() {
-    //           getImage(ImageSource.camera);
-    //         }, "Ta foto"),
-    //         SizedBox(height: 1.0),
-    //         _buildPhotoButton(() {
-    //           getImage(ImageSource.gallery);
-    //         }, "Välj foto"),
-    //         SizedBox(height: 5.0),
-    //         _buildPhotoButton(() {
-    //           setState(() => this.isSelectingPhotoProvider = false);
-    //         }, "Avbryt"),
-    //       ],
-    //     ));
   }
+
+  ListedItem _buildContactPersonRow() => ListedItem(
+        leadingIcon: Icons.contact_phone,
+        child: Text("Välj kontaktperson"),
+        trailingWidget: Row(
+          children: [
+            Text(selectedContactPerson?.name ?? ""),
+            Icon(Icons.chevron_right),
+          ],
+        ),
+        onTap: () => pushNewScreen(
+          context,
+          screen: ContactPersonSelectScreen(didSelectContact: (contact) => setState(() => this.selectedContactPerson = contact)),
+        ),
+      );
 
   ListedItem _buildTypeOfWorkRow() => ListedItem(
       leadingIcon: Icons.widgets,
@@ -548,20 +540,3 @@ class _AddEventScreenState extends State<AddEventScreen> {
     }));
   }
 }
-
-// class UnResizableContainer extends StatelessWidget {
-//   final Widget child;
-//   UnResizableContainer({required this.child});
-//   @override
-//   Widget build(BuildContext context) {
-//     return SingleChildScrollView(
-//       child: ConstrainedBox(
-//         constraints: BoxConstraints(
-//           minWidth: MediaQuery.of(context).size.width,
-//           minHeight: MediaQuery.of(context).size.height,
-//         ),
-//         child: IntrinsicHeight(child: child),
-//       ),
-//     );
-//   }
-// }

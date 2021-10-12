@@ -135,7 +135,6 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         title: Align(
             alignment: Alignment.centerLeft,

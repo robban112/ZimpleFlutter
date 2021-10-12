@@ -55,7 +55,7 @@ class FirebaseCustomerManager {
         var name = contactData['name'] ?? "";
         var email = contactData['email'] ?? "";
         var phoneNumber = contactData['phoneNumber'] ?? "";
-        contacts.add(Contact(name, phoneNumber, email));
+        contacts.add(Contact("", name, phoneNumber, email));
       }
     }
     return contacts;
@@ -70,10 +70,7 @@ class FirebaseCustomerManager {
   Future<void> changeCustomer(Customer customer) async {
     print("Update Customer ${customer.name}");
     if (customer.id == null) return Future.error(Error);
-    var ref = customerRef
-        .child(customer.id!)
-        .update(customer.toJson())
-        .then((value) => value);
+    var ref = customerRef.child(customer.id!).update(customer.toJson()).then((value) => value);
   }
 
   Future<void> deleteCustomer(Customer customer) async {

@@ -9,7 +9,8 @@ class ThemeNotifier with ChangeNotifier {
       backgroundColor: Color(0xff121212),
       scaffoldBackgroundColor: Color(0xff121212),
       cardColor: Color(0xff282828),
-      colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(
+      primaryIconTheme: IconThemeData(color: Colors.white),
+      colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo).copyWith(
         secondary: Colors.indigo.shade600,
         brightness: Brightness.dark,
       ),
@@ -25,13 +26,13 @@ class ThemeNotifier with ChangeNotifier {
     primaryColor: Colors.white,
 
     backgroundColor: Colors.white,
-    colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(
+    colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue).copyWith(
       secondary: Color(0xff3B14C3),
       brightness: Brightness.light,
     ),
     //accentColor: Colors.lightBlue,
     buttonColor: green,
-    accentIconTheme: IconThemeData(color: Colors.white),
+    primaryIconTheme: IconThemeData(color: Colors.white),
     dividerColor: Colors.black,
     fontFamily: 'FiraSans',
     iconTheme: IconThemeData(color: Colors.black),
