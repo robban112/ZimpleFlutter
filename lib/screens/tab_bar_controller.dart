@@ -73,6 +73,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
       setupContactListener(user);
       managerProvider.firebaseCustomerManager = firebaseCustomerManager;
       firebasePersonManager = FirebasePersonManager(company: user.company);
+      managerProvider.firebasePersonManager = firebasePersonManager;
       firebasePersonManager.getPersons().then((persons) {
         setupPersonManager(persons);
         setupFirebaseEventManager();
@@ -166,12 +167,13 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
     customerSubscriber.cancel();
     timereportSubscriper.cancel();
     managerProvider.dispose();
+    contactSubscriber.cancel();
     super.dispose();
   }
 
-  List<Widget> _buildScreens() {
+  List<Widget> _buildScreens(BuildContext context) {
     return loadingEvent && loadingTimereport
-        ? [_loadingWidget(), _loadingWidget(), _loadingWidget()]
+        ? [_loadingWidget(context), _loadingWidget(context), _loadingWidget(context)]
         : [
             CalendarScreen(
               user: user,
@@ -206,7 +208,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.settings),
+        icon: Icon(Icons.more_horiz),
         title: ("Mer"),
         activeColorPrimary: Theme.of(context).colorScheme.secondary,
         inactiveColorPrimary: Colors.grey,
@@ -214,11 +216,11 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
     ];
   }
 
-  Widget _loadingWidget() => Container(
-        color: Colors.black,
+  Widget _loadingWidget(BuildContext context) => Container(
+        color: Theme.of(context).primaryColor,
         child: Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(green),
+            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.secondary),
           ),
         ),
       );
@@ -232,7 +234,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
             color: Theme.of(context).primaryColor)
         : LoaderOverlay(
             overlayWidget: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(green),
+              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.secondary),
             ),
             overlayOpacity: 0.0,
             child: Stack(
@@ -244,7 +246,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
                 PersistentTabView(
                   context,
                   controller: _controller,
-                  screens: _buildScreens(),
+                  screens: _buildScreens(context),
                   items: _navBarsItems(),
                   confineInSafeArea: true,
                   //backgroundColor: Color(0xffF4F7FB),

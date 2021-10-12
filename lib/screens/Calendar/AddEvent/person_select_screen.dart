@@ -38,9 +38,9 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
 
   Widget _buildCheckMark(Person person) {
     if (selectedPersonsMap[person] ?? false)
-      return Icon(Icons.check_circle, color: green);
+      return Icon(Icons.check_circle, color: green, size: 32);
     else
-      return Icon(Icons.radio_button_off_outlined, color: green);
+      return Icon(Icons.radio_button_off_outlined, color: green, size: 32);
   }
 
   void _togglePerson(Person person) => setState(() {
@@ -92,7 +92,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
 
   _buildPersonCircleAvatar(Person person) {
     return CircleAvatar(
-      radius: 15,
+      radius: 16,
       backgroundColor: Colors.grey.shade400,
       child: Center(
         child: Text(

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/model/work_category.dart';
 
@@ -17,8 +18,8 @@ class WorkCategorySelectScreen extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Wrap(
-              spacing: 16,
-              runSpacing: 16,
+              spacing: 12,
+              runSpacing: 12,
               children: List.generate(workCategories.length, (index) {
                 WorkCategory category = WorkCategory(index);
                 return CupertinoButton(
@@ -29,12 +30,24 @@ class WorkCategorySelectScreen extends StatelessWidget {
                   },
                   child: Column(
                     children: [
-                      CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Theme.of(context).colorScheme.secondary,
-                          child: Center(child: Icon(category.icon, color: Colors.white, size: 28))),
+                      Container(
+                          height: 56,
+                          width: 56,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).shadowColor,
+                                  spreadRadius: 1,
+                                  blurRadius: 3,
+                                  offset: Offset(-2, 2), // changes position of shadow
+                                )
+                              ],
+                              color: Theme.of(context).colorScheme.secondary),
+                          child: Center(child: Icon(category.icon, color: Colors.white, size: 22))),
                       SizedBox(height: 8),
-                      Text(category.name, style: Theme.of(context).textTheme.bodyText1)
+                      Text(category.name,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, fontSize: 14))
                     ],
                   ),
                 );

@@ -22,4 +22,9 @@ class PersonManager {
   Person getPersonById(String id) {
     return persons.firstWhere((p) => p.id == id);
   }
+
+  void updatePerson(Person person) {
+    this.persons.removeWhere((p) => p.id == person.id);
+    this.persons.add(person);
+  }
 }

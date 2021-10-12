@@ -35,4 +35,6 @@ class FirebasePersonManager {
   Future<void> setUserProfileImage(UserParameters user, String filePath) async {
     personsRef.child(user.token).child("profilePicturePath").set(filePath);
   }
+
+  Future<void> setUserProps(Person person) => personsRef.child(person.id).set(person.toJson());
 }

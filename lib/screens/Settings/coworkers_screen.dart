@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/managers/person_manager.dart';
+import 'package:zimple/screens/Settings/Coworkers/coworker_details_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+import 'package:styled_widget/styled_widget.dart';
 
 class CoworkersScreen extends StatefulWidget {
   @override
@@ -12,26 +15,23 @@ class CoworkersScreen extends StatefulWidget {
 }
 
 class _CoworkersScreenState extends State<CoworkersScreen> {
-  late PersonManager personManager;
-
   @override
   void initState() {
-    personManager =
-        Provider.of<ManagerProvider>(context, listen: false).personManager;
     super.initState();
   }
 
   Widget _buildProfile(Person person) {
     return CircleAvatar(
-      radius: 20,
-      backgroundColor: Colors.grey.shade400,
+      radius: 15,
+      backgroundColor: person.color,
       child: Text(person.name.characters.first.toUpperCase(),
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    PersonManager personManager = context.watch<ManagerProvider>().personManager;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60),
@@ -41,11 +41,12 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
         scrollDirection: Axis.horizontal,
         physics: ClampingScrollPhysics(),
         child: DataTable(
+          showCheckboxColumn: false,
           dividerThickness: 0.1,
           columnSpacing: 25,
           rows: personManager.persons.map((person) {
             print(person.phonenumber);
-            return DataRow(cells: [
+            return DataRow(onSelectChanged: (_) => pushNewScreen(context, screen: CoworkerDetailsScreen(person: person)), cells: [
               DataCell(_buildProfile(person)),
               DataCell(Text(person.name)),
               DataCell(Text(person.phonenumber ?? "")),
@@ -54,12 +55,9 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
           }).toList(),
           columns: [
             DataColumn(label: Text('')),
-            DataColumn(
-                label: Text('Namn', style: TextStyle(color: Colors.grey))),
-            DataColumn(
-                label: Text('Telefon', style: TextStyle(color: Colors.grey))),
-            DataColumn(
-                label: Text('Email', style: TextStyle(color: Colors.grey)))
+            DataColumn(label: Text('Namn', style: TextStyle(color: Colors.grey))),
+            DataColumn(label: Text('Telefon', style: TextStyle(color: Colors.grey))),
+            DataColumn(label: Text('Email', style: TextStyle(color: Colors.grey))),
           ],
         ),
       ),

@@ -3,25 +3,14 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'package:zimple/model/contact.dart';
-import 'package:zimple/model/customer.dart';
-import 'package:zimple/model/event.dart';
-import 'package:zimple/model/event_type.dart';
-import 'package:zimple/model/person.dart';
-import 'package:zimple/model/work_category.dart';
+import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/screens/Calendar/AddEvent/contact_person_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/person_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/work_category_select.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
-import 'package:zimple/widgets/image_dialog.dart';
-import 'package:zimple/widgets/listed_view.dart';
-import 'package:zimple/widgets/person_circle_avatar.dart';
-import 'package:zimple/widgets/photo_buttons.dart';
-import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/widgets/rectangular_button.dart';
+import 'package:zimple/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zimple/widgets/start_end_date_selector.dart';
@@ -222,11 +211,14 @@ class _AddEventScreenState extends State<AddEventScreen> {
               hintText: 'Skriv anteckning ...',
               hintStyle: TextStyle(color: Colors.grey, fontSize: fontSize),
               enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor), borderRadius: BorderRadius.zero),
+                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor.withOpacity(0.3)),
+                  borderRadius: BorderRadius.zero),
               focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor), borderRadius: BorderRadius.zero),
+                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor.withOpacity(0.3)),
+                  borderRadius: BorderRadius.zero),
               border: OutlineInputBorder(
-                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor), borderRadius: BorderRadius.zero),
+                  borderSide: BorderSide(width: 0.3, color: Theme.of(context).dividerColor.withOpacity(0.3)),
+                  borderRadius: BorderRadius.zero),
               focusColor: green,
             ),
           ),
@@ -343,7 +335,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle("TID"),
-        Container(height: 0.3, color: Theme.of(context).dividerColor),
+        Container(height: 0.3, color: Theme.of(context).dividerColor.withOpacity(0.3)),
         //SizedBox(height: 10),
         StartEndDateSelector(
             startDateSelectorController: startDateController,
@@ -355,7 +347,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
               setState(() {});
             },
             color: Colors.transparent),
-        Container(height: 0.3, color: Theme.of(context).dividerColor),
+        Container(height: 0.3, color: Theme.of(context).dividerColor.withOpacity(0.3)),
       ],
     );
   }

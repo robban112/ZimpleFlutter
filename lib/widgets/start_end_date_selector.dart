@@ -239,7 +239,7 @@ class DateSelector extends StatelessWidget {
                 ? Container()
                 : Padding(
                     padding: const EdgeInsets.only(left: 16.0),
-                    child: Container(height: 0.3, color: Theme.of(context).dividerColor),
+                    child: Container(height: 0.3, color: Theme.of(context).dividerColor.withOpacity(0.3)),
                   )
           ],
         ),

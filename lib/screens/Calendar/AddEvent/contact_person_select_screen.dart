@@ -64,6 +64,7 @@ class ContactPersonCard extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: () => this.didSelectContact(contact),
       child: Card(
+        color: Theme.of(context).primaryColor,
         shadowColor: Theme.of(context).shadowColor,
         elevation: 20,
         //color: Colors.yellow,

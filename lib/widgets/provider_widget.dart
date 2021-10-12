@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/managers/timereport_manager.dart';
-import 'package:zimple/model/contact.dart';
-import 'package:zimple/model/customer.dart';
-import 'package:zimple/model/event.dart';
-import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
@@ -30,6 +27,11 @@ class ManagerProvider extends ChangeNotifier {
 
   void setContacts(List<Contact> contacts) {
     this.contacts = contacts;
+    notifyListeners();
+  }
+
+  void updatePerson(Person person) {
+    personManager.updatePerson(person);
     notifyListeners();
   }
 }

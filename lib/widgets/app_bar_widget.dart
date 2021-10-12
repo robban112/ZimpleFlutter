@@ -5,7 +5,12 @@ import '../utils/constants.dart';
 
 class StandardAppBar extends StatelessWidget {
   final String title;
-  const StandardAppBar(this.title, {Key? key}) : super(key: key);
+  final Widget? trailing;
+  const StandardAppBar(
+    this.title, {
+    Key? key,
+    this.trailing,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +27,7 @@ class StandardAppBar extends StatelessWidget {
         icon: Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.of(context).pop(),
       ),
+      actions: [trailing ?? Container()],
     );
   }
 }

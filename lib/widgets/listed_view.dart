@@ -146,7 +146,9 @@ class ListedView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          hidesFirstLastSeparator ? Container() : Container(height: separatorHeight, color: Theme.of(context).dividerColor),
+          hidesFirstLastSeparator
+              ? Container()
+              : Container(height: separatorHeight, color: Theme.of(context).dividerColor.withOpacity(0.3)),
           ListView.separated(
             shrinkWrap: true,
             physics: isScrollable ? AlwaysScrollableScrollPhysics() : NeverScrollableScrollPhysics(),
@@ -154,7 +156,9 @@ class ListedView extends StatelessWidget {
             itemBuilder: _itemBuilder,
             separatorBuilder: _separatorBuilder,
           ),
-          hidesFirstLastSeparator ? Container() : Container(height: separatorHeight, color: Theme.of(context).dividerColor),
+          hidesFirstLastSeparator
+              ? Container()
+              : Container(height: separatorHeight, color: Theme.of(context).dividerColor.withOpacity(0.3)),
         ],
       ),
     );
@@ -167,7 +171,7 @@ class ListedView extends StatelessWidget {
         ? Container()
         : Padding(
             padding: rowInset.copyWith(top: 0, bottom: 0, left: leftInset, right: 0),
-            child: Container(color: Theme.of(context).dividerColor, height: separatorHeight),
+            child: Container(color: Theme.of(context).dividerColor.withOpacity(0.3), height: separatorHeight),
           );
   }
 

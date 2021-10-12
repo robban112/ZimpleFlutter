@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/timereport_manager.dart';
-import 'package:zimple/model/event.dart';
-import 'package:zimple/model/timereport.dart';
-import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/model/models.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
@@ -17,9 +15,7 @@ import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
-import 'package:zimple/widgets/person_circle_avatar.dart';
-import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/widgets.dart';
 import 'package:zimple/utils/date_utils.dart';
 
 class TimeReportingScreen extends StatefulWidget {
@@ -252,7 +248,7 @@ class _TimeReportCardState extends State<TimeReportCard> {
   static final highlightColor = Colors.white.withOpacity(0.05);
   static final softHighlightColor = highlightColor.withOpacity(0.03);
   static final shadowColor = Colors.black87;
-  static final softShadowColor = shadowColor.withOpacity(0.3);
+  static final softShadowColor = shadowColor.withOpacity(0.15);
   @override
   Widget build(BuildContext context) {
     var spacing = 8.0;

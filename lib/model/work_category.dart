@@ -20,4 +20,5 @@ List<Map<String, dynamic>> workCategories = [
   {'name': 'Möte', 'icon': Icons.groups},
   {'name': 'El', 'icon': FontAwesome5.bolt},
   {'name': 'Städ', 'icon': Icons.cleaning_services},
+  {'name': 'Service', 'icon': Icons.home_repair_service},
 ];
