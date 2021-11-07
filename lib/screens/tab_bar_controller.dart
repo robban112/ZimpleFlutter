@@ -60,7 +60,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   @override
   void initState() {
     managerProvider = Provider.of<ManagerProvider>(context, listen: false);
-
+    managerProvider.firebaseUserManager = firebaseUserManager;
     firebaseUserManager.getUser()?.then((user) {
       setState(() {
         loading = false;

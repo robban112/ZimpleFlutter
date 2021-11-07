@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import './storage_manager.dart';
 import 'package:zimple/utils/constants.dart';
 
 class ThemeNotifier with ChangeNotifier {
   final darkTheme = ThemeData(
+      appBarTheme: AppBarTheme(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+        ),
+      ),
       primarySwatch: Colors.grey,
       primaryColor: Colors.black,
       backgroundColor: Color(0xff121212),
@@ -13,6 +19,12 @@ class ThemeNotifier with ChangeNotifier {
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo).copyWith(
         secondary: Colors.indigo.shade600,
         brightness: Brightness.dark,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.normal,
+        ),
       ),
       accentIconTheme: IconThemeData(color: Colors.black),
       dividerColor: Colors.white,
@@ -29,6 +41,9 @@ class ThemeNotifier with ChangeNotifier {
     colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue).copyWith(
       secondary: Color(0xff3B14C3),
       brightness: Brightness.light,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      actionTextColor: Colors.white,
     ),
     //accentColor: Colors.lightBlue,
     buttonColor: green,

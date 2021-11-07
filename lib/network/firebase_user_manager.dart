@@ -40,4 +40,19 @@ class FirebaseUserManager {
     final ref = FirebaseDatabase.instance.reference().child('Users').child(user.token);
     return ref.child('fcmToken').set(fcmToken);
   }
+
+  Future<void> inviteUser({
+    required String companyId,
+    required String name,
+    required String token,
+    required String email,
+  }) {
+    final ref = FirebaseDatabase.instance.reference().child('Invited');
+    return ref.push().set({
+      'companyId': companyId,
+      'name': name,
+      'email': email,
+      'token': token,
+    });
+  }
 }
