@@ -85,7 +85,9 @@ class _ZimpleState extends State<Zimple> {
 
   void _onGotUri(Uri uri) {
     print('got uri: $uri');
-    if (!widget.isLoggedIn) {
+    if (widget.isLoggedIn)
+      print("user is authenticated");
+    else {
       print("user is not logged in");
       List<String> pathSegments = uri.pathSegments;
       print("path segments: $pathSegments");

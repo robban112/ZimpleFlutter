@@ -167,8 +167,8 @@ class _AddCoworkerScreenState extends State<AddCoworkerScreen> {
     String token = randomToken!;
     String encryptedEmail = TextEncrypter.encryptText(email);
     String encryptedPass = TextEncrypter.encryptText(token);
-    String androidMagicLink = "https://com.zimple.zimple/first-sign-in?email=${encryptedEmail}&token=${encryptedPass}";
-    String iosMagicLink = "https://com.zimpleflutter.zimple//zimple/first-sign-in?email=${encryptedEmail}&token=${encryptedPass}";
+    String androidMagicLink = "https://com.zimple.zimple/first-sign-in?email=$encryptedEmail&token=$encryptedPass";
+    String iosMagicLink = "com.zimpleflutter.zimple://zimple/first-sign-in?email=$encryptedEmail&token=$encryptedPass";
     print("iOS Magic Link: $iosMagicLink");
     print("Android Magic Link: $androidMagicLink");
 
