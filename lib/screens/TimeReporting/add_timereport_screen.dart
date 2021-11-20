@@ -300,7 +300,6 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                     ],
                   ),
                   onTap: () {
-                    print("Tapped");
                     pushNewScreen(context, screen: CustomerSelectScreen(
                       didSelectCustomer: (customer, contact) {
                         setState(() {

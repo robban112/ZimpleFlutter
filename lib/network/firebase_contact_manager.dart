@@ -20,7 +20,6 @@ class FirebaseContactManager {
   List<Contact> _mapSnapshot(fb.DataSnapshot snapshot) {
     if (snapshot.value == null) return [];
     try {
-      print(snapshot.value);
       Map<String, dynamic> mapOfContacts = Map.from(snapshot.value);
       List<Contact> contacts = [];
       for (String key in mapOfContacts.keys) {

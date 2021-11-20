@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
@@ -60,7 +61,6 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
           dividerThickness: 0.1,
           columnSpacing: 25,
           rows: personManager.persons.map((person) {
-            print(person.phonenumber);
             return DataRow(onSelectChanged: (_) => pushNewScreen(context, screen: CoworkerDetailsScreen(person: person)), cells: [
               DataCell(_buildProfile(person)),
               DataCell(Text(person.name)),
@@ -80,6 +80,7 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
   }
 
   void _onPressedAddUser() {
+    HapticFeedback.mediumImpact();
     Navigator.push(context, CupertinoPageRoute(builder: (_) => AddCoworkerScreen()));
   }
 }

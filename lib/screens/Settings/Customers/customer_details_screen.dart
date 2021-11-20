@@ -163,7 +163,6 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
                                   text: TextSpan(
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                          print("Tapped phone");
                                           _makePhoneCall('tel:${contact.phoneNumber}');
                                         },
                                       text: contact.phoneNumber,

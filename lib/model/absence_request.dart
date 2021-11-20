@@ -21,14 +21,12 @@ class AbsenceRequest {
       this.approved,
       this.eventIds});
 
-  static AbsenceRequest? mapFromJSON(
-      String id, String userId, dynamic vacationRequestData) {
+  static AbsenceRequest? mapFromJSON(String id, String userId, dynamic vacationRequestData) {
     DateTime? start = DateTime.parse(vacationRequestData['startDate']);
     DateTime? end = DateTime.parse(vacationRequestData['endDate']);
     bool? approved = vacationRequestData['approved'];
     List<String>? eventIds;
-    AbsenceType absenceType =
-        stringToAbsenceType(vacationRequestData['absenceType']);
+    AbsenceType absenceType = stringToAbsenceType(vacationRequestData['absenceType']);
     if (vacationRequestData['eventIds'] != null) {
       eventIds = List.from(vacationRequestData['eventIds'] ?? []);
     }
@@ -46,8 +44,8 @@ class AbsenceRequest {
 
   Map<String, dynamic> toJSON() {
     return {
-      'startDate': dateStringVerbose(startDate),
-      'endDate': dateStringVerbose(endDate),
+      'startDate': dateString(startDate),
+      'endDate': dateString(endDate),
       'notes': this.notes,
       'approved': this.approved,
       'eventIds': this.eventIds,
@@ -59,8 +57,7 @@ class AbsenceRequest {
 enum AbsenceType { vacation, sickness, parental_leave, unknown }
 
 AbsenceType stringToAbsenceType(String? string) {
-  return AbsenceType.values.firstWhere((t) => t.toString() == string,
-      orElse: () => AbsenceType.unknown);
+  return AbsenceType.values.firstWhere((t) => t.toString() == string, orElse: () => AbsenceType.unknown);
 }
 
 String absenceToString(AbsenceType absenceType) {
@@ -79,20 +76,12 @@ String absenceToString(AbsenceType absenceType) {
 Widget getAbsenceTypeWidget(AbsenceType absenceType) {
   switch (absenceType) {
     case AbsenceType.vacation:
-      return CircleAvatar(
-          radius: 10,
-          backgroundColor: Colors.yellow,
-          child: Icon(Icons.wb_sunny, size: 13, color: Colors.black));
+      return CircleAvatar(radius: 10, backgroundColor: Colors.yellow, child: Icon(Icons.wb_sunny, size: 13, color: Colors.black));
     case AbsenceType.sickness:
-      return CircleAvatar(
-          radius: 10,
-          backgroundColor: Colors.red,
-          child: Icon(Icons.sick, size: 13, color: Colors.white));
+      return CircleAvatar(radius: 10, backgroundColor: Colors.red, child: Icon(Icons.sick, size: 13, color: Colors.white));
     case AbsenceType.parental_leave:
       return CircleAvatar(
-          radius: 10,
-          backgroundColor: Colors.green,
-          child: Icon(Icons.child_friendly, size: 13, color: Colors.white));
+          radius: 10, backgroundColor: Colors.green, child: Icon(Icons.child_friendly, size: 13, color: Colors.white));
     case AbsenceType.unknown:
       return CircleAvatar(radius: 10, backgroundColor: Colors.black);
   }

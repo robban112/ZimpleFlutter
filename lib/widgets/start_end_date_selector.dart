@@ -198,7 +198,10 @@ class DateSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     print("build date selector");
     return Column(
-      children: [_buildTimeRow(context), buildAnimatedContainer(context)],
+      children: [
+        _buildTimeRow(context),
+        buildAnimatedContainer(context),
+      ],
     );
   }
 

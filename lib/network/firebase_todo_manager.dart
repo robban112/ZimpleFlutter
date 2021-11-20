@@ -26,7 +26,6 @@ class FirebaseTodoManager {
 
   List<Todo> mapTodos(Map<String, dynamic> mapOfMaps) {
     List<Todo> todos = [];
-    print(mapOfMaps);
     for (String key in mapOfMaps.keys) {
       dynamic todoData = mapOfMaps[key];
       if (!todoData.containsKey('date')) {
@@ -37,15 +36,8 @@ class FirebaseTodoManager {
       String todo = todoData['todo'] != null ? todoData['todo'] : "";
       String color = todoData['color'] != null ? todoData['color'] : "";
 
-      String createdBy =
-          todoData['createdBy'] != null ? todoData['createdBy'] : "";
-      Todo todoObject = Todo(
-          id: key,
-          title: title,
-          date: date,
-          todo: todo,
-          color: color,
-          createdBy: createdBy);
+      String createdBy = todoData['createdBy'] != null ? todoData['createdBy'] : "";
+      Todo todoObject = Todo(id: key, title: title, date: date, todo: todo, color: color, createdBy: createdBy);
       todos.add(todoObject);
     }
     return todos;

@@ -306,7 +306,6 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
 
   Widget _buildEventInfo(Event? event) {
     if (event == null) {
-      print("EVENT IS NULL LOL!");
       return Container();
     }
     return Column(

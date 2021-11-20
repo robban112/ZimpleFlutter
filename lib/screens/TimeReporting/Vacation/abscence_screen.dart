@@ -120,7 +120,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> {
       //color: Colors.grey.shade200,
       color: Theme.of(context).colorScheme.secondary,
       elevation: 0.0,
-      child: Text(title),
+      child: Text(title, style: TextStyle(color: Colors.white)),
       onPressed: onTap,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),

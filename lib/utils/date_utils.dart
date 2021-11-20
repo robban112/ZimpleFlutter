@@ -43,12 +43,12 @@ String dateString(DateTime date) {
 }
 
 String dateStringVerbose(DateTime date) {
-  DateFormat formatter = DateFormat('yyyy-MM-dd kk:mm');
+  DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm', locale);
   return formatter.format(date);
 }
 
 String dateStringMonthHourMinute(DateTime date) {
-  DateFormat formatter = DateFormat('dd MMMM kk:mm', locale);
+  DateFormat formatter = DateFormat('dd MMMM HH:mm', locale);
   return formatter.format(date);
 }
 
@@ -63,7 +63,7 @@ bool isToday(DateTime date) {
 }
 
 String dateToHourMinute(DateTime date) {
-  return DateFormat('kk:mm', locale).format(date);
+  return DateFormat('HH:mm', locale).format(date);
 }
 
 String dateToYearMonthDay(DateTime date) {
@@ -93,7 +93,7 @@ String getHourDiff(DateTime startDate, DateTime endDate) {
   return minutesToHours;
 }
 
-List<DateTime> getDaysInBeteween(DateTime startDate, DateTime endDate) {
+List<DateTime> getDaysInBetween(DateTime startDate, DateTime endDate) {
   List<DateTime> days = [];
   for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
     days.add(startDate.add(Duration(days: i)));

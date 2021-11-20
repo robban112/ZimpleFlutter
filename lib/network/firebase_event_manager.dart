@@ -62,11 +62,11 @@ class FirebaseEventManager {
   }
 
   Future<List<String>> addVacationPeriod(AbsenceRequest absenceRequest, String? name) async {
-    List<DateTime> dates = getDaysInBeteween(absenceRequest.startDate, absenceRequest.endDate);
+    List<DateTime> dates = getDaysInBetween(absenceRequest.startDate, absenceRequest.endDate);
     List<String> eventIds = [];
     for (DateTime date in dates) {
-      DateTime _startDate = DateTime(date.year, date.month, date.day, 0, 0, 0);
-      DateTime _endDate = DateTime(date.year, date.month, date.day, 2, 0, 0);
+      DateTime _startDate = DateTime.utc(date.year, date.month, date.day, 00, 0, 0);
+      DateTime _endDate = DateTime.utc(date.year, date.month, date.day, 2, 0, 0);
       Event event = Event(
           id: "",
           start: _startDate,

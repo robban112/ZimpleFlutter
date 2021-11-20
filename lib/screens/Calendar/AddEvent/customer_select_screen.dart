@@ -67,7 +67,6 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
                 ContactSelect(
                   customer: customer,
                   didSelectContact: (index) {
-                    print(index);
                     selectedContact[customer] = index;
                   },
                 )
@@ -75,7 +74,6 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
             ),
             onTap: () {
               Navigator.pop(context);
-              print(selectedContact[customer]);
               widget.didSelectCustomer(customer, selectedContact[customer]!);
             },
           );

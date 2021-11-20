@@ -8,6 +8,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -34,8 +35,8 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
   @override
   void initState() {
     var now = DateTime.now();
-    start = DateTime(now.year, now.month, now.day, 0, 0, 0);
-    end = DateTime(now.year, now.month, now.day, 0, 0, 0).add(Duration(days: 7));
+    start = DateTime(now.year, now.month, now.day, 1, 0, 0);
+    end = DateTime(now.year, now.month, now.day, 1, 0, 0).add(Duration(days: 7));
     startDateController.initialDate = start;
     endDateController.initialDate = end;
     startEndDiff = end.difference(start);
@@ -62,6 +63,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
     context.loaderOverlay.show();
     UserParameters user = Provider.of<ManagerProvider>(context, listen: false).user;
     FirebaseVacationManager firebaseVacationManager = FirebaseVacationManager(company: user.company);
+
     firebaseVacationManager.addVacationRequest(user, start, end, notesController.text, this.absenceType!).then((value) {
       context.loaderOverlay.hide();
       Navigator.pop(context);
