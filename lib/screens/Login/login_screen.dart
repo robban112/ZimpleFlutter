@@ -84,13 +84,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 48.0,
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: kPadding),
-                  child: AuthenticationForm(
-                    loginRegisterText: 'Logga in',
-                    onTapLoginRegister: loginUser,
-                    hasError: this._errorLogin,
-                  ),
+                AuthenticationForm(
+                  loginRegisterText: 'Logga in',
+                  onTapLoginRegister: loginUser,
+                  hasError: this._errorLogin,
                 ),
                 SizedBox(height: 5.0),
                 Padding(

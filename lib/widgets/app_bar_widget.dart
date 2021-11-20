@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../utils/date_utils.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../utils/constants.dart';
@@ -16,6 +17,10 @@ class StandardAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       //iconTheme: IconThemeData(color: Colors.white),
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.black,
+      ),
       elevation: 0.0,
       brightness: Brightness.dark,
       backgroundColor: primaryColor,

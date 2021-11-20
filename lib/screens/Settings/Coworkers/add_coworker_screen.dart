@@ -28,9 +28,9 @@ class _AddCoworkerScreenState extends State<AddCoworkerScreen> {
 
   String? randomToken;
 
-  String iosMagicLink = 'test123';
+  String iosMagicLink = '';
 
-  String androidMagicLink = 'test123';
+  String androidMagicLink = '';
 
   TextEditingController _nameController = TextEditingController();
 
@@ -136,15 +136,16 @@ class _AddCoworkerScreenState extends State<AddCoworkerScreen> {
       setLoading(true);
       FirebaseUserManager fbUserManager = context.read<ManagerProvider>().firebaseUserManager;
       UserParameters user = context.read<ManagerProvider>().user;
-      //randomToken = Uuid().v4().toString();
-      randomToken = 'password12345';
+      randomToken = Uuid().v4().toString();
+      //randomToken = 'Password123Zimple321';
       fbUserManager
           .inviteUser(
-        companyId: user.company,
-        name: _nameController.text,
-        token: randomToken!,
-        email: _emailController.text,
-      )
+              companyId: user.company,
+              name: _nameController.text,
+              token: randomToken!,
+              email: _emailController.text,
+              iOSLink: _getIOSMagicLink(_emailController.text, randomToken!),
+              androidLink: _getAndroidMagicLink(_emailController.text, randomToken!))
           .then(
         (_) {
           setLoading(false);
@@ -177,6 +178,18 @@ class _AddCoworkerScreenState extends State<AddCoworkerScreen> {
       this.androidMagicLink = androidMagicLink;
       this._successfulInvite = true;
     });
+  }
+
+  String _getIOSMagicLink(String email, String token) {
+    String encryptedEmail = TextEncrypter.encryptText(email);
+    String encryptedPass = TextEncrypter.encryptText(token);
+    return "com.zimpleflutter.zimple://zimple/first-sign-in?email=$encryptedEmail&token=$encryptedPass";
+  }
+
+  String _getAndroidMagicLink(String email, String token) {
+    String encryptedEmail = TextEncrypter.encryptText(email);
+    String encryptedPass = TextEncrypter.encryptText(token);
+    return "https://com.zimple.zimple/first-sign-in?email=$encryptedEmail&token=$encryptedPass";
   }
 }
 

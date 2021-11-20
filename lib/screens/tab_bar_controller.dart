@@ -50,6 +50,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   late StreamSubscription timereportSubscriper;
   late StreamSubscription<List<Customer>> customerSubscriber;
   late StreamSubscription<List<Contact>> contactSubscriber;
+  late StreamSubscription<List<Person>> personSubscriber;
   late ManagerProvider managerProvider;
   TimereportManager timeReportManager = TimereportManager();
   late List<Customer> customers;
@@ -78,6 +79,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
         setupPersonManager(persons);
         setupFirebaseEventManager();
         setupFirebaseTimereport();
+        setupPersonsListener();
       });
     });
     super.initState();
@@ -102,6 +104,12 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   void listenToUserTopic() {
     print("listening to topic: ${this.user.token}");
     FirebaseMessaging.instance.subscribeToTopic(this.user.token);
+  }
+
+  void setupPersonsListener() {
+    personSubscriber = managerProvider.firebasePersonManager.listenPersons().listen((event) {
+      managerProvider.setPersons(event);
+    });
   }
 
   void setupContactListener(UserParameters user) {
@@ -168,6 +176,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
     timereportSubscriper.cancel();
     managerProvider.dispose();
     contactSubscriber.cancel();
+    personSubscriber.cancel();
     super.dispose();
   }
 

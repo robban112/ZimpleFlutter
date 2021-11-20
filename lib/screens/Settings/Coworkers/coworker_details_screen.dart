@@ -1,3 +1,5 @@
+import 'package:clipboard/clipboard.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:zimple/model/person.dart';
@@ -57,6 +59,7 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
           color: Theme.of(context).backgroundColor,
           height: MediaQuery.of(context).size.height,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListedView(items: [
                 ListedTextField(placeholder: 'Namn', leadingIcon: Icons.menu, controller: _nameController),
@@ -70,8 +73,9 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
                     leadingIcon: Icons.phone,
                     controller: _phoneController,
                     inputType: TextInputType.phone),
-                _buildChangeColorRow()
+                _buildChangeColorRow(),
               ]),
+              _buildMagicLinks(),
             ],
           ).padding(vertical: 8),
         ),
@@ -101,6 +105,54 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
               )),
         ),
       ).padding(right: 0);
+
+  Widget _buildMagicLinks() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 24),
+          _buildMagicLinkSection("iOS Magisk Länk", widget.person.iOSLink),
+          _buildMagicLinkSection("Android Magisk Länk", widget.person.androidLink),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMagicLinkSection(String title, String? magicLink) {
+    if (magicLink == null) return Container();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+        const SizedBox(height: 8),
+        _buildCopyTextButton(magicLink),
+        const SizedBox(height: 12),
+      ],
+    );
+  }
+
+  Widget _buildCopyTextButton(String text) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () {
+        FlutterClipboard.copy(text).then((_) {
+          final snackBar = SnackBar(
+            content: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text('Kopierat!'),
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        });
+      },
+      child: Text(
+        text,
+        style: TextStyle(color: Colors.blue, fontSize: 16),
+      ),
+    );
+  }
 
   void pickColor() {
     Color pickedColor = widget.person.color;

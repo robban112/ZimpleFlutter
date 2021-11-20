@@ -46,6 +46,8 @@ class FirebaseUserManager {
     required String name,
     required String token,
     required String email,
+    required String iOSLink,
+    required String androidLink,
   }) {
     final ref = FirebaseDatabase.instance.reference().child('Invited');
     return ref.push().set({
@@ -53,6 +55,8 @@ class FirebaseUserManager {
       'name': name,
       'email': email,
       'token': token,
+      'iOSLink': iOSLink,
+      'androidLink': androidLink,
     });
   }
 }

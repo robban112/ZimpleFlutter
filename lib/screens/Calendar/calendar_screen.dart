@@ -51,7 +51,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   late Map<Person, bool> _filteredPersons;
   WeekPageController daysChangedController = WeekPageController();
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
-  late StreamSubscription<EventManager> eventManagerSubscriber;
 
   @override
   void initState() {
@@ -62,12 +61,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
     firebaseUserManager = FirebaseUserManager();
     _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
     //filteredPersons = widget.personManager.persons;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    eventManagerSubscriber.cancel();
   }
 
   Widget _buildBody() {
@@ -220,6 +213,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //backgroundColor: Colors.white,
       key: _drawerKey,
       floatingActionButton: widget.user.isAdmin
           ? FloatingActionButton(

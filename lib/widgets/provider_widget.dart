@@ -34,6 +34,11 @@ class ManagerProvider extends ChangeNotifier {
     personManager.updatePerson(person);
     notifyListeners();
   }
+
+  void setPersons(List<Person> persons) {
+    this.personManager = PersonManager(persons: persons);
+    notifyListeners();
+  }
 }
 
 class ProviderWidget extends InheritedWidget {

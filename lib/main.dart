@@ -204,7 +204,10 @@ class _ZimpleState extends State<Zimple> {
   Widget build(BuildContext context) {
     //initializeDateFormatting('sv_se');
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: Colors.white),
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+        systemNavigationBarColor: Colors.black,
+      ),
     );
 
     FirebaseMessaging.onBackgroundMessage(_throwGetMessage);

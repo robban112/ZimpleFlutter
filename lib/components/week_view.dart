@@ -45,7 +45,9 @@ class WeekView extends StatelessWidget {
         dayWidth: dayWidth, events: events, minuteHeight: _minuteHeight, datesOfWeek: dates, didTapEvent: didTapEvent);
     return Container(
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(color: primaryColor),
+      decoration: BoxDecoration(
+        color: primaryColor,
+      ),
       child: Column(
         children: <Widget>[
           WeekHeader(

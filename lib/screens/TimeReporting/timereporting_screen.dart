@@ -78,6 +78,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
           children: [
             Container(height: size.height, width: size.width),
             SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -257,12 +258,13 @@ class _TimeReportCardState extends State<TimeReportCard> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
       child: Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(18.0)),
-            boxShadow: [
-              BoxShadow(color: softHighlightColor, offset: Offset(-3, -3), spreadRadius: 0, blurRadius: 3),
-              BoxShadow(color: softShadowColor, offset: Offset(3, 3), spreadRadius: 0.5, blurRadius: 8)
-            ]),
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.all(Radius.circular(18.0)),
+          boxShadow: [
+            BoxShadow(color: softHighlightColor, offset: Offset(-3, -3), spreadRadius: 0, blurRadius: 3),
+            BoxShadow(color: softShadowColor, offset: Offset(3, 3), spreadRadius: 0.5, blurRadius: 8),
+          ],
+        ),
         width: 175,
         child: Material(
           color: Colors.transparent,

@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/user_parameters.dart';
 import '../model/person.dart';
 import 'package:flutter/material.dart';
@@ -15,18 +16,34 @@ class FirebasePersonManager {
 
   Future<List<Person>> getPersons() async {
     var snapshot = await personsRef.once();
+    List<Person> persons = _mapSnapshot(snapshot);
+    return persons;
+  }
+
+  Stream<List<Person>> listenPersons() {
+    return personsRef.onValue.map((eventPersons) {
+      print("Listening value persons");
+      var snapshot = eventPersons.snapshot;
+      return _mapSnapshot(snapshot);
+    });
+  }
+
+  List<Person> _mapSnapshot(DataSnapshot snapshot) {
     Map<String, dynamic> mapOfMaps = Map.from(snapshot.value);
     List<Person> persons = [];
     for (String key in mapOfMaps.keys) {
       dynamic personData = mapOfMaps[key];
       persons.add(
         Person(
-            color: hexToColor(personData['color']),
-            name: personData['name'] ?? "",
-            id: personData['id'].toString(),
-            email: personData['email'],
-            profilePicturePath: personData['profilePicturePath'],
-            phonenumber: personData['phonenumber']),
+          color: hexToColor(personData['color']),
+          name: personData['name'] ?? "",
+          id: personData['id'].toString(),
+          email: personData['email'],
+          profilePicturePath: personData['profilePicturePath'],
+          phonenumber: personData['phonenumber'],
+          iOSLink: personData['iOSLink'],
+          androidLink: personData['androidLink'],
+        ),
       );
     }
     return persons;

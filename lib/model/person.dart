@@ -8,8 +8,19 @@ class Person {
   String? email;
   String? profilePicturePath;
   String? phonenumber;
+  String? iOSLink;
+  String? androidLink;
 
-  Person({required this.name, required this.color, required this.id, this.email, this.profilePicturePath, this.phonenumber});
+  Person({
+    required this.name,
+    required this.color,
+    required this.id,
+    this.email,
+    this.profilePicturePath,
+    this.phonenumber,
+    this.iOSLink,
+    this.androidLink,
+  });
 
   Map<String, dynamic> toJson() => {
         'name': this.name,
@@ -17,5 +28,7 @@ class Person {
         'phonenumber': this.phonenumber,
         'id': this.id,
         'color': colorToString(this.color),
+        'iOSLink': this.iOSLink,
+        'androidLink': this.androidLink,
       };
 }

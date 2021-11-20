@@ -4,12 +4,17 @@ import 'package:zimple/utils/constants.dart';
 class RectangularButton extends StatelessWidget {
   final Function onTap;
   final String text;
-  RectangularButton({required this.onTap, required this.text});
+  final EdgeInsets padding;
+  RectangularButton({
+    required this.onTap,
+    required this.text,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      padding: padding,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0)),
       child: ButtonTheme(
         height: 60,

@@ -5,7 +5,7 @@ import '../utils/constants.dart';
 //import 'package:flash_chat/constants.dart';
 
 class AuthenticationForm extends StatefulWidget {
-  Function(String, String) onTapLoginRegister;
+  final Function(String, String) onTapLoginRegister;
   final String loginRegisterText;
   final bool? hasError;
   AuthenticationForm({required this.loginRegisterText, required this.onTapLoginRegister, this.hasError});
@@ -56,66 +56,84 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        TextFormField(
-          key: _emailFormKey,
-          validator: emailValidator,
-          autovalidate: _autoValidate,
-          onChanged: (value) {
-            setState(() {
-              _email = value;
-            });
-            //Do something with the user input.
-          },
-          style: TextStyle(color: Colors.white, fontSize: 17.0),
-          autocorrect: false,
-          decoration: _textfieldDecoration(Icons.email, 'EMAIL'),
-        ),
-        SizedBox(
-          height: 8.0,
-        ),
-        TextFormField(
-          key: _passwordFormKey,
-          validator: passwordValidator,
-          keyboardType: TextInputType.visiblePassword,
-          autovalidate: _autoValidate || (widget.hasError ?? false),
-          style: TextStyle(color: Colors.white),
-          onChanged: (value) {
-            setState(() {
-              _password = value;
-            });
-            //Do something with the user input.
-          },
-          obscureText: true,
-          decoration: _textfieldDecoration(Icons.lock, 'PASSWORD'),
-        ),
-        AnimatedContainer(
-            duration: Duration(milliseconds: 200),
-            height: (widget.hasError ?? false) ? 30 : 0,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Text("Fel lösenord", style: TextStyle(color: Colors.red, fontSize: 17)),
-              ),
-            )),
-        SizedBox(
-          height: 24.0,
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 0.0),
-          child: Hero(
-            tag: 'register_button',
-            child: RectangularButton(
-              text: widget.loginRegisterText,
-              onTap: () {
-                if (validateLoginInput()) {
-                  widget.onTapLoginRegister(_email, _password);
-                }
-              },
-            ),
-          ),
-        ),
+        _emailPassTextFields(),
+        _forgotPassword(),
+        SizedBox(height: 24.0),
+        _loginButton(),
       ],
+    );
+  }
+
+  AnimatedContainer _forgotPassword() {
+    return AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        height: (widget.hasError ?? false) ? 30 : 0,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text("Fel lösenord", style: TextStyle(color: Colors.red, fontSize: 17)),
+          ),
+        ));
+  }
+
+  Widget _emailPassTextFields() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: kPadding),
+      child: Column(
+        children: [
+          TextFormField(
+            key: _emailFormKey,
+            validator: emailValidator,
+            autovalidate: _autoValidate,
+            onChanged: (value) {
+              setState(() {
+                _email = value;
+              });
+              //Do something with the user input.
+            },
+            style: TextStyle(color: Colors.white, fontSize: 17.0),
+            autocorrect: false,
+            decoration: _textfieldDecoration(Icons.email, 'EMAIL'),
+          ),
+          SizedBox(
+            height: 8.0,
+          ),
+          TextFormField(
+            key: _passwordFormKey,
+            validator: passwordValidator,
+            keyboardType: TextInputType.visiblePassword,
+            autovalidate: _autoValidate || (widget.hasError ?? false),
+            style: TextStyle(color: Colors.white),
+            onChanged: (value) {
+              setState(() {
+                _password = value;
+              });
+              //Do something with the user input.
+            },
+            obscureText: true,
+            decoration: _textfieldDecoration(Icons.lock, 'PASSWORD'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding _loginButton() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 0.0),
+      child: Hero(
+        tag: 'register_button',
+        child: RectangularButton(
+          padding: EdgeInsets.symmetric(horizontal: kPadding),
+          text: widget.loginRegisterText,
+          onTap: () {
+            if (validateLoginInput()) {
+              widget.onTapLoginRegister(_email, _password);
+            }
+          },
+        ),
+      ),
     );
   }
 }
