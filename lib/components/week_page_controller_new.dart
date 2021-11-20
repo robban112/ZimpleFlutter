@@ -158,17 +158,7 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
             dateStream: streamController.stream,
           )),
       body: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-          if (notification is ScrollEndNotification) {
-            var page = sc.offset / widget.screenWidth;
-            currentPage = page.toInt() - this.pageOffset;
-            var diffDaysCurrentDate = currentPage * widget.numberOfDays - 6;
-            var first = DateTime.now().add(Duration(days: diffDaysCurrentDate));
-            streamController.add(first);
-            print("Page: $currentPage");
-          }
-          return false;
-        },
+        onNotification: _onScrollNotification,
         child: ListView.builder(
           controller: sc,
           cacheExtent: 0,
@@ -181,5 +171,22 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
         ),
       ),
     );
+  }
+
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollEndNotification) {
+      var page = sc.offset / widget.screenWidth;
+      currentPage = page.toInt() - this.pageOffset;
+
+      var today = DateTime.now();
+
+      var diffDaysCurrentDate = currentPage * widget.numberOfDays - (today.weekday - 1);
+      var first = DateTime.now().add(Duration(days: diffDaysCurrentDate));
+
+      print('First date in current week is: ${first.toString()}');
+      streamController.add(first);
+      print("Page: $currentPage");
+    }
+    return false;
   }
 }

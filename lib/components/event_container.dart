@@ -118,7 +118,7 @@ class EventContainer extends StatelessWidget {
 
   double _getTitleHeight(String text, EventLayout eventLayout, bool isEventLarge) {
     double _textHeight = textHeight(text, _titleStyle(isEventLarge, event), eventLayout.width - padding * 2);
-    return _textHeight > eventLayout.height - (padding * 2) ? eventLayout.height - (padding * 2) : _textHeight;
+    return _textHeight > eventLayout.height - (padding * 2) ? eventLayout.height - padding * 2 : _textHeight;
   }
 
   double _getDescHeight(String text, EventLayout eventLayout, double titleHeight) {
@@ -126,8 +126,8 @@ class EventContainer extends StatelessWidget {
     double descHeight = textHeight(event.customer ?? '', _descStyle(), eventLayout.width - padding * 2);
     if (titleHeight + descHeight > eventLayout.height) {
       double diff = (titleHeight + descHeight) - eventLayout.height;
-      if (descHeight - diff - 10 < 0) return 0;
-      return descHeight - diff - 10;
+      if (descHeight - diff - (padding * 2) < 0) return 0;
+      return descHeight - diff - (padding * 2);
     }
     return descHeight;
   }
