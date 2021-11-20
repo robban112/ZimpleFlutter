@@ -181,7 +181,7 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
       var today = DateTime.now();
 
       var diffDaysCurrentDate = currentPage * widget.numberOfDays - (today.weekday - 1);
-      var first = DateTime.now().add(Duration(days: diffDaysCurrentDate));
+      var first = today.add(Duration(days: diffDaysCurrentDate));
 
       print('First date in current week is: ${first.toString()}');
       streamController.add(first);
