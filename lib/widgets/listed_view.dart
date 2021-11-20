@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zimple/utils/constants.dart';
 
 class ListedItem {
@@ -23,7 +24,10 @@ class ListedItemWidget extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: item.onTap,
+        onTap: () {
+          if (item.onTap != null) item.onTap!();
+          HapticFeedback.mediumImpact();
+        },
         splashColor: Colors.grey.shade300,
         child: Padding(
           padding: this.rowInset,
@@ -52,49 +56,6 @@ class ListedItemWidget extends StatelessWidget {
     );
   }
 }
-
-// class ZimpleTextField extends StatelessWidget {
-//   final String? placeholder;
-//   final Function(String)? onChanged;
-//   final GlobalKey<FormState>? key;
-//   final String? initialValue;
-//   final TextEditingController? controller;
-//   final TextInputType? inputType;
-//   const ZimpleTextField(
-//       {this.key,
-//       leadingIcon,
-//       this.placeholder,
-//       this.onChanged,
-//       this.initialValue = "",
-//       this.controller,
-//       this.inputType = TextInputType.text});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       children: [
-//         Expanded(
-//           child: TextFormField(
-//             textInputAction: TextInputAction.done,
-//             initialValue: initialValue,
-//             key: key,
-//             style: TextStyle(fontSize: 17),
-//             autocorrect: false,
-//             keyboardType: inputType,
-//             onChanged: onChanged,
-//             controller: controller,
-//             decoration: InputDecoration(
-//               hintText: placeholder,
-//               hintStyle: TextStyle(fontSize: 17),
-//               //focusColor: focusColor,
-//               focusedBorder: InputBorder.none,
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 class ListedTitle extends StatelessWidget {
   const ListedTitle({Key? key, required this.text}) : super(key: key);

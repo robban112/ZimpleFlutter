@@ -275,14 +275,12 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
                   popActionScreens: PopActionScreensType.all,
                   itemAnimationProperties: ItemAnimationProperties(
                     // Navigation Bar's items animation properties.
-                    duration: Duration(milliseconds: 200),
+                    duration: Duration(milliseconds: 150),
                     curve: Curves.ease,
                   ),
                   screenTransitionAnimation: ScreenTransitionAnimation(
                     // Screen transition animation on change of selected tab.
-                    animateTabTransition: true,
-                    curve: Curves.ease,
-                    duration: Duration(milliseconds: 200),
+                    animateTabTransition: false,
                   ),
                   navBarStyle: NavBarStyle.style8, // Choose the nav bar style with this property.
                 ),

@@ -55,45 +55,44 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
-          _performCallback();
-          return true;
+    return Scaffold(
+      appBar: AppBar(
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Välj personer",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        elevation: 0.0,
+        backgroundColor: primaryColor,
+        actions: [
+          TextButton(
+            child: Text("Spara", style: TextStyle(color: Colors.white, fontSize: 17)),
+            onPressed: () => onPop(context),
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => onPop(context),
+        ),
+      ),
+      body: ListView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.only(top: 8.0),
+        itemBuilder: (context, index) {
+          var person = widget.persons[index];
+          return _buildPersonRow(person);
         },
-        child: Scaffold(
-          appBar: AppBar(
-            brightness: Brightness.dark,
-            //iconTheme: IconThemeData(color: Colors.white),
-            title: Align(alignment: Alignment.centerLeft, child: Text("Välj personer", style: TextStyle(color: Colors.white))),
-            elevation: 0.0,
-            backgroundColor: primaryColor,
-            actions: [
-              TextButton(
-                child: Text("Spara", style: TextStyle(color: Colors.white, fontSize: 17)),
-                onPressed: () => onPop(context),
-              ),
-            ],
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => onPop(context),
-            ),
-          ),
-          body: ListView.builder(
-            shrinkWrap: true,
-            padding: EdgeInsets.only(top: 8.0),
-            itemBuilder: (context, index) {
-              var person = widget.persons[index];
-              return _buildPersonRow(person);
-            },
-            itemCount: widget.persons.length,
-          ),
-        ));
+        itemCount: widget.persons.length,
+      ),
+    );
   }
 
   _buildPersonCircleAvatar(Person person) {
     return CircleAvatar(
       radius: 16,
-      backgroundColor: Colors.grey.shade400,
+      backgroundColor: Colors.grey.shade700,
       child: Center(
         child: Text(
           person.name.characters.first.toUpperCase(),
@@ -105,7 +104,10 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
 
   _buildPersonRow(Person person) {
     return GestureDetector(
-        onTap: () => _togglePerson(person),
+        onTap: () {
+          _togglePerson(person);
+          _performCallback();
+        },
         child: Container(
           color: Colors.transparent,
           child: Padding(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/components/timeplan.dart';
 import 'package:zimple/model/event.dart';
@@ -114,6 +115,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _didTapEvent(Event event) {
+    HapticFeedback.lightImpact();
     showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -130,12 +132,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
             firebaseEventManager: widget.firebaseEventManager,
             firebaseStorageManager: firebaseStorageManager,
             didTapCopyEvent: (event) {
+              HapticFeedback.lightImpact();
               setState(() {
                 eventToCopy = event;
                 isCopyingEvent = true;
               });
             },
             didTapChangeEvent: (event) {
+              HapticFeedback.lightImpact();
               pushNewScreen(context,
                   screen: AddEventScreen(
                     persons: widget.personManager.persons,
@@ -150,6 +154,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void copyEvent(DateTime date, int index) {
     if (eventToCopy == null) return;
+    HapticFeedback.lightImpact();
     var start = DateTime(date.year, date.month, date.day, index, eventToCopy!.start.minute);
     var diff = eventToCopy!.end.difference(eventToCopy!.start).inHours;
     var end = DateTime(date.year, date.month, date.day, index + diff, eventToCopy!.start.minute);
@@ -172,6 +177,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     text: "Avbryt",
                     color: Colors.red,
                     onTap: () {
+                      HapticFeedback.lightImpact();
                       setState(() {
                         isCopyingEvent = false;
                       });
@@ -224,6 +230,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 size: 24,
               ),
               onPressed: () {
+                HapticFeedback.mediumImpact();
                 Navigator.push(
                     context,
                     MaterialPageRoute(

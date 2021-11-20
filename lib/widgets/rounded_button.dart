@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RoundedButton extends StatelessWidget {
   final String text;
@@ -25,10 +26,10 @@ class RoundedButton extends StatelessWidget {
       child: ButtonTheme(
         height: 60.0,
         child: ElevatedButton(
-          child: Text(this.text,
-              style: TextStyle(fontSize: fontSize, color: Colors.black)),
+          child: Text(this.text, style: TextStyle(fontSize: fontSize, color: Colors.black)),
           onPressed: () {
             if (this.onTap == null) return;
+            HapticFeedback.mediumImpact();
             this.onTap!();
           },
           style: ElevatedButton.styleFrom(
