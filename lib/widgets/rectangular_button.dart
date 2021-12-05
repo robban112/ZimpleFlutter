@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zimple/utils/constants.dart';
 
 class RectangularButton extends StatelessWidget {
@@ -21,6 +22,7 @@ class RectangularButton extends StatelessWidget {
         child: ElevatedButton(
           child: Text(text, style: TextStyle(fontSize: 17.0, color: Colors.white)),
           onPressed: () {
+            HapticFeedback.lightImpact();
             this.onTap();
           },
           style: ElevatedButton.styleFrom(

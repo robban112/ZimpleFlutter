@@ -67,7 +67,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
         backgroundColor: primaryColor,
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [

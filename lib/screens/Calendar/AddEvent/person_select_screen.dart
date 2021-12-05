@@ -38,15 +38,17 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
 
   Widget _buildCheckMark(Person person) {
     if (selectedPersonsMap[person] ?? false)
-      return Icon(Icons.check_circle, color: green, size: 32);
+      return Icon(Icons.check_circle, color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), size: 32);
     else
-      return Icon(Icons.radio_button_off_outlined, color: green, size: 32);
+      return Icon(Icons.radio_button_off_outlined, color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), size: 32);
   }
 
-  void _togglePerson(Person person) => setState(() {
-        if (selectedPersonsMap[person] == null) return;
-        selectedPersonsMap[person] = !selectedPersonsMap[person]!;
-      });
+  void _togglePerson(Person person) => setState(
+        () {
+          if (selectedPersonsMap[person] == null) return;
+          selectedPersonsMap[person] = !selectedPersonsMap[person]!;
+        },
+      );
 
   void onPop(BuildContext context) {
     _performCallback();

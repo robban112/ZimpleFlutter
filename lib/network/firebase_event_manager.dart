@@ -1,21 +1,28 @@
+import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/material.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/absence_request.dart';
+import 'package:zimple/model/customer.dart';
+import 'package:zimple/model/event.dart';
 import 'package:zimple/model/event_type.dart';
+import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/utils/date_utils.dart';
-import '../model/person.dart';
-import '../model/event.dart';
-import '../managers/person_manager.dart';
 
 class FirebaseEventManager {
   String company;
   PersonManager personManager;
+  CustomerManager customerManager;
   late fb.DatabaseReference eventRef;
   late fb.DatabaseReference database;
 
-  FirebaseEventManager({required this.company, required this.personManager}) {
+  FirebaseEventManager({
+    required this.company,
+    required this.personManager,
+    required this.customerManager,
+  }) {
     this.database = fb.FirebaseDatabase.instance.reference();
     this.eventRef = database.reference().child(company).child('Events');
   }
@@ -73,7 +80,9 @@ class FirebaseEventManager {
           end: _endDate,
           title: "${absenceToString(absenceRequest.absenceType)} - ${name ?? ""}",
           notes: absenceRequest.notes,
-          persons: [Person(id: absenceRequest.userId, color: Colors.white, name: "")],
+          persons: [
+            Person(id: absenceRequest.userId, color: Colors.white, name: ""),
+          ],
           eventType: EventType.vacation);
       String id = await addEvent(event);
       eventIds.add(id);
@@ -100,6 +109,10 @@ class FirebaseEventManager {
       String? location = eventData['address'];
       String? phoneNumber = eventData['phonenumber'];
       String? customerKey = eventData["customerKey"];
+      Customer? customerRef;
+      if (customerKey != null) {
+        customerRef = this.customerManager.getCustomer(customerKey);
+      }
       String? contactKey = eventData["contactKey"];
       EventType eventType = stringToEventType(eventData['eventType']);
       int? customerContactIndex = eventData['customerContactIndex'];
@@ -110,24 +123,26 @@ class FirebaseEventManager {
       Color eventColor = _setEventColorFromPersons(persons);
       Map<String, dynamic>? imageMap = eventData['images'] == null ? null : Map.from(eventData['images']);
       Event event = Event(
-          end: endDate,
-          start: startDate,
-          id: key,
-          eventType: eventType,
-          title: title,
-          persons: persons,
-          color: eventColor,
-          notes: notes,
-          customer: customer,
-          location: location,
-          phoneNumber: phoneNumber,
-          imageStoragePaths: imageStoragePaths,
-          originalImageStoragePaths: imageMap,
-          customerKey: customerKey,
-          customerContactIndex: customerContactIndex,
-          timereported: timereported,
-          workCategoryId: workCategoryId,
-          contactKey: contactKey);
+        end: endDate,
+        start: startDate,
+        id: key,
+        eventType: eventType,
+        title: title,
+        persons: persons,
+        color: eventColor,
+        notes: notes,
+        customer: customer,
+        location: location,
+        phoneNumber: phoneNumber,
+        imageStoragePaths: imageStoragePaths,
+        originalImageStoragePaths: imageMap,
+        customerKey: customerKey,
+        customerContactIndex: customerContactIndex,
+        timereported: timereported,
+        workCategoryId: workCategoryId,
+        contactKey: contactKey,
+        customerRef: customerRef,
+      );
       events.add(event);
     }
     return events;

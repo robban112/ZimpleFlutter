@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/utils.dart';
@@ -45,7 +46,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             child: Center(
               child: Container(
                 height: 30.0,
-                child: isDarkMode ? Image.asset('images/zimple_logo.png') : Image.asset('images/zimple_logo_black.png'),
+                child: SvgPicture.asset('images/zimpleLogo.svg', color: isDarkMode ? Colors.white : Colors.black),
               ),
             ),
           ),

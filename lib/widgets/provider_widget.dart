@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/src/provider.dart';
+import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
@@ -22,8 +24,13 @@ class ManagerProvider extends ChangeNotifier {
   late FirebaseTimeReportManager firebaseTimereportManager;
   late FirebaseContactManager firebaseContactManager;
   late TimereportManager timereportManager;
+  late CustomerManager customerManager;
   List<Contact> contacts = [];
   Map<String, int>? absenceRequestReadMap;
+
+  static ManagerProvider of(BuildContext context) {
+    return context.read<ManagerProvider>();
+  }
 
   void setContacts(List<Contact> contacts) {
     this.contacts = contacts;
@@ -37,6 +44,16 @@ class ManagerProvider extends ChangeNotifier {
 
   void setPersons(List<Person> persons) {
     this.personManager = PersonManager(persons: persons);
+    notifyListeners();
+  }
+
+  void setEventManager(EventManager eventManager) {
+    this.eventManager = eventManager;
+    notifyListeners();
+  }
+
+  void updateEvent({required String key, required Event newEvent}) {
+    this.eventManager.updateEvent(key: key, newEvent: newEvent);
     notifyListeners();
   }
 }

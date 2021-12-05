@@ -202,8 +202,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           hidesFirstLastSeparator: false,
           items: [
             ListedItem(
-                trailingIcon: Icons.work,
-                child: Text("Välj arbetsorder"),
+                leadingIcon: Icons.work,
+                child: Text("Välj arbetsorder", style: TextStyle(fontSize: 16)),
                 trailingWidget: Row(
                   children: [
                     selectedEvent != null
@@ -251,7 +251,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
             ListedItemWidget(
               rowInset: EdgeInsets.only(right: 16.0, left: 20.0),
               item: ListedItem(
-                child: Text("Lägg till bild"),
+                child: Text("Bilder"),
                 onTap: () {
                   setState(() => this.isSelectingPhotoProvider = true);
                 },
@@ -283,7 +283,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
             items: [
               ListedItem(
                   leadingIcon: Icons.person,
-                  child: Text("Välj kund"),
+                  child: Text("Kund", style: TextStyle(fontSize: 16)),
                   trailingWidget: Row(
                     children: [
                       Text(selectedCustomer?.name ?? ""),
@@ -392,8 +392,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
               onChangeStart: (startDate) => updateDifference(startDate, endDateController.getDate(), this.minutesBreak),
               onChangeEnd: (endDate) => updateDifference(startDateController.getDate(), endDate, this.minutesBreak),
               datePickerMode: selectedEvent != null ? CupertinoDatePickerMode.time : CupertinoDatePickerMode.dateAndTime,
-              startTitle: "När du började",
-              endTitle: "När du slutade",
+              startTitle: "Började",
+              endTitle: "Slutade",
             ),
             Container(height: 0.5, color: Colors.grey.shade400),
             //buildBreakRow(),
@@ -423,7 +423,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Rast:  "),
+              Text("Rast:", style: TextStyle(fontSize: 16)),
               Row(
                 children: [
                   Text("${_minutesBreak.toInt()}", style: TextStyle(fontSize: 20.0)),
@@ -548,7 +548,7 @@ class TimereportRow extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(this.title, style: TextStyle(fontSize: 15.0)),
+              Text(this.title, style: TextStyle(fontSize: 16.0)),
               this.leading,
             ],
           ),
@@ -670,7 +670,7 @@ class NotesComponent extends StatelessWidget {
       keyboardType: TextInputType.multiline,
       decoration: InputDecoration(
         hintText: 'Skriv anteckning ...',
-        hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
         enabledBorder:
             OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.grey.shade300), borderRadius: BorderRadius.zero),
         focusedBorder:

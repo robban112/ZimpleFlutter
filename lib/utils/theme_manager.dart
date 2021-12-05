@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/src/provider.dart';
 import './storage_manager.dart';
 import 'package:zimple/utils/constants.dart';
 
 class ThemeNotifier with ChangeNotifier {
+  static ThemeNotifier of(BuildContext context) {
+    return context.read<ThemeNotifier>();
+  }
+
   final darkTheme = ThemeData(
       appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle(

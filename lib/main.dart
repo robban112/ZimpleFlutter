@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:zimple/screens/Login/first_login_screen.dart';
 import 'package:zimple/screens/Login/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/screens/Splash/splash_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -121,14 +122,6 @@ class _ZimpleState extends State<Zimple> {
     }, onError: (Object err) {
       if (!mounted) return;
       print('got err: $err');
-      // setState(() {
-      //   //_latestUri = null;
-      //   if (err is FormatException) {
-      //     //_err = err;
-      //   } else {
-      //     //_err = null;
-      //   }
-      // });
     });
   }
 
@@ -204,7 +197,7 @@ class _ZimpleState extends State<Zimple> {
   Widget build(BuildContext context) {
     //initializeDateFormatting('sv_se');
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
+      SystemUiOverlayStyle.dark.copyWith(
         statusBarColor: Colors.black,
         systemNavigationBarColor: Colors.black,
       ),
@@ -251,9 +244,14 @@ Future<bool> initializeApp() async {
   return isUserLoggedIn();
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  bool _hasFinishedSplash = false;
   final Future<bool> _init = initializeApp();
-  //final Future<bool> _isLoggedIn = isUserLoggedIn();
 
   @override
   Widget build(BuildContext context) {
@@ -271,12 +269,12 @@ class App extends StatelessWidget {
         }
 
         // Once complete, show your application
-        if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+        if (_hasFinishedSplash && snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
           return Zimple(snapshot.data!);
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
-        return Container(color: primaryColor);
+        return SplashScreen(finishedSplash: () => setState(() => _hasFinishedSplash = true));
       },
     );
   }

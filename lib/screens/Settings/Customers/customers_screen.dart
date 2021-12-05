@@ -57,10 +57,11 @@ class _CustomerScreenState extends State<CustomerScreen> {
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddCustomerScreen(),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddCustomerScreen(),
+                    ),
+                  );
                 },
               )
             : Container(),
@@ -73,8 +74,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(customer.name),
-                    Text(customer.address ?? "", style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600))
+                    Text(customer.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(customer.address ?? "", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600))
                   ],
                 ),
                 onTap: () {
@@ -128,7 +129,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(customer.name),
+              Text(customer.name, style: TextStyle(fontSize: 20)),
               Text(customer.address ?? "", style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600))
             ],
           ),
@@ -173,9 +174,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(contact.name, style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)),
+                    Text(contact.name, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
                     SizedBox(height: 2),
-                    Text(contact.email ?? ""),
+                    Text(contact.email ?? "", style: TextStyle(fontSize: 16)),
                     SizedBox(height: 2),
                     Text(contact.phoneNumber)
                   ],

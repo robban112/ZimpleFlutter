@@ -13,15 +13,10 @@ class FirebaseVacationManager {
     absenceRef = database.reference().child(company).child('Absence');
   }
 
-  Future<void> addVacationRequest(UserParameters user, DateTime startDate,
-      DateTime endDate, String? notes, AbsenceType absenceType) {
-    AbsenceRequest vacationRequest = AbsenceRequest(
-        id: '',
-        startDate: startDate,
-        userId: '',
-        endDate: endDate,
-        notes: notes,
-        absenceType: absenceType);
+  Future<void> addVacationRequest(
+      UserParameters user, DateTime startDate, DateTime endDate, String? notes, AbsenceType absenceType) {
+    AbsenceRequest vacationRequest =
+        AbsenceRequest(id: '', startDate: startDate, userId: '', endDate: endDate, notes: notes, absenceType: absenceType);
     return absenceRef.child(user.token).push().set(vacationRequest.toJSON());
   }
 
@@ -31,8 +26,7 @@ class FirebaseVacationManager {
     });
   }
 
-  List<AbsenceRequest> _parseAbsenceRequestList(
-      dynamic absenceData, String userId) {
+  List<AbsenceRequest> _parseAbsenceRequestList(dynamic absenceData, String userId) {
     Map<String, dynamic> map = Map.from(absenceData);
     return map.keys
         .map((key) => AbsenceRequest.mapFromJSON(key, userId, map[key]))
@@ -53,10 +47,10 @@ class FirebaseVacationManager {
   Future<Map<String, int>> getUnreadAbsenceRequests() async {
     Map<String, int> unreadMap = {};
     absenceRef.once().then((snapshot) {
+      if (snapshot.value == null) return unreadMap;
       Map<String, dynamic> userMap = Map.from(snapshot.value);
       userMap.keys.forEach((userKey) {
-        int numUnread = _parseAbsenceRequestList(userMap[userKey], userKey)
-            .fold<int>(0, (prev, absenceRequest) {
+        int numUnread = _parseAbsenceRequestList(userMap[userKey], userKey).fold<int>(0, (prev, absenceRequest) {
           if (absenceRequest.approved == null) prev += 1;
           return prev;
         });

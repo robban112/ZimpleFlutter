@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:provider/src/provider.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/widgets/provider_widget.dart';
 import 'week_view.dart';
 import '../model/event.dart';
 import '../utils/date_utils.dart';
@@ -16,32 +18,33 @@ class WeekPageControllerNew extends StatelessWidget {
   final WeekPageController daysChangedController;
   //final List<Event> events;
   final Function(Event) didTapEvent;
+  final Function(Event) didLongPressEvent;
   final Function(DateTime, int) didTapHour;
   final Function(DateTime, int) didDoubleTapHour;
-  final EventManager eventManager;
 
-  WeekPageControllerNew(
-      {Key? key,
-      required double minuteHeight,
-      required int numberOfDays,
-      required this.eventManager,
-      required this.didTapEvent,
-      required this.daysChangedController,
-      required this.didTapHour,
-      required this.didDoubleTapHour})
-      : _minuteHeight = minuteHeight,
+  WeekPageControllerNew({
+    Key? key,
+    required double minuteHeight,
+    required int numberOfDays,
+    required this.didTapEvent,
+    required this.daysChangedController,
+    required this.didTapHour,
+    required this.didDoubleTapHour,
+    required this.didLongPressEvent,
+  })  : _minuteHeight = minuteHeight,
         _numberOfDays = numberOfDays,
         super(key: key);
 
-  Widget buildContainer(DateTime date) {
+  Widget buildContainer(BuildContext context, DateTime date) {
     return WeekView(
       numberOfDays: _numberOfDays,
       minuteHeight: _minuteHeight,
       dates: getDateRange(date, _numberOfDays),
-      events: eventManager.getEventByStartDate(date, _numberOfDays),
+      events: context.read<ManagerProvider>().eventManager.getEventByStartDate(date, _numberOfDays),
       didTapEvent: didTapEvent,
       didTapHour: didTapHour,
       didDoubleTapHour: didDoubleTapHour,
+      didLongPressEvent: didLongPressEvent,
     );
   }
 
@@ -51,7 +54,7 @@ class WeekPageControllerNew extends StatelessWidget {
     print("Rebuilt WeekPageController");
     return InnerWeekPageController(
       screenWidth: width,
-      widgetBuilder: buildContainer,
+      widgetBuilder: (date) => buildContainer(context, date),
       numberOfDays: _numberOfDays,
       daysChangedController: daysChangedController,
     );

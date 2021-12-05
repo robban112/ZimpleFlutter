@@ -80,7 +80,7 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
   }
 
   void _onPressedAddUser() {
-    HapticFeedback.mediumImpact();
+    HapticFeedback.lightImpact();
     Navigator.push(context, CupertinoPageRoute(builder: (_) => AddCoworkerScreen()));
   }
 }

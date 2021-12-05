@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/theme_manager.dart';
 
 class ListedItem {
-  final Widget child;
+  final Widget? child;
+  final String? text;
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final Widget? trailingWidget;
   final VoidCallback? onTap;
-  ListedItem({required this.child, this.leadingIcon, this.trailingIcon, this.onTap, this.trailingWidget});
+  ListedItem({
+    this.child,
+    this.text,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.onTap,
+    this.trailingWidget,
+  });
 }
 
 class ListedItemWidget extends StatelessWidget {
@@ -26,7 +36,6 @@ class ListedItemWidget extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (item.onTap != null) item.onTap!();
-          HapticFeedback.mediumImpact();
         },
         splashColor: Colors.grey.shade300,
         child: Padding(
@@ -45,11 +54,11 @@ class ListedItemWidget extends StatelessWidget {
                         ],
                       )
                     : Container(),
-                item.child
+                item.text != null ? Text(item.text!, style: TextStyle(fontSize: 16)) : item.child!
               ],
             ),
             Expanded(child: Container()),
-            item.trailingWidget != null ? item.trailingWidget! : Icon(item.trailingIcon)
+            item.trailingWidget != null ? item.trailingWidget! : Icon(Icons.chevron_right)
           ]),
         ),
       ),
@@ -136,10 +145,10 @@ class ListedView extends StatelessWidget {
           );
   }
 
-  Widget _itemBuilder(contex, index) {
+  Widget _itemBuilder(context, index) {
     var item = items[index];
     if (item is ListedTextField) {
-      return _textfieldBuilder(item);
+      return _textfieldBuilder(context, item);
     }
     return ListedItemWidget(
       item: item,
@@ -147,7 +156,7 @@ class ListedView extends StatelessWidget {
     );
   }
 
-  Widget _textfieldBuilder(ListedTextField item) {
+  Widget _textfieldBuilder(BuildContext context, ListedTextField item) {
     return Padding(
       padding: rowInset.copyWith(top: 0, bottom: 0),
       child: Row(
@@ -165,14 +174,17 @@ class ListedView extends StatelessWidget {
               textInputAction: TextInputAction.done,
               //initialValue: item.initialValue,
               key: key,
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 16),
               autocorrect: false,
               keyboardType: item.inputType,
               onChanged: item.onChanged,
               controller: item.controller,
               decoration: InputDecoration(
                   hintText: item.placeholder,
-                  hintStyle: TextStyle(fontSize: 15),
+                  hintStyle: TextStyle(
+                      fontSize: 16,
+                      color:
+                          ThemeNotifier.of(context).isDarkMode() ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.3)),
                   //focusColor: focusColor,
                   focusedBorder: InputBorder.none,
                   border: InputBorder.none),

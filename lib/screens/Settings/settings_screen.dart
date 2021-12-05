@@ -28,13 +28,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: Consumer<ThemeNotifier>(
         builder: (context, theme, _) {
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Dark mode"),
+                    Text("Dark mode", style: TextStyle(fontSize: 16)),
                     CupertinoSwitch(
                         value: theme.isDarkMode(),
                         onChanged: (val) {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
@@ -13,6 +14,8 @@ import 'package:zimple/screens/Settings/Customers/customers_screen.dart';
 import 'package:zimple/screens/Settings/settings_screen.dart';
 import 'package:zimple/screens/Settings/support_screen.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/theme_manager.dart';
+import 'package:zimple/widgets/provider_widget.dart';
 import '../Login/login_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/photo_buttons.dart';
@@ -21,8 +24,7 @@ import 'package:zimple/widgets/listed_view.dart';
 class MoreScreen extends StatefulWidget {
   static const String routeName = "settings_screen";
   final UserParameters user;
-  final List<Customer> customers;
-  const MoreScreen({required this.user, required this.customers});
+  const MoreScreen({required this.user});
 
   @override
   _MoreScreenState createState() => _MoreScreenState();
@@ -81,8 +83,8 @@ class _MoreScreenState extends State<MoreScreen> {
                 SizedBox(height: 80),
                 _buildProfile(),
                 SizedBox(height: 10),
-                Text(widget.user.email, textAlign: TextAlign.center, style: TextStyle(fontSize: 18.0)),
-                SizedBox(height: 15),
+                _buildTitle(),
+                SizedBox(height: 8),
                 widget.user.isAdmin
                     ? Text(
                         "Admin",
@@ -99,6 +101,11 @@ class _MoreScreenState extends State<MoreScreen> {
     );
   }
 
+  Text _buildTitle() {
+    String title = widget.user.email.isBlank() ? widget.user.name : widget.user.email;
+    return Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold));
+  }
+
   Widget buildListMenu(BuildContext context) {
     return ListedView(
       rowInset: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -106,35 +113,35 @@ class _MoreScreenState extends State<MoreScreen> {
         ListedItem(
             leadingIcon: Icons.people_alt_outlined,
             trailingIcon: Icons.chevron_right,
-            child: Text("Kunder"),
+            text: "Kunder",
             onTap: () {
-              pushNewScreen(context, screen: CustomerScreen(customers: widget.customers));
+              pushNewScreen(context, screen: CustomerScreen(customers: ManagerProvider.of(context).customers));
             }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
             leadingIcon: Icons.people,
-            child: Text("Medarbetare"),
+            text: "Medarbetare",
             onTap: () {
               pushNewScreen(context, screen: CoworkersScreen());
             }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
             leadingIcon: Icons.support_agent,
-            child: Text("Support"),
+            text: "Support",
             onTap: () {
               pushNewScreen(context, screen: SupportScreen());
             }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
             leadingIcon: Icons.settings,
-            child: Text("Inställningar"),
+            text: "Inställningar",
             onTap: () {
               pushNewScreen(context, screen: SettingsScreen());
             }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
             leadingIcon: Icons.logout,
-            child: Text("Logga ut"),
+            text: "Logga ut",
             onTap: () {
               logout(context);
             }),
@@ -194,14 +201,15 @@ class _MoreScreenState extends State<MoreScreen> {
 
   CircleAvatar _buildProfile() {
     var imageNull = widget.user.profilePicturePath == null;
+    bool isDarkMode = ThemeNotifier.of(context).isDarkMode();
     return CircleAvatar(
       radius: 75,
-      backgroundColor: Colors.grey.shade400,
+      backgroundColor: Colors.grey.shade900,
       child: Stack(
         children: [
           Center(
             child: imageNull
-                ? Text(widget.user.name, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 21.0))
+                ? Icon(Icons.image, size: 48)
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(150),
                     child: Container(
@@ -213,10 +221,9 @@ class _MoreScreenState extends State<MoreScreen> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: FloatingActionButton(
-                heroTag: 'photo_button',
-                backgroundColor: Colors.grey.shade300,
+                backgroundColor: Colors.grey.shade800,
                 mini: true,
-                child: Icon(Icons.photo_camera),
+                child: Icon(Icons.photo_camera, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     this.isSelectingPhotoProvider = !this.isSelectingPhotoProvider;
@@ -228,5 +235,9 @@ class _MoreScreenState extends State<MoreScreen> {
         ],
       ),
     );
+  }
+
+  String _userName() {
+    return widget.user.name.isEmpty ? widget.user.email : widget.user.name;
   }
 }

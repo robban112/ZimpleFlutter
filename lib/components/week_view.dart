@@ -10,15 +10,16 @@ import '../utils/date_utils.dart';
 import 'package:zimple/utils/constants.dart';
 
 class WeekView extends StatelessWidget {
-  WeekView(
-      {required int numberOfDays,
-      required double minuteHeight,
-      required this.events,
-      required this.didTapEvent,
-      required this.dates,
-      required this.didTapHour,
-      required this.didDoubleTapHour})
-      : _numberOfDays = numberOfDays,
+  WeekView({
+    required int numberOfDays,
+    required double minuteHeight,
+    required this.events,
+    required this.didTapEvent,
+    required this.didLongPressEvent,
+    required this.dates,
+    required this.didTapHour,
+    required this.didDoubleTapHour,
+  })  : _numberOfDays = numberOfDays,
         _minuteHeight = minuteHeight;
 
   final int _numberOfDays;
@@ -26,6 +27,7 @@ class WeekView extends StatelessWidget {
   final List<Event> events;
   final List<DateTime> dates;
   final Function(Event) didTapEvent;
+  final Function(Event) didLongPressEvent;
   final Function(DateTime, int) didTapHour;
   final Function(DateTime, int) didDoubleTapHour;
 
@@ -42,7 +44,13 @@ class WeekView extends StatelessWidget {
   Widget build(BuildContext context) {
     var dayWidth = (MediaQuery.of(context).size.width - verticalTimeContainerWidth) / _numberOfDays;
     var eventLayoutManager = EventLayoutManager(
-        dayWidth: dayWidth, events: events, minuteHeight: _minuteHeight, datesOfWeek: dates, didTapEvent: didTapEvent);
+      dayWidth: dayWidth,
+      events: events,
+      minuteHeight: _minuteHeight,
+      datesOfWeek: dates,
+      didTapEvent: didTapEvent,
+      didLongPressEvent: didLongPressEvent,
+    );
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
@@ -113,19 +121,20 @@ class WeekView extends StatelessWidget {
   List<Widget> _buildHourContainer(BuildContext context, DateTime date, double dayWidth) {
     return List.generate(
       24,
-      (index) => GestureDetector(
-        onTap: () {
+      (index) => Listener(
+        onPointerUp: (event) {
+          print("tapped hour");
           didTapHour(date, index);
         },
-        onDoubleTap: () {
-          this.didDoubleTapHour(date, index);
-        },
-        child: HourContainer(
-          minuteHeight: _minuteHeight,
-          dayWidth: dayWidth,
-          color: isToday(date)
-              ? Color.alphaBlend(Theme.of(context).colorScheme.secondary.withOpacity(0.15), Theme.of(context).backgroundColor)
-              : Theme.of(context).backgroundColor,
+        child: GestureDetector(
+          onDoubleTap: () => this.didDoubleTapHour(date, index),
+          child: HourContainer(
+            minuteHeight: _minuteHeight,
+            dayWidth: dayWidth,
+            color: isToday(date)
+                ? Color.alphaBlend(Theme.of(context).colorScheme.secondary.withOpacity(0.15), Theme.of(context).backgroundColor)
+                : Theme.of(context).backgroundColor,
+          ),
         ),
       ),
     );

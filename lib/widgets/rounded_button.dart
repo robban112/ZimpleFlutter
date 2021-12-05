@@ -29,7 +29,7 @@ class RoundedButton extends StatelessWidget {
           child: Text(this.text, style: TextStyle(fontSize: fontSize, color: Colors.black)),
           onPressed: () {
             if (this.onTap == null) return;
-            HapticFeedback.mediumImpact();
+            HapticFeedback.lightImpact();
             this.onTap!();
           },
           style: ElevatedButton.styleFrom(

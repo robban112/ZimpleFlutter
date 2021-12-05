@@ -14,6 +14,11 @@ class FirebaseCustomerManager {
     this.customerRef = database.reference().child(company).child('Customers');
   }
 
+  Future<List<Customer>> getCustomers() async {
+    var snapshot = await customerRef.once();
+    return _mapCustomer(snapshot);
+  }
+
   Stream<List<Customer>> listenCustomers() {
     return customerRef.limitToLast(500).onValue.map((event) {
       logger.log(Level.info, "Listen Customers");

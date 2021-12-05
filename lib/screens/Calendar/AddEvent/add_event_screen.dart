@@ -72,7 +72,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final DateSelectorController startDateController = DateSelectorController();
   final DateSelectorController endDateController = DateSelectorController();
 
-  static const fontSize = 14.0;
+  static const fontSize = 16.0;
 
   @override
   void initState() {
@@ -356,7 +356,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
     return ListedView(hidesFirstLastSeparator: false, rowInset: EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0), items: [
       ListedItem(
           leadingIcon: Icons.group,
-          child: Text("Välj personer"),
+          text: "Personer",
           trailingWidget: Row(
             children: [buildSelectedPersonsAvatars(), Icon(Icons.chevron_right)],
           ),
@@ -370,7 +370,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
           }),
       ListedItem(
           leadingIcon: Icons.person,
-          child: Text("Välj kund"),
+          text: "Kund",
           trailingWidget: Row(
             children: [
               Text(selectedCustomer?.name ?? ""),
@@ -421,7 +421,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       //     controller: phonenumberController),
       ListedItem(
           leadingIcon: Icons.image_rounded,
-          child: Text("Lägg till bilder"),
+          text: "Lägg till bilder",
           trailingWidget: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -474,7 +474,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   ListedItem _buildContactPersonRow() => ListedItem(
         leadingIcon: Icons.contact_phone,
-        child: Text("Välj kontaktperson"),
+        text: "Kontaktperson",
         trailingWidget: Row(
           children: [
             Text(selectedContactPerson?.name ?? ""),
@@ -489,7 +489,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   ListedItem _buildTypeOfWorkRow() => ListedItem(
       leadingIcon: Icons.widgets,
-      child: Text("Välj kategori"),
+      text: "Kategori",
       trailingWidget: Row(
         children: [
           _buildSelectedTypeOfWork(),

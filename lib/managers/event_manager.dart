@@ -71,6 +71,16 @@ class EventManager {
     return eventKeyMap[key];
   }
 
+  void updateEvent({required String key, required Event newEvent}) {
+    Event? savedEvent = eventKeyMap[key];
+    if (savedEvent == null) return;
+
+    savedEvent.color = newEvent.color;
+    savedEvent.start = newEvent.start;
+    savedEvent.end = newEvent.end;
+    savedEvent.isMovingEvent = newEvent.isMovingEvent;
+  }
+
   bool hasUserTimreportedCurrentEvent(Event event, String key) {
     return event.timereported?.contains(key) ?? false;
   }

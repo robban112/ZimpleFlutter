@@ -13,29 +13,28 @@ class EventLayoutManager {
   final double minuteHeight;
   final List<DateTime> datesOfWeek;
   final Function(Event) didTapEvent;
-  EventLayoutManager(
-      {required this.dayWidth,
-      required this.events,
-      required this.minuteHeight,
-      required this.datesOfWeek,
-      required this.didTapEvent});
+  final Function(Event) didLongPressEvent;
+  EventLayoutManager({
+    required this.dayWidth,
+    required this.events,
+    required this.minuteHeight,
+    required this.datesOfWeek,
+    required this.didTapEvent,
+    required this.didLongPressEvent,
+  });
 
   List<Widget> buildEventContainers(int index) {
     //List<EventLayout> eventContainers = [];
     int firstDay = datesOfWeek.first.weekday;
-    List<Event> eventsOfDay = events
-        .where((event) => event.start.weekday - 1 == index + firstDay - 1)
-        .toList();
+    List<Event> eventsOfDay = events.where((event) => event.start.weekday - 1 == index + firstDay - 1).toList();
     for (int indexEvent = 0; indexEvent < eventsOfDay.length; indexEvent++) {
       Event event = eventsOfDay[indexEvent];
       if (!event.start.isSameDate(event.end)) {
-        event.end = DateTime(event.start.year, event.start.month,
-            event.start.day, event.end.hour, event.end.minute);
+        event.end = DateTime(event.start.year, event.start.month, event.start.day, event.end.hour, event.end.minute);
       }
       int diffHour = event.end.difference(event.start).inHours;
       int diffMin = event.end.difference(event.start).inMinutes;
-      double height =
-          (diffHour + (diffMin - 60 * diffHour) / 60) * minuteHeight * 60;
+      double height = (diffHour + (diffMin - 60 * diffHour) / 60) * minuteHeight * 60;
       double top = event.start.hour * minuteHeight * 60;
       top += event.start.minute * minuteHeight;
 
@@ -43,8 +42,7 @@ class EventLayoutManager {
       //   top = 0;
       // }
 
-      EventLayout eventLayout =
-          EventLayout(height: height, width: dayWidth, left: 0, top: top);
+      EventLayout eventLayout = EventLayout(height: height, width: dayWidth, left: 0, top: top);
       event.layout = eventLayout;
       //eventContainers.add(eventContainer);
     }
@@ -53,6 +51,7 @@ class EventLayoutManager {
               event: event,
               eventLayout: event.layout,
               didTapEvent: didTapEvent,
+              didLongPressEvent: didLongPressEvent,
             ))
         .toList();
 
@@ -68,8 +67,7 @@ class EventLayoutManager {
     groupedEvents.add([firstItem]);
     for (int index = 1; index < sectionItemContainers.length; index++) {
       Event item = sectionItemContainers[index];
-      Tuple2<bool, int> canBePlacedBeneath =
-          _canBePlacedBeneath(item, groupedEvents);
+      Tuple2<bool, int> canBePlacedBeneath = _canBePlacedBeneath(item, groupedEvents);
       bool placedBeneath = canBePlacedBeneath.item1;
       int beneathColumnNumber = canBePlacedBeneath.item2;
       if (placedBeneath) {
@@ -89,8 +87,7 @@ class EventLayoutManager {
       }
       adjust += 1;
     }
-    List<List<Event>> extendedGroupedEvents =
-        _extendGroupedEvents(groupedEvents, columnWidth);
+    List<List<Event>> extendedGroupedEvents = _extendGroupedEvents(groupedEvents, columnWidth);
     return _groupedEventsToList(extendedGroupedEvents);
   }
 
@@ -104,8 +101,7 @@ class EventLayoutManager {
     return eventContainers;
   }
 
-  Tuple2<bool, int> _canBePlacedBeneath(
-      Event item, List<List<Event>> groupedEvents) {
+  Tuple2<bool, int> _canBePlacedBeneath(Event item, List<List<Event>> groupedEvents) {
     for (var index = 0; index < groupedEvents.length; index++) {
       List<Event> column = groupedEvents[index];
       var lastItem = column.last;
@@ -132,16 +128,12 @@ class EventLayoutManager {
     return false;
   }
 
-  List<List<Event>> _extendGroupedEvents(
-      List<List<Event>> groupedEvents, double width) {
+  List<List<Event>> _extendGroupedEvents(List<List<Event>> groupedEvents, double width) {
     for (int index = 0; index < groupedEvents.length; index++) {
       for (Event eventContainer in groupedEvents[index]) {
         double adjustWidthMultiplier = 1.0;
-        for (int followingIndex = index + 1;
-            followingIndex < groupedEvents.length;
-            followingIndex++) {
-          if (_canExtendToColumn(
-              eventContainer, groupedEvents[followingIndex])) {
+        for (int followingIndex = index + 1; followingIndex < groupedEvents.length; followingIndex++) {
+          if (_canExtendToColumn(eventContainer, groupedEvents[followingIndex])) {
             adjustWidthMultiplier += 1;
           } else {
             break;
@@ -158,8 +150,7 @@ class EventLayoutManager {
     var secondBottom = secondEvent.layout.top + secondEvent.layout.height;
     if (firstBottom < secondBottom && secondEvent.layout.top > firstBottom) {
       return true;
-    } else if (secondBottom < firstBottom &&
-        firstEvent.layout.top > secondBottom) {
+    } else if (secondBottom < firstBottom && firstEvent.layout.top > secondBottom) {
       return true;
     }
     return false;

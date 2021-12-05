@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/src/provider.dart';
 import 'package:zimple/components/timeplan.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/person.dart';
@@ -9,7 +9,6 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/screens/drawer.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../../components/week_page_controller_new.dart';
 import '../../network/firebase_event_manager.dart';
@@ -24,7 +23,6 @@ import 'event_detail_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
   static const String routeName = 'calendar_screen';
-  final EventManager eventManager;
   final FirebaseEventManager firebaseEventManager;
   final UserParameters user;
   final PersonManager personManager;
@@ -33,7 +31,6 @@ class CalendarScreen extends StatefulWidget {
     required this.user,
     required this.personManager,
     required this.firebaseEventManager,
-    required this.eventManager,
   });
   _CalendarScreenState createState() => _CalendarScreenState();
 }
@@ -47,8 +44,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
   late DateTime dateAggregator;
   bool isCopyingEvent = false;
   Event? eventToCopy;
+  Event? eventToMove;
   bool isShowingTimeplan = false;
   bool viewingMySchedule = false;
+  bool isMovingEvent = false;
   late Map<Person, bool> _filteredPersons;
   WeekPageController daysChangedController = WeekPageController();
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -64,50 +63,62 @@ class _CalendarScreenState extends State<CalendarScreen> {
     //filteredPersons = widget.personManager.persons;
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(EventManager eventManager) {
     return ProviderWidget(
       didTapEvent: this._didTapEvent,
       drawerKey: _drawerKey,
       child: isShowingTimeplan
           ? Timeplan(
-              eventManager: widget.eventManager,
+              eventManager: eventManager,
               didTapEvent: _didTapEvent,
               shouldShowIsTimereported: false,
             )
           : Stack(
               children: [
                 WeekPageControllerNew(
-                  eventManager: widget.eventManager,
-                  minuteHeight: this._minuteHeight,
-                  numberOfDays: this._numberOfDays,
-                  daysChangedController: daysChangedController,
-                  didTapEvent: (Event event) {
-                    if (isCopyingEvent) {
-                      copyEvent(event.start, event.start.hour);
-                    } else
-                      this._didTapEvent(event);
-                  },
-                  didTapHour: (date, index) {
-                    if (isCopyingEvent) {
-                      print("upload new event at $date $index");
-                      copyEvent(date, index);
-                    }
-                  },
-                  didDoubleTapHour: (date, index) {
-                    print("Double dap date: $date");
-                    if (this._numberOfDays == 1) {
+                    minuteHeight: this._minuteHeight,
+                    numberOfDays: this._numberOfDays,
+                    daysChangedController: daysChangedController,
+                    didTapEvent: (Event event) {
+                      if (isCopyingEvent) {
+                        copyEvent(event.start, event.start.hour);
+                      } else if (isMovingEvent) {
+                        moveEvent(context, event.start, event.start.hour);
+                      } else
+                        this._didTapEvent(event);
+                    },
+                    didTapHour: (date, index) {
+                      if (isCopyingEvent) {
+                        print("upload new event at $date $index");
+                        copyEvent(date, index);
+                      } else if (isMovingEvent) {
+                        print("moving event");
+                        moveEvent(context, date, index);
+                      }
+                    },
+                    didDoubleTapHour: (date, index) {
+                      print("Double dap date: $date");
+                      if (this._numberOfDays == 1) {
+                        setState(() {
+                          this._numberOfDays = 7;
+                        });
+                        daysChangedController.daysChanged(1, 7, null);
+                      } else {
+                        daysChangedController.daysChanged(7, 1, date);
+                        setState(() {
+                          this._numberOfDays = 1;
+                        });
+                      }
+                    },
+                    didLongPressEvent: (Event event) {
+                      HapticFeedback.mediumImpact();
+                      print("isMovingEvent: $isMovingEvent");
+                      context.read<ManagerProvider>().updateEvent(key: event.id, newEvent: event.copyWith(isMovingEvent: true));
                       setState(() {
-                        this._numberOfDays = 7;
+                        this.isMovingEvent = !this.isMovingEvent;
+                        this.eventToMove = (eventToMove == null ? event : null);
                       });
-                      daysChangedController.daysChanged(1, 7, null);
-                    } else {
-                      daysChangedController.daysChanged(7, 1, date);
-                      setState(() {
-                        this._numberOfDays = 1;
-                      });
-                    }
-                  },
-                ),
+                    }),
                 buildCopyWidget()
               ],
             ),
@@ -164,22 +175,43 @@ class _CalendarScreenState extends State<CalendarScreen> {
     widget.firebaseEventManager.addEvent(eventToCopy!);
   }
 
+  void moveEvent(BuildContext context, DateTime date, int index) {
+    EventManager eventManager = context.read<ManagerProvider>().eventManager;
+    var start = DateTime(date.year, date.month, date.day, index, eventToMove!.start.minute);
+    var diff = eventToMove!.end.difference(eventToMove!.start).inHours;
+    var end = DateTime(date.year, date.month, date.day, index + diff, eventToMove!.start.minute);
+
+    Event newEvent = eventToMove!.copyWith(start: start, end: end, isMovingEvent: eventToMove!.isMovingEvent);
+    eventManager.updateEvent(key: eventToMove!.id, newEvent: newEvent);
+    setState(() {});
+    HapticFeedback.heavyImpact();
+  }
+
   Widget buildCopyWidget() {
-    return isCopyingEvent
+    return isMovingEvent || isCopyingEvent
         ? Padding(
             padding: const EdgeInsets.only(bottom: 20.0),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(
-                  width: 150,
-                  height: 60,
+                  width: 175,
+                  height: 75,
                   child: RoundedButton(
                     text: "Avbryt",
+                    fontSize: 16,
+                    textColor: Colors.white,
                     color: Colors.red,
                     onTap: () {
                       HapticFeedback.lightImpact();
+                      if (isMovingEvent && eventToMove != null) {
+                        context
+                            .read<ManagerProvider>()
+                            .updateEvent(key: eventToMove!.id, newEvent: eventToMove!.copyWith(isMovingEvent: false));
+                      }
                       setState(() {
                         isCopyingEvent = false;
+                        isMovingEvent = false;
+                        eventToMove = null;
                       });
                     },
                   )),
@@ -205,12 +237,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
     daysChangedController.daysChanged(prevNumberOfDays, numberOfDays, null);
   }
 
-  void _didSetFilterForPersons(Person person) {
+  void _didSetFilterForPersons(EventManager eventManager, Person person) {
     print("filter for: $person");
     setState(() {
       if (_filteredPersons[person] == null) return;
       this._filteredPersons[person] = !this._filteredPersons[person]!;
-      this.widget.eventManager.eventFilter = (events) {
+      eventManager.eventFilter = (events) {
         return events.where((event) => event.persons?.any((p) => this._filteredPersons[p]!) ?? false).toList();
       };
     });
@@ -218,6 +250,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    EventManager eventManager = context.read<ManagerProvider>().eventManager;
     return Scaffold(
       //backgroundColor: Colors.white,
       key: _drawerKey,
@@ -230,7 +263,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 size: 24,
               ),
               onPressed: () {
-                HapticFeedback.mediumImpact();
+                HapticFeedback.lightImpact();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -247,10 +280,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
         setNumberOfDays: _setNumberOfDays,
         toggleTimeplanView: _toggleTimeplanView,
         filteredPersons: this._filteredPersons,
-        didSetFilterForPersons: this._didSetFilterForPersons,
+        didSetFilterForPersons: (person) => this._didSetFilterForPersons(eventManager, person),
         persons: widget.personManager.persons,
       ),
-      body: _buildBody(),
+      body: _buildBody(eventManager),
     );
   }
 }

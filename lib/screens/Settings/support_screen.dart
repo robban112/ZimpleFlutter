@@ -25,7 +25,7 @@ class SupportScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.phone),
                   SizedBox(width: 16),
-                  Text("07012345678"),
+                  Text("0760313335", style: TextStyle(fontSize: 16)),
                 ],
               ),
             ),
@@ -34,7 +34,7 @@ class SupportScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 24.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [Icon(Icons.email), SizedBox(width: 16), Text("zebastian@zimple.se")],
+                children: [Icon(Icons.email), SizedBox(width: 16), Text("zebastian@zimple.se", style: TextStyle(fontSize: 16))],
               ),
             )
           ],

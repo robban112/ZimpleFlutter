@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
+import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
@@ -43,17 +44,16 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   late FirebaseCustomerManager firebaseCustomerManager;
   late EventManager eventManager;
   late PersonManager personManager;
+  late CustomerManager customerManager;
   bool loadingEvent = true;
   bool loadingTimereport = true;
   PersistentTabController _controller = PersistentTabController(initialIndex: 0);
   late StreamSubscription<EventManager> eventManagerSubscriber;
-  late StreamSubscription timereportSubscriper;
   late StreamSubscription<List<Customer>> customerSubscriber;
   late StreamSubscription<List<Contact>> contactSubscriber;
   late StreamSubscription<List<Person>> personSubscriber;
   late ManagerProvider managerProvider;
   TimereportManager timeReportManager = TimereportManager();
-  late List<Customer> customers;
   bool loading = true;
 
   _TabBarControllerState();
@@ -63,19 +63,28 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
     managerProvider = Provider.of<ManagerProvider>(context, listen: false);
     managerProvider.firebaseUserManager = firebaseUserManager;
     firebaseUserManager.getUser()?.then((user) {
-      setState(() {
-        loading = false;
-      });
       //Utils.setLoading(context, true);
-      this.user = user;
-      managerProvider.user = user;
+      _setupUser(user);
+      _setupManagers(user.company);
+
       updateFCMToken(user);
       setupCustomerSubscriber();
       setupContactListener(user);
-      managerProvider.firebaseCustomerManager = firebaseCustomerManager;
-      firebasePersonManager = FirebasePersonManager(company: user.company);
-      managerProvider.firebasePersonManager = firebasePersonManager;
-      firebasePersonManager.getPersons().then((persons) {
+
+      Future.wait([
+        firebaseCustomerManager.getCustomers(),
+        firebasePersonManager.getPersons(),
+      ]).then((List responses) {
+        List<Person> persons = responses[1] as List<Person>;
+        List<Customer> customers = responses[0] as List<Customer>;
+        print("Received persons: ${persons.toString()}");
+        print("Received customers: ${customers.toString()}");
+        CustomerManager customerManager = CustomerManager(customers: customers);
+        managerProvider.customerManager = customerManager;
+        managerProvider.customers = customers;
+        setState(() {
+          loading = false;
+        });
         setupPersonManager(persons);
         setupFirebaseEventManager();
         setupFirebaseTimereport();
@@ -83,6 +92,19 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
       });
     });
     super.initState();
+  }
+
+  _setupUser(UserParameters user) {
+    this.user = user;
+    managerProvider.user = user;
+  }
+
+  _setupManagers(String company) {
+    firebaseCustomerManager = FirebaseCustomerManager(company: company);
+    firebasePersonManager = FirebasePersonManager(company: company);
+
+    managerProvider.firebaseCustomerManager = firebaseCustomerManager;
+    managerProvider.firebasePersonManager = firebasePersonManager;
   }
 
   Future<String?> getTokenz() async {
@@ -133,7 +155,7 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
         this.timeReportManager = timeReportManager;
         managerProvider.timereportManager = timereportManager;
         this.loadingTimereport = false;
-        if (!loadingTimereport && !loadingEvent) Utils.setLoading(context, false);
+        // if (!loadingTimereport && !loadingEvent) Utils.setLoading(context, false);
       });
 
       //print(timereportManager.getTimereports(user.token).first.breakTime);
@@ -141,23 +163,26 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   }
 
   void setupCustomerSubscriber() {
-    firebaseCustomerManager = FirebaseCustomerManager(company: user.company);
     customerSubscriber = firebaseCustomerManager.listenCustomers().listen((customers) {
       setState(() {
         managerProvider.customers = customers;
-        this.customers = customers;
+        this.customerManager = CustomerManager(customers: customers);
       });
     });
   }
 
   void setupFirebaseEventManager() {
-    firebaseEventManager = FirebaseEventManager(company: user.company, personManager: personManager);
+    firebaseEventManager = FirebaseEventManager(
+      company: user.company,
+      personManager: this.personManager,
+      customerManager: this.customerManager,
+    );
     managerProvider.firebaseEventManager = firebaseEventManager;
     eventManagerSubscriber = firebaseEventManager.listenEvents().listen((eventManager) {
       if (!mounted) return;
       setState(() {
         this.eventManager = eventManager;
-        managerProvider.eventManager = eventManager;
+        managerProvider.setEventManager(eventManager);
         loadingEvent = false;
         if (!loadingTimereport && !loadingEvent) Utils.setLoading(context, false);
       });
@@ -173,7 +198,6 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   void dispose() {
     eventManagerSubscriber.cancel();
     customerSubscriber.cancel();
-    timereportSubscriper.cancel();
     managerProvider.dispose();
     contactSubscriber.cancel();
     personSubscriber.cancel();
@@ -188,7 +212,6 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
               user: user,
               personManager: personManager,
               firebaseEventManager: firebaseEventManager,
-              eventManager: eventManager,
             ),
             TimeReportingScreen(
               eventManager: eventManager,
@@ -197,7 +220,6 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
             ),
             MoreScreen(
               user: this.user,
-              customers: this.customers,
             )
           ];
   }

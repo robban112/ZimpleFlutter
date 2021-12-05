@@ -84,7 +84,6 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
                 children: [
                   SizedBox(height: 12.0),
                   _buildLatestTimereports(context),
-                  SizedBox(height: 24.0),
                   _buildSectionTitle("Funktioner"),
                   _buildFunctionsListedView(),
                   widget.user.isAdmin ? _buildSectionTitle("Admin") : Container(),
@@ -104,19 +103,17 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
       items: [
         ListedItem(
             leadingIcon: Icons.access_time,
-            child: Text(
-              "Rapportera tid",
-            ),
+            text: "Rapportera tid",
             trailingIcon: Icons.chevron_right,
             onTap: goToAddTimereportScreen),
         ListedItem(
             leadingIcon: Icons.wb_sunny,
-            child: Text("Ansök frånvaro"),
+            text: "Ansök frånvaro",
             trailingIcon: Icons.chevron_right,
             onTap: () => pushNewScreen(context, screen: ReportVacationScreen())),
         ListedItem(
             leadingIcon: Icons.alarm_off,
-            child: Text("Min frånvaro"),
+            text: "Min frånvaro",
             trailingIcon: Icons.chevron_right,
             onTap: () => pushNewScreen(context,
                 screen: AbsenceScreen(
@@ -131,7 +128,12 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
     double width = MediaQuery.of(context).size.width;
     return Stack(
       children: [
-        Text("Visa frånvaroansökningar"),
+        Text(
+          "Frånvaroansökningar",
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
       ],
     );
   }
@@ -156,12 +158,10 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
       items: [
         ListedItem(
             leadingIcon: Icons.all_inbox,
-            child: Text(
-              "Visa alla tidrapporter",
-            ),
+            text: "Alla tidrapporter",
             trailingIcon: Icons.chevron_right,
             onTap: goToShowAllTimereportScreen),
-        ListedItem(leadingIcon: Icons.bar_chart, child: Text("Se statistik"), trailingIcon: Icons.chevron_right),
+        //ListedItem(leadingIcon: Icons.bar_chart, child: Text("Se statistik"), trailingIcon: Icons.chevron_right),
         ListedItem(
             leadingIcon: Icons.alarm_off,
             child: _buildAbsenceChild(),
@@ -174,7 +174,8 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
   }
 
   Widget _buildLatestTimereports(BuildContext context) {
-    var timereports = Provider.of<ManagerProvider>(context, listen: true).timereportManager.getTimereports(widget.user.token);
+    List<TimeReport> timereports =
+        Provider.of<ManagerProvider>(context, listen: true).timereportManager.getTimereports(widget.user.token);
     return timereports.isNotEmpty
         ? Column(
             children: [
@@ -184,6 +185,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
                 scrollDirection: Axis.horizontal,
                 child: TimeReportList(timereports: timereports.take(12).toList(), eventManager: widget.eventManager),
               ),
+              SizedBox(height: 24.0),
             ],
           )
         : Container();

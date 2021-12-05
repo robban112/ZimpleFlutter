@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:zimple/utils/constants.dart';
 import '../utils/date_utils.dart';
@@ -196,7 +197,6 @@ class DateSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build date selector");
     return Column(
       children: [
         _buildTimeRow(context),
@@ -226,12 +226,12 @@ class DateSelector extends StatelessWidget {
                     children: [
                       Icon(Icons.access_time),
                       SizedBox(width: 16.0),
-                      Text(title, style: TextStyle(fontSize: 14)),
+                      Text(title, style: TextStyle(fontSize: 16)),
                     ],
                   ),
                   Row(
                     children: [
-                      Text(dateString(date), style: TextStyle(fontSize: 15)),
+                      Text(dateString(date), style: TextStyle(fontSize: 16)),
                       Icon(isShowingDatePicker ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down)
                     ],
                   )

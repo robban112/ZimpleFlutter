@@ -53,37 +53,35 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       VoidCallback? onTapRichText}) {
     return ListedParameter(
         iconData: iconData,
-        child: Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: greyText,
-              ),
-              SizedBox(
-                width: 25,
-              ),
-              (isRichText ?? false)
-                  ? RichText(
-                      text: TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              if (onTapRichText != null) onTapRichText();
-                            },
-                          text: subtitle,
-                          style: TextStyle(color: Colors.lightBlue, fontSize: 18.0)))
-                  : (Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 10,
-                    ))
-            ],
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: greyText,
+            ),
+            SizedBox(
+              width: 25,
+            ),
+            (isRichText ?? false)
+                ? RichText(
+                    text: TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            if (onTapRichText != null) onTapRichText();
+                          },
+                        text: subtitle,
+                        style: TextStyle(color: Colors.lightBlue, fontSize: 18.0)))
+                : (Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 10,
+                  ))
+          ],
         ));
   }
 
@@ -391,6 +389,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Widget _buildPhoneNumber() {
+    if (widget.event.phoneNumber == null) return Container();
+    String? phonenumber = widget.event.phoneNumber?.replaceAll('-', '').replaceAll(' ', '');
     return widget.event.phoneNumber.isNotBlank()
         ? _buildParameter(
             iconData: Icons.phone,
@@ -398,7 +398,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             subtitle: widget.event.phoneNumber!,
             isRichText: true,
             onTapRichText: () {
-              _makePhoneCall('tel:${widget.event.phoneNumber}');
+              _makePhoneCall('tel:$phonenumber');
             })
         : Container();
   }
@@ -495,7 +495,10 @@ class ListedParameter extends StatelessWidget {
             SizedBox(
               width: 25.0,
             ),
-            child
+            Container(
+              width: MediaQuery.of(context).size.width * 0.7,
+              child: child,
+            )
           ],
         ),
         SizedBox(
