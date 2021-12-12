@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/utils/constants.dart';
@@ -15,6 +16,7 @@ class CustomerSelectScreen extends StatefulWidget {
 
 class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
   late List<Customer> customers;
+
   late Map<Customer, int> selectedContact;
 
   @override
@@ -31,6 +33,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
   }
 
   Widget buildBody() {
+    bool isDarkMode = Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
     if (customers.isEmpty) {
       return Align(
           alignment: Alignment.topCenter,
@@ -50,6 +53,8 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
     return ListView.separated(
         separatorBuilder: (context, index) {
           return Divider(
+            indent: 16,
+            endIndent: 16,
             color: Colors.grey.shade300,
           );
         },
@@ -57,19 +62,13 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
         itemBuilder: (context, index) {
           var customer = customers[index];
           return ListTile(
-            contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 18.0),
+            leading: _buildLeadingAvatar(isDarkMode, customer),
+            contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(customer.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0)),
-                Text(customer.address ?? ""),
-                SizedBox(height: 10),
-                ContactSelect(
-                  customer: customer,
-                  didSelectContact: (index) {
-                    selectedContact[customer] = index;
-                  },
-                )
+                Text(customer.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                Text(customer.address ?? "", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15.0)),
               ],
             ),
             onTap: () {
@@ -78,6 +77,28 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
             },
           );
         });
+  }
+
+  Container _buildLeadingAvatar(bool isDarkMode, Customer customer) {
+    if (customer.name.characters.length == 0) return Container(height: 45, width: 45);
+    return Container(
+      height: 45,
+      width: 45,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400,
+      ),
+      child: Center(
+        child: Text(
+          customer.name.characters.first,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
 }
 

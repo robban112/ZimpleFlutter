@@ -5,18 +5,27 @@ import 'cost.dart';
 
 class TimeReport {
   String id;
+
   String? userId;
 
   final DateTime startDate;
+
   final DateTime endDate;
+
   final int breakTime;
+
   final int totalTime;
+
   final String? comment;
+
   final String? eventId;
 
   final List<Cost>? costs;
+
   bool isCompleted;
+
   List<String>? imagesList;
+
   String? customerKey;
 
   Map<String, dynamic>? imageStoragePaths;
@@ -54,9 +63,7 @@ class TimeReport {
   void setImagesStoragePaths(String key, List<String> filenames) {
     Map<String, Map<String, String>> map = {};
     filenames.forEach((fileName) {
-      Map<String, String> inner_map = {
-        'storagePath': "/Timereport/$key/$fileName"
-      };
+      Map<String, String> inner_map = {'storagePath': "/Timereport/$key/$fileName"};
       map[fileName] = inner_map;
     });
     this.imageStoragePaths = map;
@@ -66,11 +73,7 @@ class TimeReport {
     Map<String, Map<String, dynamic>> map = {};
     costs?.forEach((cost) {
       var uid = Uuid().v4().toString();
-      map[uid] = {
-        'description': cost.description,
-        'cost': cost.cost,
-        'amount': cost.amount
-      };
+      map[uid] = {'description': cost.description, 'cost': cost.cost, 'amount': cost.amount};
     });
     return map;
   }
@@ -80,8 +83,7 @@ class TimeReport {
     DateTime endDate = DateTime.parse(timereportData['endDate']);
     int breakTime = timereportData['breakTime'] ?? 0;
     int totalTime = timereportData['totalTime'] ?? 0;
-    List<String> imagesStoragePaths =
-        _getImagesFromEventData(timereportData) ?? [];
+    List<String> imagesStoragePaths = _getImagesFromEventData(timereportData) ?? [];
     List<Cost> costs = _getCostsFromTimereportData(timereportData) ?? [];
     String? comment = timereportData['comment'];
     String? eventId = timereportData['eventId'];
@@ -108,9 +110,7 @@ class TimeReport {
     }
     Map<String, dynamic> imageMap = Map.from(imageData);
     var imageKeys = imageMap.keys;
-    List<String> storagePaths = imageKeys
-        .map((key) => imageMap[key]['storagePath'].toString())
-        .toList();
+    List<String> storagePaths = imageKeys.map((key) => imageMap[key]['storagePath'].toString()).toList();
     return storagePaths;
   }
 

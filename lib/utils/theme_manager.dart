@@ -9,6 +9,10 @@ class ThemeNotifier with ChangeNotifier {
     return context.read<ThemeNotifier>();
   }
 
+  Color get textColor {
+    return isDarkMode() ? Colors.white : Colors.black;
+  }
+
   final darkTheme = ThemeData(
       appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle(

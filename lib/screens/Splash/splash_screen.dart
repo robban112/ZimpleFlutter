@@ -143,19 +143,6 @@ class _LinesState extends State<Lines> with TickerProviderStateMixin {
                 },
               );
             }),
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: RaisedButton(
-              onPressed: () {
-                _controller.reset();
-                _secondController.reset();
-                _controller.forward();
-              },
-              child: Text('Animate'),
-            ),
-          ),
-        ),
       ],
     );
   }

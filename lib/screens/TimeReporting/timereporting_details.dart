@@ -112,7 +112,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
                 iconData: Icons.access_time,
                 title: dateToYearMonthDay(timereport.startDate),
                 subtitle: '${dateToHourMinute(timereport.startDate)} - ${dateToHourMinute(timereport.endDate)}'),
-            _buildParameter(iconData: Icons.access_time, title: "Tid", subtitle: _getTimeSubtitle(timereport)),
+            _buildParameter(iconData: Icons.access_time, title: "Arbetad tid", subtitle: _getTimeSubtitle(timereport)),
             _buildParameter(iconData: Icons.access_alarm, title: "Rast", subtitle: '${timereport.breakTime.toString()} minuter'),
             ConditionalWidget(
               condition: timereport.comment != "",
@@ -322,27 +322,28 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
   Widget _buildParameter({required IconData iconData, required String title, required String subtitle}) {
     return ListedParameter(
         iconData: iconData,
-        child: Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: greyText,
-              ),
-              SizedBox(
-                width: 25,
-              ),
-              Text(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: greyText,
+            ),
+            SizedBox(
+              width: 25,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: Text(
                 subtitle,
                 style: TextStyle(
                   fontSize: 16.0,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 10,
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ));
   }
 

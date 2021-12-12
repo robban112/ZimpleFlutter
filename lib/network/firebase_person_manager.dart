@@ -43,6 +43,7 @@ class FirebasePersonManager {
           phonenumber: personData['phonenumber'],
           iOSLink: personData['iOSLink'],
           androidLink: personData['androidLink'],
+          ssn: personData['ssn'],
         ),
       );
     }

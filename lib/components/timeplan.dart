@@ -50,7 +50,11 @@ class Timeplan extends StatelessWidget {
                   isFirstDayOfMonth(date)
                       ? Padding(
                           padding: const EdgeInsets.only(top: 10.0),
-                          child: Text(dateStringMonth(date), style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.normal)),
+                          child: Text(dateStringMonth(date),
+                              style: TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                              )),
                         )
                       : Container(),
                   TimeplanDay(
@@ -101,26 +105,23 @@ class TimeplanDay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _isToday = isToday(date);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Container(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: 35.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(dateFormat.format(date),
-                      style: TextStyle(
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.normal,
-                          color: isToday(date) ? Theme.of(context).colorScheme.secondary : null)),
-                  Text(dateToAbbreviatedString(date),
-                      style: TextStyle(color: isToday(date) ? Theme.of(context).colorScheme.secondary : null))
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(dateFormat.format(date),
+                    style: TextStyle(
+                        fontSize: 25.0,
+                        fontWeight: _isToday ? FontWeight.w900 : FontWeight.normal,
+                        color: isToday(date) ? Colors.red : null)),
+                Text(dateToAbbreviatedString(date), style: TextStyle(color: _isToday ? Colors.red : null))
+              ],
             ),
             SizedBox(width: 20.0),
             TimeplanEvent(

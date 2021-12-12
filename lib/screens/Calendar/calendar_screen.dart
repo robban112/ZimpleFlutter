@@ -45,6 +45,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   bool isCopyingEvent = false;
   Event? eventToCopy;
   Event? eventToMove;
+  Event? originalEventToMove;
   bool isShowingTimeplan = false;
   bool viewingMySchedule = false;
   bool isMovingEvent = false;
@@ -115,11 +116,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       print("isMovingEvent: $isMovingEvent");
                       context.read<ManagerProvider>().updateEvent(key: event.id, newEvent: event.copyWith(isMovingEvent: true));
                       setState(() {
+                        this.originalEventToMove = event.copyWith();
                         this.isMovingEvent = !this.isMovingEvent;
                         this.eventToMove = (eventToMove == null ? event : null);
                       });
                     }),
-                buildCopyWidget()
+                buildCopyWidget(),
               ],
             ),
     );
@@ -181,8 +183,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
     var diff = eventToMove!.end.difference(eventToMove!.start).inHours;
     var end = DateTime(date.year, date.month, date.day, index + diff, eventToMove!.start.minute);
 
+    print("New event start: $start");
+    print("New event end: $start");
+
     Event newEvent = eventToMove!.copyWith(start: start, end: end, isMovingEvent: eventToMove!.isMovingEvent);
-    eventManager.updateEvent(key: eventToMove!.id, newEvent: newEvent);
+    eventManager.updateEvent(key: eventToMove!.id, newEvent: newEvent, oldEvent: eventToMove!);
     setState(() {});
     HapticFeedback.heavyImpact();
   }
@@ -193,31 +198,68 @@ class _CalendarScreenState extends State<CalendarScreen> {
             padding: const EdgeInsets.only(bottom: 20.0),
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                  width: 175,
-                  height: 75,
-                  child: RoundedButton(
-                    text: "Avbryt",
-                    fontSize: 16,
-                    textColor: Colors.white,
-                    color: Colors.red,
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      if (isMovingEvent && eventToMove != null) {
-                        context
-                            .read<ManagerProvider>()
-                            .updateEvent(key: eventToMove!.id, newEvent: eventToMove!.copyWith(isMovingEvent: false));
-                      }
-                      setState(() {
-                        isCopyingEvent = false;
-                        isMovingEvent = false;
-                        eventToMove = null;
-                      });
-                    },
-                  )),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: _buildSmallButton(
+                      title: 'Avbryt',
+                      onPressed: _onTapCancel,
+                      color: Colors.red,
+                    ),
+                  ),
+                  isMovingEvent
+                      ? Expanded(
+                          child: _buildSmallButton(
+                            title: 'Spara',
+                            onPressed: _onTapSave,
+                            color: Colors.green,
+                          ),
+                        )
+                      : Container(),
+                ],
+              ),
             ),
           )
         : Container();
+  }
+
+  Widget _buildSmallButton({required String title, required VoidCallback onPressed, required Color color}) {
+    return Container(
+      height: 75,
+      child: RoundedButton(
+        text: title,
+        fontSize: 16,
+        textColor: Colors.white,
+        color: color,
+        onTap: onPressed,
+      ),
+    );
+  }
+
+  void _onTapCancel() {
+    print("Tapped cancel");
+    HapticFeedback.lightImpact();
+    if (isMovingEvent && eventToMove != null) {
+      context.read<ManagerProvider>().updateEvent(key: eventToMove!.id, newEvent: eventToMove!.copyWith(isMovingEvent: false));
+    }
+    setState(() {
+      isCopyingEvent = false;
+      isMovingEvent = false;
+      eventToMove = null;
+      originalEventToMove = null;
+    });
+  }
+
+  void _onTapSave() {
+    widget.firebaseEventManager.removeEvent(eventToMove!);
+    widget.firebaseEventManager.addEvent(eventToMove!);
+    setState(() {
+      isCopyingEvent = false;
+      isMovingEvent = false;
+      eventToMove = null;
+      originalEventToMove = null;
+    });
   }
 
   void _toggleTimeplanView() {
@@ -254,7 +296,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       //backgroundColor: Colors.white,
       key: _drawerKey,
-      floatingActionButton: widget.user.isAdmin
+      floatingActionButton: !isMovingEvent && !isCopyingEvent && widget.user.isAdmin
           ? FloatingActionButton(
               backgroundColor: Theme.of(context).colorScheme.secondary,
               child: Icon(

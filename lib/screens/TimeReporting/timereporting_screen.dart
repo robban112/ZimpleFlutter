@@ -20,9 +20,13 @@ import 'package:zimple/utils/date_utils.dart';
 
 class TimeReportingScreen extends StatefulWidget {
   static const routeName = "time_reporting_screen";
+
   final EventManager eventManager;
+
   final PersonManager personManager;
+
   final UserParameters user;
+
   TimeReportingScreen({required this.eventManager, required this.personManager, required this.user});
   @override
   _TimeReportingScreenState createState() => _TimeReportingScreenState();
@@ -309,7 +313,11 @@ class _TimeReportCardState extends State<TimeReportCard> {
   }
 
   String _getHourDiff() {
-    return getHourDiff(widget.timereport.startDate, widget.timereport.endDate);
+    return getHourDiff(
+      widget.timereport.startDate,
+      widget.timereport.endDate,
+      minutesBreak: widget.timereport.breakTime,
+    );
   }
 
   Row buildFirstRow() {
@@ -327,7 +335,7 @@ class _TimeReportCardState extends State<TimeReportCard> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(_getHourDiff(), style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
+            Text(_getHourDiff(), style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.w400)),
             Text("timmar", style: TextStyle(color: Colors.grey))
           ],
         )

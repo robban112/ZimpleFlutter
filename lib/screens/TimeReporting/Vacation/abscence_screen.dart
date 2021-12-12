@@ -204,10 +204,13 @@ class AbsenceRequestWidget extends StatelessWidget {
                 children: [
                   Text(absenceToString(absenceRequest.absenceType)),
                   buildTitle(context, absenceRequest),
+                  SizedBox(
+                    height: 8,
+                  ),
                   absenceRequest.notes.isNotBlank()
                       ? Row(
                           children: [
-                            _buildTextColumn("Anteckningar", absenceRequest.notes!),
+                            _buildTextColumn(context, "Anteckningar", absenceRequest.notes!),
                           ],
                         )
                       : Container(),
@@ -271,7 +274,7 @@ class AbsenceRequestWidget extends StatelessWidget {
     );
   }
 
-  Column _buildTextColumn(String title, String subtitle) {
+  Column _buildTextColumn(BuildContext context, String title, String subtitle) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,16 +283,16 @@ class AbsenceRequestWidget extends StatelessWidget {
           title,
           style: greyText,
         ),
-        SizedBox(
-          width: 25,
-        ),
-        Text(
-          subtitle,
-          style: TextStyle(
-            fontSize: 16.0,
+        Container(
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 16.0,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 10,
           ),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 10,
         )
       ],
     );

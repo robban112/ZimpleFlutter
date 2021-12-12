@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/theme_manager.dart';
 
 class VerticalTimeContainer extends StatelessWidget {
   final double width;
@@ -32,7 +33,7 @@ class VerticalTimeContainer extends StatelessWidget {
                   height: minuteHeight * 60,
                   child: Text(
                     _getTime(index),
-                    style: TextStyle(fontWeight: FontWeight.w300, color: null),
+                    style: TextStyle(fontWeight: FontWeight.w300, color: ThemeNotifier.of(context).textColor.withOpacity(0.6)),
                   ),
                 );
         }),

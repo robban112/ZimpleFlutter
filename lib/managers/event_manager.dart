@@ -71,8 +71,36 @@ class EventManager {
     return eventKeyMap[key];
   }
 
-  void updateEvent({required String key, required Event newEvent}) {
+  Event? safeFirstWhere(List<Event> events, bool Function(Event event) function) {
+    try {
+      return events.firstWhere((element) => function(element));
+    } catch (error) {
+      return null;
+    }
+  }
+
+  void updateEvent({required String key, required Event newEvent, Event? oldEvent}) {
     Event? savedEvent = eventKeyMap[key];
+
+    if (oldEvent != null) {
+      String dateKey = dateString(oldEvent.start);
+      List<Event>? dayEvents = eventMap[dateKey];
+      print("dayEvents: $dayEvents");
+      if (dayEvents != null) {
+        Event? event = safeFirstWhere(dayEvents, (event) => event.id == oldEvent.id);
+        if (event != null) {
+          dayEvents.remove(event);
+          eventMap[dateKey] = dayEvents;
+        }
+      }
+      String newDateKey = dateString(newEvent.start);
+      List<Event>? events = eventMap[newDateKey];
+      if (events == null)
+        eventMap[newDateKey] = [newEvent];
+      else
+        eventMap[newDateKey]!.add(newEvent);
+    }
+
     if (savedEvent == null) return;
 
     savedEvent.color = newEvent.color;

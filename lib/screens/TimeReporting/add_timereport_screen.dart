@@ -161,9 +161,9 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                 SizedBox(height: 12.0),
                 selectedEvent == null ? _buildSectionTitle("Eller välj kund") : Container(),
                 buildSelectCustomerTile(),
-                SizedBox(height: 24.0),
+                SizedBox(height: 32.0),
                 buildTimeComponent(),
-                SizedBox(height: 24.0),
+                SizedBox(height: 32.0),
                 buildInfoComponent(),
                 SizedBox(height: 16.0),
                 buildCostComponent(),
@@ -251,6 +251,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
             ListedItemWidget(
               rowInset: EdgeInsets.only(right: 16.0, left: 20.0),
               item: ListedItem(
+                leadingIcon: Icons.image,
                 child: Text("Bilder"),
                 onTap: () {
                   setState(() => this.isSelectingPhotoProvider = true);
@@ -671,8 +672,7 @@ class NotesComponent extends StatelessWidget {
       decoration: InputDecoration(
         hintText: 'Skriv anteckning ...',
         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-        enabledBorder:
-            OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.grey.shade300), borderRadius: BorderRadius.zero),
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
         focusedBorder:
             OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.grey.shade300), borderRadius: BorderRadius.zero),
         border:

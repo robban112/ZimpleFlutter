@@ -347,9 +347,12 @@ class _TimereportRowState extends State<TimereportRow> {
                       Row(
                         children: [
                           _buildColumn(
-                              titleWidget: Text(dayNumberInMonth(widget.timereport.startDate),
-                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
-                              subtitle: dateToAbbreviatedString(widget.timereport.startDate)),
+                            titleWidget: Text(
+                              dayNumberInMonth(widget.timereport.startDate),
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                            subtitle: dateToAbbreviatedString(widget.timereport.startDate),
+                          ),
                           SizedBox(width: 16.0),
                           _buildColumn(
                               titleWidget: ConstrainedBox(
@@ -367,7 +370,12 @@ class _TimereportRowState extends State<TimereportRow> {
                               child: Row(
                                 children: [
                                   _buildColumn(
-                                      titleWidget: Text(getHourDiff(widget.timereport.startDate, widget.timereport.endDate),
+                                      titleWidget: Text(
+                                          getHourDiff(
+                                            widget.timereport.startDate,
+                                            widget.timereport.endDate,
+                                            minutesBreak: widget.timereport.breakTime,
+                                          ),
                                           style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                                       subtitle: "timmar",
                                       crossAxisAlignment: CrossAxisAlignment.center)

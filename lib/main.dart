@@ -22,10 +22,12 @@ import 'package:flutter/services.dart' show PlatformException;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  runApp(ChangeNotifierProvider<ThemeNotifier>(
-    create: (_) => new ThemeNotifier(),
-    child: App(),
-  ));
+  runApp(
+    ChangeNotifierProvider<ThemeNotifier>(
+      create: (_) => new ThemeNotifier(),
+      child: App(),
+    ),
+  );
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -262,8 +264,11 @@ class _AppState extends State<App> {
         // Check for errors
         if (snapshot.hasError) {
           return Container(
-            child: Center(
-              child: Text("Det blev något fel"),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Text("Det blev något fel, pröva att starta om appen"),
+              ),
             ),
           );
         }

@@ -223,6 +223,7 @@ class _MoreScreenState extends State<MoreScreen> {
               child: FloatingActionButton(
                 backgroundColor: Colors.grey.shade800,
                 mini: true,
+                heroTag: 'Nothing',
                 child: Icon(Icons.photo_camera, color: Colors.white),
                 onPressed: () {
                   setState(() {

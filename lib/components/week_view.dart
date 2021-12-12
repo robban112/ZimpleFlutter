@@ -121,8 +121,8 @@ class WeekView extends StatelessWidget {
   List<Widget> _buildHourContainer(BuildContext context, DateTime date, double dayWidth) {
     return List.generate(
       24,
-      (index) => Listener(
-        onPointerUp: (event) {
+      (index) => GestureDetector(
+        onTap: () {
           print("tapped hour");
           didTapHour(date, index);
         },

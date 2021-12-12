@@ -42,6 +42,11 @@ String dateString(DateTime date) {
   return formatter.format(date);
 }
 
+String monthDayString(DateTime date) {
+  DateFormat formatter = DateFormat('MM-dd');
+  return formatter.format(date);
+}
+
 String dateStringVerbose(DateTime date) {
   DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm', locale);
   return formatter.format(date);
@@ -86,8 +91,17 @@ List<DateTime> getDateRange(DateTime startDate, int daysForward) {
   return dates;
 }
 
-String getHourDiff(DateTime startDate, DateTime endDate) {
+String getHourDiff(DateTime startDate, DateTime endDate, {int minutesBreak = 0}) {
   int minutes = endDate.difference(startDate).inMinutes;
+  minutes -= minutesBreak;
+  String minutesToHours = (minutes / 60).toStringAsFixed(2);
+  if (minutesToHours.endsWith("00")) return (minutes / 60).round().toString();
+  return minutesToHours;
+}
+
+String getHourDiffPresentable(DateTime startDate, DateTime endDate, {int minutesBreak = 0}) {
+  int minutes = endDate.difference(startDate).inMinutes;
+  minutes -= minutesBreak;
   String minutesToHours = (minutes / 60).toStringAsFixed(2);
   if (minutesToHours.endsWith("00")) return (minutes / 60).round().toString();
   return minutesToHours;

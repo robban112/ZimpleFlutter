@@ -45,6 +45,48 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   final EdgeInsets contentPadding = EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0);
 
+  @override
+  Widget build(BuildContext context) {
+    print("Rebuild Event Detail screen");
+    List<Customer> customers = Provider.of<ManagerProvider>(context, listen: false).customers;
+    Customer? customer;
+    if (widget.event.customerKey != null) {
+      customer = customers.firstWhereOrNull((element) => element.id == widget.event.customerKey);
+    }
+    var width = MediaQuery.of(context).size.width;
+    return DraggableScrollableSheet(
+      initialChildSize: 0.75,
+      minChildSize: 0.7,
+      maxChildSize: 0.9,
+      builder: (context, controller) {
+        return LayoutBuilder(
+          builder: (context, constraint) {
+            return SingleChildScrollView(
+              physics: ClampingScrollPhysics(),
+              controller: controller,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraint.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: <Widget>[
+                      _buildTitle(width),
+                      _buildBody(customer),
+                      Expanded(
+                        child: Container(
+                          color: Theme.of(context).backgroundColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildParameter(
       {required IconData iconData,
       required String title,
@@ -198,92 +240,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         : Container();
   }
 
-  void handleClick(String value) {
-    switch (value) {
-      case 'Kopiera event':
-        this.widget.didTapCopyEvent(this.widget.event);
-        break;
-      case 'Ta bort event':
-        handleDeleteEvent();
-        break;
-    }
-  }
-
-  void handleDeleteEvent() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-              title: new Text("Ta bort arbetsorder"),
-              content: new Text("Är du säker på att du vill ta bort den här arbetsordern?"),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                    isDestructiveAction: true,
-                    child: Text("Ja"),
-                    onPressed: () {
-                      HapticFeedback.heavyImpact();
-                      Navigator.of(context).pop();
-                      widget.firebaseEventManager.removeEvent(widget.event);
-                    }),
-                CupertinoDialogAction(
-                  child: Text("Nej"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            ));
-  }
-
-  Future<void> _makePhoneCall(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print("Rebuild Event Detail screen");
-    List<Customer> customers = Provider.of<ManagerProvider>(context, listen: false).customers;
-    Customer? customer;
-    if (widget.event.customerKey != null) {
-      customer = customers.firstWhereOrNull((element) => element.id == widget.event.customerKey);
-    }
-    var width = MediaQuery.of(context).size.width;
-    return DraggableScrollableSheet(
-      initialChildSize: 0.75,
-      minChildSize: 0.7,
-      maxChildSize: 0.9,
-      builder: (context, controller) {
-        return LayoutBuilder(
-          builder: (context, constraint) {
-            return SingleChildScrollView(
-              physics: ClampingScrollPhysics(),
-              controller: controller,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraint.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: <Widget>[
-                      _buildTitle(width),
-                      _buildBody(customer),
-                      Expanded(
-                        child: Container(
-                          color: Theme.of(context).backgroundColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   Widget _buildBody(Customer? customer) {
     return Container(
       color: Theme.of(context).backgroundColor,
@@ -327,17 +283,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Widget _buildTitle(double width) {
     var textColor = dynamicBlackWhite(widget.event.color);
     var width = MediaQuery.of(context).size.width;
+    bool shouldShowTime = !(widget.event.eventType == EventType.vacation || widget.event.eventType == EventType.sickness);
     return Stack(
       children: [
-        // Container(
-        //   height: 75,
-        //   padding: EdgeInsets.only(left: 0),
-        //   decoration: BoxDecoration(
-        //       color: widget.event.color,
-        //       borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-        // ),
         Container(
-          //height: 75,
           padding: EdgeInsets.only(left: 0),
           decoration: BoxDecoration(color: widget.event.color, borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
           child: Padding(
@@ -362,8 +311,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   ],
                 ),
                 SizedBox(height: 4.0),
-                Text('${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}',
-                    style: TextStyle(color: textColor.withAlpha(120), fontSize: 20.0, fontWeight: FontWeight.w500))
+                shouldShowTime
+                    ? Text('${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}',
+                        style: TextStyle(color: textColor.withAlpha(120), fontSize: 20.0, fontWeight: FontWeight.w500))
+                    : Container()
               ],
             ),
           ),
@@ -473,6 +424,50 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               ),
             ),
           );
+  }
+
+  void handleClick(String value) {
+    switch (value) {
+      case 'Kopiera event':
+        this.widget.didTapCopyEvent(this.widget.event);
+        break;
+      case 'Ta bort event':
+        handleDeleteEvent();
+        break;
+    }
+  }
+
+  void handleDeleteEvent() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: new Text("Ta bort arbetsorder"),
+              content: new Text("Är du säker på att du vill ta bort den här arbetsordern?"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    child: Text("Ja"),
+                    onPressed: () {
+                      HapticFeedback.heavyImpact();
+                      Navigator.of(context).pop();
+                      widget.firebaseEventManager.removeEvent(widget.event);
+                    }),
+                CupertinoDialogAction(
+                  child: Text("Nej"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ));
+  }
+
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 

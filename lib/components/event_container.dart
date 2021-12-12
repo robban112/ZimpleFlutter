@@ -124,8 +124,14 @@ class EventContainer extends StatelessWidget {
     return event.color.withAlpha(alpha);
   }
 
+  Color _fade(Color color) {
+    int alpha = event.isMovingEvent ? 100 : 255;
+    if (event.end.isBefore(DateTime.now())) alpha = 100;
+    return color.withAlpha(alpha);
+  }
+
   Color _dynamicBlackWhite(Color color) {
-    return color.computeLuminance() < 0.5 ? Colors.white : Colors.black;
+    return color.computeLuminance() < 0.5 ? _fade(Colors.white) : _fade(Colors.black);
   }
 
   double _getTitleHeight(String text, EventLayout eventLayout, bool isEventLarge) {

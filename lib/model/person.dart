@@ -10,6 +10,7 @@ class Person {
   String? phonenumber;
   String? iOSLink;
   String? androidLink;
+  String? ssn;
 
   Person({
     required this.name,
@@ -20,6 +21,7 @@ class Person {
     this.phonenumber,
     this.iOSLink,
     this.androidLink,
+    this.ssn,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,5 +32,6 @@ class Person {
         'color': colorToString(this.color),
         'iOSLink': this.iOSLink,
         'androidLink': this.androidLink,
+        'ssn': this.ssn,
       };
 }

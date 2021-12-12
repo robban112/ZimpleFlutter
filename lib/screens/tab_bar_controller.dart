@@ -289,7 +289,10 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
                   hideNavigationBarWhenKeyboardShows:
                       true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
                   decoration: NavBarDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                    ),
                     colorBehindNavBar: Colors.white,
                   ),
                   navBarHeight: 55,
