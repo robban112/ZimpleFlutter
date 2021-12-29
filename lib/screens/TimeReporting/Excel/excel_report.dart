@@ -56,7 +56,11 @@ class ExcelManager {
         person.name,
         customerString,
         dateToYearMonthDay(timereport.startDate),
-        getHourDiff(timereport.startDate, timereport.endDate),
+        getHourDiff(
+          timereport.startDate,
+          timereport.endDate,
+          minutesBreak: timereport.breakTime,
+        ),
         (timereport.breakTime / 60).toStringAsFixed(2),
         "",
         timereport.comment,

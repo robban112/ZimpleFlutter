@@ -187,6 +187,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
               SizedBox(height: 12.0),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
                 child: TimeReportList(timereports: timereports.take(12).toList(), eventManager: widget.eventManager),
               ),
               SizedBox(height: 24.0),

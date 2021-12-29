@@ -513,7 +513,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         eventId: selectedEvent?.id,
         costs: this.costs,
         comment: notesController.text,
-        customerKey: selectedCustomer?.id ?? selectedEvent?.id);
+        customerKey: selectedCustomer?.id);
     fb.DatabaseReference ref = firebaseTimeReportManager.newTimereportRef();
     var filenames = selectedImages.map((_) => Uuid().v4().toString()).toList();
     timereport.setImagesStoragePaths(ref.key, filenames);

@@ -21,7 +21,7 @@ class FirebaseCustomerManager {
 
   Stream<List<Customer>> listenCustomers() {
     return customerRef.limitToLast(500).onValue.map((event) {
-      logger.log(Level.info, "Listen Customers");
+      print("Listen Customers");
       var snapshot = event.snapshot;
       return _mapCustomer(snapshot);
       //return _mapSnapshot(snapshot);

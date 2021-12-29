@@ -11,6 +11,7 @@ class Person {
   String? iOSLink;
   String? androidLink;
   String? ssn;
+  String? address;
 
   Person({
     required this.name,
@@ -22,6 +23,7 @@ class Person {
     this.iOSLink,
     this.androidLink,
     this.ssn,
+    this.address,
   });
 
   Map<String, dynamic> toJson() => {
@@ -33,5 +35,6 @@ class Person {
         'iOSLink': this.iOSLink,
         'androidLink': this.androidLink,
         'ssn': this.ssn,
+        'address': this.address,
       };
 }

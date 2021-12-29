@@ -12,6 +12,7 @@ import 'package:zimple/screens/Calendar/event_detail_screen.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/generate_invoice_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/conditional_widget.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/page_dots_indicator.dart';
@@ -133,7 +134,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     return [
       PopupMenuButton<String>(
         icon: Icon(Icons.more_horiz, color: Colors.white),
-        color: Colors.white,
+        color: Theme.of(context).primaryColor,
         onSelected: (value) {
           this.handleClick(value);
           //Navigator.of(context).pop();

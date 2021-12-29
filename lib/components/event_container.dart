@@ -1,6 +1,7 @@
 import 'package:provider/src/provider.dart';
 import 'package:zimple/model/event_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/widgets.dart';
 import '../model/event.dart';
@@ -111,6 +112,7 @@ class EventContainer extends StatelessWidget {
             ),
             child: Text(
               event.customerRef?.name ?? event.customer ?? "",
+              overflow: TextOverflow.clip,
               style: _descStyle(),
             ),
           )
@@ -142,10 +144,10 @@ class EventContainer extends StatelessWidget {
   double _getDescHeight(String text, EventLayout eventLayout, double titleHeight) {
     if (titleHeight > eventLayout.height) return 0;
     double descHeight = textHeight(event.customer ?? '', _descStyle(), eventLayout.width - padding * 2);
-    if (titleHeight + descHeight > eventLayout.height) {
+    if (titleHeight + descHeight > eventLayout.height - (padding * 2)) {
       double diff = (titleHeight + descHeight) - eventLayout.height;
       if (descHeight - diff - (padding * 2) < 0) return 0;
-      return descHeight - diff - (padding * 2) - 4;
+      return descHeight - diff - (padding * 2) - 8;
     }
     return descHeight;
   }
@@ -161,6 +163,7 @@ class EventContainer extends StatelessWidget {
         fontWeight: FontWeight.w400,
         fontSize: isEventLarge ? 15 : 11,
         color: _dynamicBlackWhite(event.color),
+        overflow: TextOverflow.clip,
       );
 
   double textHeight(String text, TextStyle style, double textWidth) {

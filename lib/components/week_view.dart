@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import '../model/event.dart';
@@ -23,12 +24,19 @@ class WeekView extends StatelessWidget {
         _minuteHeight = minuteHeight;
 
   final int _numberOfDays;
+
   final double _minuteHeight;
+
   final List<Event> events;
+
   final List<DateTime> dates;
+
   final Function(Event) didTapEvent;
+
   final Function(Event) didLongPressEvent;
+
   final Function(DateTime, int) didTapHour;
+
   final Function(DateTime, int) didDoubleTapHour;
 
   final double verticalTimeContainerWidth = 45;
@@ -42,8 +50,8 @@ class WeekView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var dayWidth = (MediaQuery.of(context).size.width - verticalTimeContainerWidth) / _numberOfDays;
-    var eventLayoutManager = EventLayoutManager(
+    double dayWidth = _getDayWidth(context);
+    EventLayoutManager eventLayoutManager = EventLayoutManager(
       dayWidth: dayWidth,
       events: events,
       minuteHeight: _minuteHeight,
@@ -96,8 +104,14 @@ class WeekView extends StatelessWidget {
   }
 
   List<Widget> _buildHoursAndEvents(
-      BuildContext context, List<DateTime> dates, EventLayoutManager eventLayoutManager, double dayWidth) {
+    BuildContext context,
+    List<DateTime> dates,
+    EventLayoutManager eventLayoutManager,
+    double dayWidth,
+  ) {
     return List.generate(_numberOfDays, (index) {
+      bool shouldSkipWeekends = CalendarSettings.of(context).shouldSkipWeekends;
+      if (shouldSkipWeekends && (index == 5 || index == 6)) return Container();
       List<Widget> events = eventLayoutManager.buildEventContainers(index);
       return Stack(
         children: [
@@ -123,7 +137,6 @@ class WeekView extends StatelessWidget {
       24,
       (index) => GestureDetector(
         onTap: () {
-          print("tapped hour");
           didTapHour(date, index);
         },
         child: GestureDetector(
@@ -139,12 +152,26 @@ class WeekView extends StatelessWidget {
       ),
     );
   }
+
+  double _getDayWidth(BuildContext context) {
+    bool shouldSkipWeekends = CalendarSettings.watch(context).shouldSkipWeekends;
+    int numberOfDays = CalendarSettings.watch(context).numberOfDays;
+    double width = MediaQuery.of(context).size.width - verticalTimeContainerWidth;
+    if (shouldSkipWeekends && numberOfDays == 7) {
+      // Skip Saturday and Sunday
+      return width / 5;
+    }
+    return width / numberOfDays;
+  }
 }
 
 class HourContainer extends StatelessWidget {
   final double minuteHeight;
+
   final double dayWidth;
+
   final Color color;
+
   HourContainer({
     required this.minuteHeight,
     required this.dayWidth,

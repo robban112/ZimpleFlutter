@@ -4,10 +4,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
+import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/network/firebase_company_manager.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
@@ -70,6 +72,10 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
       updateFCMToken(user);
       setupCustomerSubscriber();
       setupContactListener(user);
+
+      FirebaseCompanyManager firebaseCompanyManager = FirebaseCompanyManager(company: user.company);
+      managerProvider.firebaseCompanyManager = firebaseCompanyManager;
+      setupCompanySubscriber(firebaseCompanyManager);
 
       Future.wait([
         firebaseCustomerManager.getCustomers(),
@@ -160,6 +166,14 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
 
       //print(timereportManager.getTimereports(user.token).first.breakTime);
     });
+  }
+
+  void setupCompanySubscriber(FirebaseCompanyManager firebaseCompanyManager) {
+    firebaseCompanyManager.streamCompanySettings().listen(
+          (CompanySettings companySettings) => managerProvider.updateCompanySettings(
+            companySettings: companySettings,
+          ),
+        );
   }
 
   void setupCustomerSubscriber() {

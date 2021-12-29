@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:zimple/model/contact.dart';
 

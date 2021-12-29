@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/screens/TimeReporting/Excel/excel_report.dart';
 import 'package:zimple/utils/constants.dart';
@@ -18,11 +20,6 @@ class TimereportMonthReportScreen extends StatefulWidget {
   _TimereportMonthReportScreenState createState() => _TimereportMonthReportScreenState();
 }
 
-class HoursMinutes {
-  final int totalMinutes;
-  HoursMinutes({required this.totalMinutes});
-}
-
 class _TimereportMonthReportScreenState extends State<TimereportMonthReportScreen> {
   int totalHours(int totalMinutes) {
     int hours = (totalMinutes / 60).floor();
@@ -40,6 +37,29 @@ class _TimereportMonthReportScreenState extends State<TimereportMonthReportScree
 
   int totalBreak() {
     return widget.timereports.fold<int>(0, (prev, timereport) => prev + timereport.breakTime);
+  }
+
+  int totalCustomers() {
+    List<String> customers = [];
+    for (TimeReport timeReport in widget.timereports) {
+      if (timeReport.customerKey != null) customers.add(timeReport.customerKey!);
+    }
+
+    List<String> customerKeys =
+        widget.timereports.map((tr) => tr.customerKey).whereType<String>().where((element) => element != "").toList();
+
+    print(customerKeys.toSet());
+
+    CustomerManager customerManager = ManagerProvider.of(context).customerManager;
+
+    for (var key in customerKeys) {
+      print(customerManager.getCustomer(key)?.name);
+    }
+    return customerKeys.toSet().length;
+  }
+
+  double averageWorkingTime(int totalMinutes) {
+    return totalMinutes / widget.timereports.length;
   }
 
   Padding _buildRow(String left, String right, {String? appendRight}) {
@@ -124,10 +144,13 @@ class _TimereportMonthReportScreenState extends State<TimereportMonthReportScree
               TimereportChartView(timereports: widget.timereports),
               const SizedBox(height: 24),
               _title("Statistik"),
+              _buildRowWidget("Totaltid: ", _buildHoursMinutesWidget(_totalMinutes)),
               _buildRowWidget("Total arbetad tid", _buildHoursMinutesWidget(_totalMinutesAfterBreak)),
               _buildRowWidget("Total rast: ", _buildHoursMinutesWidget(_totalBreakMinutes)),
-              _buildRowWidget("Totaltid: ", _buildHoursMinutesWidget(_totalMinutes)),
+              _buildRowWidget("Snitt arbetstid: ", _buildHoursMinutesWidget((_totalMinutes ~/ widget.timereports.length))),
+              _buildRowWidget("Snitt rast: ", _buildHoursMinutesWidget((_totalBreakMinutes ~/ widget.timereports.length))),
               _buildRow("Antal rapporter: ", widget.timereports.length.toString(), appendRight: 'st'),
+              //_buildRow("Antal kunder: ", totalCustomers().toString(), appendRight: 'st'),
               const SizedBox(height: 24),
               _title("Funktioner"),
               _buildExcelCreator()
@@ -140,10 +163,11 @@ class _TimereportMonthReportScreenState extends State<TimereportMonthReportScree
 
   Widget _buildExcelCreator() {
     return ListedView(
-      rowInset: const EdgeInsets.symmetric(vertical: 8),
+      rowInset: const EdgeInsets.symmetric(vertical: 12),
       items: [
         ListedItem(
-          text: 'Skapa excel från rapport',
+          leadingIcon: FontAwesome5.file_export,
+          text: 'Generera excel från rapport',
           onTap: () => _onTapGenerateExcel(context),
         ),
       ],

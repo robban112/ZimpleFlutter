@@ -33,12 +33,15 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
 
   late TextEditingController _ssnController;
 
+  late TextEditingController _addressController;
+
   @override
   void initState() {
     _nameController = TextEditingController(text: widget.person.name);
     _phoneController = TextEditingController(text: widget.person.phonenumber);
     _emailController = TextEditingController(text: widget.person.email);
     _ssnController = TextEditingController(text: widget.person.ssn);
+    _addressController = TextEditingController(text: widget.person.address);
     super.initState();
   }
 
@@ -82,6 +85,11 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
                     leadingIcon: FontAwesome5.user,
                     controller: _ssnController,
                     inputType: TextInputType.number),
+                ListedTextField(
+                    placeholder: 'Address',
+                    leadingIcon: Icons.location_city,
+                    controller: _addressController,
+                    inputType: TextInputType.text),
                 _buildChangeColorRow(),
               ]),
               _buildMagicLinks(),
@@ -198,6 +206,7 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
       email: _emailController.text,
       ssn: _ssnController.text,
       color: selectedNewColor ?? widget.person.color,
+      address: _addressController.text,
     );
     context.read<ManagerProvider>().firebasePersonManager.setUserProps(newPerson);
     context.read<ManagerProvider>().updatePerson(newPerson);

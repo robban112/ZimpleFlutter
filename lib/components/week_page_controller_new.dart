@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:provider/src/provider.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'week_view.dart';
@@ -13,8 +14,6 @@ typedef List<Event> EventCallback(DateTime date, int numberOfDays);
 typedef void DaysChanged(int prevNumberOfDays, int newNumberOfDays);
 
 class WeekPageControllerNew extends StatelessWidget {
-  final double _minuteHeight;
-  final int _numberOfDays;
   final WeekPageController daysChangedController;
   //final List<Event> events;
   final Function(Event) didTapEvent;
@@ -24,23 +23,23 @@ class WeekPageControllerNew extends StatelessWidget {
 
   WeekPageControllerNew({
     Key? key,
-    required double minuteHeight,
-    required int numberOfDays,
     required this.didTapEvent,
     required this.daysChangedController,
     required this.didTapHour,
     required this.didDoubleTapHour,
     required this.didLongPressEvent,
-  })  : _minuteHeight = minuteHeight,
-        _numberOfDays = numberOfDays,
-        super(key: key);
+  }) : super(key: key);
 
   Widget buildContainer(BuildContext context, DateTime date) {
+    int numberOfDays = CalendarSettings.watch(context).numberOfDays;
     return WeekView(
-      numberOfDays: _numberOfDays,
-      minuteHeight: _minuteHeight,
-      dates: getDateRange(date, _numberOfDays),
-      events: context.read<ManagerProvider>().eventManager.getEventByStartDate(date, _numberOfDays),
+      numberOfDays: numberOfDays,
+      minuteHeight: CalendarSettings.watch(context).minuteHeight,
+      dates: getDateRange(date, numberOfDays),
+      events: context.read<ManagerProvider>().eventManager.getEventByStartDate(
+            date,
+            numberOfDays,
+          ),
       didTapEvent: didTapEvent,
       didTapHour: didTapHour,
       didDoubleTapHour: didDoubleTapHour,
@@ -51,11 +50,12 @@ class WeekPageControllerNew extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    int numberOfDays = CalendarSettings.watch(context).numberOfDays;
     print("Rebuilt WeekPageController");
     return InnerWeekPageController(
       screenWidth: width,
       widgetBuilder: (date) => buildContainer(context, date),
-      numberOfDays: _numberOfDays,
+      numberOfDays: numberOfDays,
       daysChangedController: daysChangedController,
     );
   }

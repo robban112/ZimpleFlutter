@@ -5,8 +5,11 @@ import 'package:zimple/utils/constants.dart';
 
 class PersonSelectScreen extends StatefulWidget {
   static const String routeName = 'person_select_screen';
+
   final List<Person> persons;
+
   final Function(List<Person>) personCallback;
+
   final List<Person>? preSelectedPersons;
 
   PersonSelectScreen({required this.persons, required this.personCallback, this.preSelectedPersons});

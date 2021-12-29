@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zimple/model/person.dart';
+import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/utils.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
@@ -83,10 +85,27 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   }),
             ],
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 12),
+          _buildSetShouldShowWeekend(),
+          SizedBox(height: 12),
           _buildFilterPersonsItem()
         ],
       ),
+    );
+  }
+
+  Padding _buildSetShouldShowWeekend() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text("Visa helg"),
+        CupertinoSwitch(
+          value: !CalendarSettings.watch(context).shouldSkipWeekends,
+          onChanged: (val) {
+            CalendarSettings.of(context).setShouldSkipWeekend(!val);
+          },
+        ),
+      ]),
     );
   }
 
@@ -107,7 +126,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return Container(
                   color: Colors.transparent,
-                  height: 50,
+                  height: 12,
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(

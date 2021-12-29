@@ -1,8 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/user_parameters.dart';
 import '../model/person.dart';
-import 'package:flutter/material.dart';
 import '../utils/color_utils.dart';
 
 class FirebasePersonManager {
@@ -44,6 +42,7 @@ class FirebasePersonManager {
           iOSLink: personData['iOSLink'],
           androidLink: personData['androidLink'],
           ssn: personData['ssn'],
+          address: personData['address'],
         ),
       );
     }

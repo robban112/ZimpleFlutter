@@ -1,3 +1,4 @@
+import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:flutter/material.dart';
 import '../utils/weekday_to_string.dart';
@@ -23,6 +24,7 @@ class WeekHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateFormat formattedDate = DateFormat(DateFormat.DAY, locale);
+    bool shouldSkipWeekends = CalendarSettings.of(context).shouldSkipWeekends;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
@@ -35,6 +37,7 @@ class WeekHeader extends StatelessWidget {
         padding: EdgeInsets.only(left: _leftPadding),
         child: Row(
           children: List.generate(_numberOfDays, (index) {
+            if (shouldSkipWeekends && (index == 5 || index == 6)) return Container();
             return Container(
               width: _dayWidth,
               child: Padding(
