@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:zimple/screens/tab_bar_controller.dart';
+import 'package:zimple/screens/tab_bar_widget.dart';
 import 'package:zimple/utils/encrypter.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 class FirstLoginScreen extends StatefulWidget {
   static const routeName = 'first_login_screen';
@@ -32,7 +33,7 @@ class _FirstLoginScreenState extends State<FirstLoginScreen> {
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: decryptedEmail.trim(), password: decryptedPass.trim());
-      Navigator.pushNamedAndRemoveUntil(context, TabBarController.routeName, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, TabBarWidget.routeName, (route) => false);
     } catch (e) {
       setState(() {
         this._hasError = true;
@@ -87,10 +88,7 @@ class _FirstLoginScreenState extends State<FirstLoginScreen> {
   Widget _buildBackButton() {
     return Align(
       alignment: Alignment.topLeft,
-      child: IconButton(
-        icon: Icon(Icons.arrow_back, color: Colors.white),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
+      child: NavBarBack(),
     );
   }
 }

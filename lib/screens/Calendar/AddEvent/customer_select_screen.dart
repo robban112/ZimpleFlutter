@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/utils/constants.dart';
 
 class CustomerSelectScreen extends StatefulWidget {
   final Function(Customer, int) didSelectCustomer;
@@ -29,7 +27,12 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Välj kund")), body: buildBody());
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: StandardAppBar("Välj kund"),
+      ),
+      body: buildBody(),
+    );
   }
 
   Widget buildBody() {
@@ -79,8 +82,23 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
         });
   }
 
-  Container _buildLeadingAvatar(bool isDarkMode, Customer customer) {
+  Widget _buildLeadingAvatar(bool isDarkMode, Customer customer) {
     if (customer.name.characters.length == 0) return Container(height: 45, width: 45);
+    return CustomerCircle(customer: customer);
+  }
+}
+
+class CustomerCircle extends StatelessWidget {
+  final Customer customer;
+
+  CustomerCircle({
+    Key? key,
+    required this.customer,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    bool isDarkMode = Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
     return Container(
       height: 45,
       width: 45,
@@ -93,7 +111,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
           customer.name.characters.first,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: 18,
             color: Colors.white,
           ),
         ),

@@ -66,7 +66,7 @@ final List<BoxShadow> standardShadow = [
   )
 ];
 
-final TextStyle appBarTitleStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0);
+final TextStyle appBarTitleStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 25.0);
 
 String? emailValidator(String? value) {
   if (value == null) return null;

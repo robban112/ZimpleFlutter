@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -23,13 +24,7 @@ class _ShowAllTimeReportScreenState extends State<ShowAllTimeReportScreen> {
         brightness: Brightness.dark,
         backgroundColor: primaryColor,
         title: Text("Alla tidrapporter", style: TextStyle(color: Colors.white)),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: NavBarBack(),
       ),
       body: SingleChildScrollView(
         child: Column(

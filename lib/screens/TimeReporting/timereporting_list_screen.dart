@@ -11,6 +11,7 @@ import 'package:zimple/screens/TimeReporting/timereport_month_report_screen.dart
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/utils/date_utils.dart';
@@ -116,7 +117,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(key, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+          Text(key, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
           user.isAdmin
               ? TextButton(
                   child: Text("Visa månadsrapport", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
@@ -247,13 +248,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
       title: Align(
           alignment: Alignment.centerLeft,
           child: Text("", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18.0))),
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: Colors.white,
-        ),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
+      leading: NavBarBack(),
     );
   }
 }
@@ -276,8 +271,11 @@ class TimereportRow extends StatefulWidget {
 }
 
 class _TimereportRowState extends State<TimereportRow> {
-  Column _buildColumn(
-      {required Widget titleWidget, required String subtitle, CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start}) {
+  Column _buildColumn({
+    required Widget titleWidget,
+    required String subtitle,
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
+  }) {
     return Column(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -349,7 +347,7 @@ class _TimereportRowState extends State<TimereportRow> {
                           _buildColumn(
                             titleWidget: Text(
                               dayNumberInMonth(widget.timereport.startDate),
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             subtitle: dateToAbbreviatedString(widget.timereport.startDate),
                           ),

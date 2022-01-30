@@ -3,9 +3,11 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
+import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customer_details_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/widgets/floating_add_button.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -52,31 +54,36 @@ class _CustomerScreenState extends State<CustomerScreen> {
       child: Scaffold(
         appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Kundbas")),
         floatingActionButton: user.isAdmin
-            ? FloatingActionButton(
-                child: Icon(Icons.add, color: Colors.white),
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddCustomerScreen(),
-                    ),
-                  );
-                },
-              )
+            ? FloatingAddButton(onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddCustomerScreen(),
+                  ),
+                );
+              })
             : Container(),
         body: SingleChildScrollView(
           child: ListedView(
               items: List.generate(customers.length, (index) {
             Customer customer = customers[index];
             return ListedItem(
+                leadingWidget: CustomerCircle(customer: customer),
                 trailingIcon: Icons.chevron_right,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(customer.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    Text(customer.address ?? "", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600))
-                  ],
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: Text(
+                          customer.name,
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Text(customer.address ?? "", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600))
+                    ],
+                  ),
                 ),
                 onTap: () {
                   pushNewScreen(context, screen: CustomerDetailsScreen(customer: customer));

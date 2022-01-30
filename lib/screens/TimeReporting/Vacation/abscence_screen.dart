@@ -9,6 +9,7 @@ import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:zimple/extensions/string_extensions.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 class AbsenceScreen extends StatefulWidget {
@@ -122,14 +123,9 @@ class _AbsenceScreenState extends State<AbsenceScreen> with SingleTickerProvider
           brightness: Brightness.dark,
           backgroundColor: primaryColor,
           title: Align(
-              alignment: Alignment.centerLeft, child: Text("Frånvaro", style: TextStyle(color: Colors.white, fontSize: 28))),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+              alignment: Alignment.centerLeft,
+              child: Text("Frånvaro", style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900))),
+          leading: NavBarBack(),
         ),
         body: FutureBuilder(
             future: loadVacation,

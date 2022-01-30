@@ -88,13 +88,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
         backgroundColor: primaryColor,
         elevation: 5,
         title: Align(alignment: Alignment.centerLeft, child: Text("Ansök om ledighet", style: appBarTitleStyle)),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: NavBarBack(),
       ),
       body: GestureDetector(
         onTap: () {

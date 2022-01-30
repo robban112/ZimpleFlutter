@@ -10,7 +10,7 @@ class FirebaseCompanyManager {
     required this.company,
   }) {
     fb.DatabaseReference database = fb.FirebaseDatabase.instance.reference();
-    this.companyRef = database.reference().child(company).child("CompanySettings");
+    this.companyRef = database.ref.child(company).child("CompanySettings");
   }
 
   Future<void> updateCompanySettings({required CompanySettings companySettings}) {

@@ -9,12 +9,12 @@ class FirebasePersonManager {
   late DatabaseReference database;
   FirebasePersonManager({required this.company}) {
     database = FirebaseDatabase.instance.reference();
-    personsRef = database.reference().child(company).child('Persons');
+    personsRef = database.ref.child(company).child('Persons');
   }
 
   Future<List<Person>> getPersons() async {
-    var snapshot = await personsRef.once();
-    List<Person> persons = _mapSnapshot(snapshot);
+    var databaseEvent = await personsRef.once();
+    List<Person> persons = _mapSnapshot(databaseEvent.snapshot);
     return persons;
   }
 
@@ -27,7 +27,7 @@ class FirebasePersonManager {
   }
 
   List<Person> _mapSnapshot(DataSnapshot snapshot) {
-    Map<String, dynamic> mapOfMaps = Map.from(snapshot.value);
+    Map<String, dynamic> mapOfMaps = Map.from(snapshot.value as Map<dynamic, dynamic>);
     List<Person> persons = [];
     for (String key in mapOfMaps.keys) {
       dynamic personData = mapOfMaps[key];

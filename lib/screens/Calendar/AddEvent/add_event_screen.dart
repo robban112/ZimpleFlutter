@@ -234,7 +234,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
     );
   }
 
-  Event _uploadEventImages(String key) {
+  Event? _uploadEventImages(String? key) {
+    if (key == null) return null;
     List<String> fileUids = selectedImages.map((_) => Uuid().v4().toString()).toList();
     Map<String, Map<String, String>> map = {};
     fileUids.forEach((fileName) {
@@ -253,7 +254,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   void _addNewEvent() async {
     fb.DatabaseReference ref = widget.firebaseEventManager.newEventRef();
-    Event event = _uploadEventImages(ref.key);
+    Event? event = _uploadEventImages(ref.key);
+    if (event == null) return;
     print("Adding new event");
     context.loaderOverlay.show();
     widget.firebaseEventManager.addEventWithRef(ref, event).then((value) {
@@ -264,7 +266,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   void _changeEvent() async {
     print("Changing event with id: ${widget.eventToChange?.id}");
-    Event event = _uploadEventImages(widget.eventToChange!.id);
+    Event? event = _uploadEventImages(widget.eventToChange!.id);
+    if (event == null) return;
     context.loaderOverlay.show();
     widget.firebaseEventManager.changeEvent(event).then((value) {
       context.loaderOverlay.hide();

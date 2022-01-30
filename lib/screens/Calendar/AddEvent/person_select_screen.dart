@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import '../../../model/person.dart';
 import 'package:zimple/utils/constants.dart';
 //import 'package:decorated_icon/cupertino_will_pop_scope.dart';
@@ -41,9 +43,9 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
 
   Widget _buildCheckMark(Person person) {
     if (selectedPersonsMap[person] ?? false)
-      return Icon(Icons.check_circle, color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), size: 32);
+      return Icon(FeatherIcons.checkCircle, color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), size: 32);
     else
-      return Icon(Icons.radio_button_off_outlined, color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), size: 32);
+      return Icon(Icons.circle_outlined, color: Theme.of(context).colorScheme.secondary.withOpacity(0.35), size: 32);
   }
 
   void _togglePerson(Person person) => setState(
@@ -66,7 +68,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
           alignment: Alignment.centerLeft,
           child: Text(
             "Välj personer",
-            style: TextStyle(color: Colors.white),
+            style: appBarTitleStyle,
           ),
         ),
         elevation: 0.0,
@@ -77,10 +79,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
             onPressed: () => onPop(context),
           ),
         ],
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => onPop(context),
-        ),
+        leading: NavBarBack(onPressed: () => onPop(context)),
       ),
       body: ListView.builder(
         shrinkWrap: true,

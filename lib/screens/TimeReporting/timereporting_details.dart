@@ -13,6 +13,7 @@ import 'package:zimple/screens/TimeReporting/Invoice/generate_invoice_screen.dar
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/theme_manager.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/conditional_widget.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/page_dots_indicator.dart';
@@ -46,10 +47,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
           ),
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: NavBarBack(),
         actions: user.isAdmin ? _buildActions(context) : []);
   }
 

@@ -5,18 +5,17 @@ import 'package:zimple/model/event.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 class TimeReportingSelectScreen extends StatefulWidget {
   static const routeName = "time_reporting_select_screen";
   final EventManager eventManager;
   final Function(Event) didSelectEvent;
-  TimeReportingSelectScreen(
-      {required this.eventManager, required this.didSelectEvent});
+  TimeReportingSelectScreen({required this.eventManager, required this.didSelectEvent});
 
   @override
-  _TimeReportingSelectScreenState createState() =>
-      _TimeReportingSelectScreenState();
+  _TimeReportingSelectScreenState createState() => _TimeReportingSelectScreenState();
 }
 
 class _TimeReportingSelectScreenState extends State<TimeReportingSelectScreen> {
@@ -34,8 +33,7 @@ class _TimeReportingSelectScreenState extends State<TimeReportingSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserParameters user =
-        Provider.of<ManagerProvider>(context, listen: true).user;
+    UserParameters user = Provider.of<ManagerProvider>(context, listen: true).user;
 
     return Stack(
       children: [
@@ -45,12 +43,8 @@ class _TimeReportingSelectScreenState extends State<TimeReportingSelectScreen> {
             backgroundColor: primaryColor,
             elevation: 0.0,
             toolbarHeight: 75,
-            title: Text("Välj vilken arbetsorder du vill tidrapportera för",
-                maxLines: 2, style: TextStyle(color: Colors.white)),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            title: Text("Välj vilken arbetsorder du vill tidrapportera för", maxLines: 2, style: TextStyle(color: Colors.white)),
+            leading: NavBarBack(),
           ),
           body: Stack(
             children: [

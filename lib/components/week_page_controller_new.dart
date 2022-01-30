@@ -1,6 +1,5 @@
 import 'dart:async';
-import 'package:provider/src/provider.dart';
-import 'package:zimple/managers/event_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
@@ -155,11 +154,12 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(75.0),
-          child: AppBarWidget(
-            hasMenu: true,
-            dateStream: streamController.stream,
-          )),
+        preferredSize: Size.fromHeight(75.0),
+        child: AppBarWidget(
+          hasMenu: true,
+          dateStream: streamController.stream,
+        ),
+      ),
       body: NotificationListener<ScrollNotification>(
         onNotification: _onScrollNotification,
         child: ListView.builder(

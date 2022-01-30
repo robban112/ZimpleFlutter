@@ -60,7 +60,7 @@ class TimeReport {
     };
   }
 
-  void setImagesStoragePaths(String key, List<String> filenames) {
+  void setImagesStoragePaths(String? key, List<String> filenames) {
     Map<String, Map<String, String>> map = {};
     filenames.forEach((fileName) {
       Map<String, String> inner_map = {'storagePath': "/Timereport/$key/$fileName"};

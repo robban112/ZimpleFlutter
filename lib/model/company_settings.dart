@@ -17,7 +17,7 @@ class CompanySettings {
   factory CompanySettings.fromSnapshot({required DataSnapshot snapshot}) {
     if (snapshot.value == null) return CompanySettings.initial();
     try {
-      Map map = Map.from(snapshot.value);
+      Map map = Map.from(snapshot.value as Map<dynamic, dynamic>);
       return CompanySettings(
         isPrivateEvents: map['isPrivateEvents'] ?? _kDefaultIsPrivateEvents,
         companyName: map['companyName'] ?? '',

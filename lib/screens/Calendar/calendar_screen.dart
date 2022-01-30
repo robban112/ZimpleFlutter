@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +9,7 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/screens/drawer.dart';
+import 'package:zimple/widgets/floating_add_button.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../../components/week_page_controller_new.dart';
 import '../../network/firebase_event_manager.dart';
@@ -84,6 +84,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   bool isMovingEvent = false;
 
+  bool isPrivateEvents = false;
+
   late Map<Person, bool> _filteredPersons;
 
   WeekPageController daysChangedController = WeekPageController();
@@ -98,52 +100,35 @@ class _CalendarScreenState extends State<CalendarScreen> {
     firebaseStorageManager = FirebaseStorageManager(company: widget.user.company);
     firebaseUserManager = FirebaseUserManager();
     _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
+    Future.delayed(Duration.zero, () {
+      _setupCompanySettingsListener(context);
+    });
     //filteredPersons = widget.personManager.persons;
   }
 
   @override
   Widget build(BuildContext context) {
-    _setupCompanySettingsListener(context);
     EventManager eventManager = context.read<ManagerProvider>().eventManager;
-    return ChangeNotifierProvider(
-      create: (_) => CalendarSettings(),
-      builder: (context, __) => Scaffold(
-        key: _drawerKey,
-        floatingActionButton: !isMovingEvent && !isCopyingEvent && widget.user.isAdmin
-            ? FloatingActionButton(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                onPressed: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddEventScreen(
-                          persons: widget.personManager.persons,
-                          firebaseEventManager: widget.firebaseEventManager,
-                          firebaseStorageManager: this.firebaseStorageManager,
-                        ),
-                      ));
-                },
-              )
-            : Container(),
-        drawer: DrawerWidget(
-          setNumberOfDays: (int days) => _setNumberOfDays(context, days),
-          toggleTimeplanView: _toggleTimeplanView,
-          filteredPersons: this._filteredPersons,
-          didSetFilterForPersons: (person) => this._didSetFilterForPersons(eventManager, person),
-          persons: widget.personManager.persons,
-        ),
-        body: _buildBody(eventManager),
+    return Scaffold(
+      key: _drawerKey,
+      floatingActionButton: !isMovingEvent && !isCopyingEvent && widget.user.isAdmin
+          ? FloatingAddButton(
+              onPressed: _goToAddEvent,
+            )
+          : Container(),
+      drawer: DrawerWidget(
+        setNumberOfDays: (int days) => _setNumberOfDays(context, days),
+        toggleTimeplanView: _toggleTimeplanView,
+        filteredPersons: this._filteredPersons,
+        didSetFilterForPersons: (person) => this._didSetFilterForPersons(eventManager, person),
+        persons: widget.personManager.persons,
+        isPrivateEvents: this.isPrivateEvents,
       ),
+      body: _buildBody(context, eventManager),
     );
   }
 
-  Widget _buildBody(EventManager eventManager) {
+  Widget _buildBody(BuildContext context, EventManager eventManager) {
     return ProviderWidget(
       didTapEvent: this._didTapEvent,
       drawerKey: _drawerKey,
@@ -187,13 +172,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
       },
       didTapChangeEvent: (event) {
         HapticFeedback.lightImpact();
-        pushNewScreen(context,
-            screen: AddEventScreen(
-              persons: widget.personManager.persons,
-              firebaseEventManager: widget.firebaseEventManager,
-              firebaseStorageManager: this.firebaseStorageManager,
-              eventToChange: event,
-            ));
+        pushNewScreen(
+          context,
+          screen: AddEventScreen(
+            persons: widget.personManager.persons,
+            firebaseEventManager: widget.firebaseEventManager,
+            firebaseStorageManager: this.firebaseStorageManager,
+            eventToChange: event,
+          ),
+        );
       },
     );
   }
@@ -288,6 +275,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
+  void _goToAddEvent() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddEventScreen(
+            persons: widget.personManager.persons,
+            firebaseEventManager: widget.firebaseEventManager,
+            firebaseStorageManager: this.firebaseStorageManager,
+          ),
+        ));
+  }
+
   void _onTapCancel() {
     print("Tapped cancel");
     HapticFeedback.lightImpact();
@@ -333,7 +332,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void _applyFilterForPersons(EventManager eventManager) {
     print("Applying filter for persons");
     eventManager.eventFilter = (events) {
-      return events.where((event) => event.persons?.any((p) => this._filteredPersons[p]!) ?? false).toList();
+      List<Event> eventsToShow = [];
+      for (Event event in events) {
+        if (event.persons == null || event.persons!.isEmpty) {
+          eventsToShow.add(event);
+        } else if (event.persons!.any((Person person) => this._filteredPersons[person]!)) {
+          eventsToShow.add(event);
+        }
+      }
+      return eventsToShow;
     };
   }
 
@@ -341,14 +348,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
     print("filter for: $person");
     setState(() {
       if (_filteredPersons[person] == null) return;
+      print(_filteredPersons);
       this._filteredPersons[person] = !this._filteredPersons[person]!;
       _applyFilterForPersons(eventManager);
     });
   }
 
   void _setupCompanySettingsListener(BuildContext context) {
-    CompanySettings companySettings = context.watch<ManagerProvider>().companySettings;
+    CompanySettings companySettings = context.read<ManagerProvider>().companySettings;
     if (companySettings.isPrivateEvents) {
+      setState(() => this.isPrivateEvents = true);
       this._filteredPersons = Map<Person, bool>.fromIterable(
         widget.personManager.persons,
         key: (person) => person,

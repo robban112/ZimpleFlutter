@@ -8,7 +8,7 @@ class FirebaseContactManager {
 
   FirebaseContactManager(this.company) {
     database = fb.FirebaseDatabase.instance.reference();
-    contactRef = database.reference().child(company).child('Contacts');
+    contactRef = database.ref.child(company).child('Contacts');
   }
 
   Future<void> addContact(Contact contact) => contactRef.push().set(contact.toJson());
@@ -18,7 +18,7 @@ class FirebaseContactManager {
   List<Contact> _mapSnapshot(fb.DataSnapshot snapshot) {
     if (snapshot.value == null) return [];
     try {
-      Map<String, dynamic> mapOfContacts = Map.from(snapshot.value);
+      Map<String, dynamic> mapOfContacts = Map.from(snapshot.value as Map<dynamic, dynamic>);
       List<Contact> contacts = [];
       for (String key in mapOfContacts.keys) {
         Map<String, dynamic> contactData = Map.from(mapOfContacts[key]);

@@ -113,13 +113,22 @@ class TimeplanDay extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(dateFormat.format(date),
-                    style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: _isToday ? FontWeight.w900 : FontWeight.normal,
-                        color: isToday(date) ? Colors.red : null)),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _isToday ? Colors.red : Colors.transparent,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(_isToday ? 8.0 : 0.0),
+                    child: Text(dateFormat.format(date),
+                        style: TextStyle(
+                            fontSize: _isToday ? 20 : 25.0,
+                            fontWeight: FontWeight.w900,
+                            color: isToday(date) ? Colors.white : null)),
+                  ),
+                ),
                 Text(dateToAbbreviatedString(date), style: TextStyle(color: _isToday ? Colors.red : null))
               ],
             ),

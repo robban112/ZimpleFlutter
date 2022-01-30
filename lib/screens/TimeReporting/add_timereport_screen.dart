@@ -16,6 +16,7 @@ import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_select_screen.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/image_dialog.dart';
 import 'package:zimple/widgets/listed_view.dart';
 import 'package:zimple/widgets/photo_buttons.dart';
@@ -138,12 +139,9 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         backgroundColor: primaryColor,
         title: Align(
             alignment: Alignment.centerLeft,
-            child: Text("Tidrapportera", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0, color: Colors.white))),
+            child: Text("Tidrapportera", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 24.0, color: Colors.white))),
         elevation: 0.0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: NavBarBack(),
       ),
       body: GestureDetector(
         onTap: () {
@@ -490,7 +488,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     }
   }
 
-  Future<void> _uploadTimereportImages(List<String> filenames, String key) async {
+  Future<void> _uploadTimereportImages(List<String> filenames, String? key) async {
+    if (key == null) return;
     filenames.asMap().forEach((index, filename) async {
       print("Uploading $filename for timereport $key");
       var file = selectedImages[index];

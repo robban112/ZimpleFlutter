@@ -11,10 +11,9 @@ class FirebaseTimeReportManager {
   late fb.DatabaseReference database;
   late fb.DatabaseReference timereportRef;
 
-  FirebaseTimeReportManager(
-      {required this.company, required this.personManager}) {
-    database = fb.FirebaseDatabase.instance.reference();
-    timereportRef = database.reference().child(company).child('TimeReport');
+  FirebaseTimeReportManager({required this.company, required this.personManager}) {
+    database = fb.FirebaseDatabase.instance.ref();
+    timereportRef = database.ref.child(company).child('TimeReport');
   }
 
   Future<void> addTimeReport(TimeReport timeReport, UserParameters user) {
@@ -25,25 +24,16 @@ class FirebaseTimeReportManager {
     return timereportRef.push();
   }
 
-  Future<String> addTimereportWithRef(
-      fb.DatabaseReference ref, TimeReport timereport) {
+  Future<String?> addTimereportWithRef(fb.DatabaseReference ref, TimeReport timereport) {
     return ref.set(timereport.toJson()).then((value) => ref.key);
   }
 
   Future<void> removeTimereport(TimeReport timereport) {
-    return timereportRef
-        .child(timereport.userId!)
-        .child(timereport.id)
-        .remove()
-        .then((value) => value);
+    return timereportRef.child(timereport.userId!).child(timereport.id).remove().then((value) => value);
   }
 
   Future<void>? changeTimereport(TimeReport timereport) {
-    return timereportRef
-        .child(timereport.userId!)
-        .child(timereport.id)
-        .update(timereport.toJson())
-        .then((value) => value);
+    return timereportRef.child(timereport.userId!).child(timereport.id).update(timereport.toJson()).then((value) => value);
   }
 
   Stream<TimereportManager> listenTimereports(UserParameters user) {
@@ -59,7 +49,7 @@ class FirebaseTimeReportManager {
       return timereportManager;
     }
 
-    Map<String, dynamic> mapOfMaps = Map.from(snapshot.value);
+    Map<String, dynamic> mapOfMaps = Map.from(snapshot.value as Map<dynamic, dynamic>);
     if (mapOfMaps == null) {
       return timereportManager;
     }

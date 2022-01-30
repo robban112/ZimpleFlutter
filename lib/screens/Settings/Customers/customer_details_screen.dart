@@ -9,6 +9,7 @@ import 'package:zimple/screens/Settings/Customers/add_customer_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 class CustomerDetailsScreen extends StatefulWidget {
@@ -66,10 +67,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
         brightness: Brightness.dark,
         backgroundColor: primaryColor,
         elevation: 0.0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: NavBarBack(),
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
@@ -137,7 +135,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
                             height: rowHeight,
                             child: Row(
                               children: [
-                                Text("Telefonnummer", style: greyText),
+                                Text("Telefonnummer", style: greyText.copyWith(fontSize: 13)),
                                 SizedBox(width: 16.0),
                               ],
                             ),

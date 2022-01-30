@@ -10,6 +10,7 @@ class ListedItem {
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final Widget? trailingWidget;
+  final Widget? leadingWidget;
   final VoidCallback? onTap;
   ListedItem({
     this.child,
@@ -18,6 +19,7 @@ class ListedItem {
     this.trailingIcon,
     this.onTap,
     this.trailingWidget,
+    this.leadingWidget,
   });
 }
 
@@ -43,19 +45,7 @@ class ListedItemWidget extends StatelessWidget {
           child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                item.leadingIcon != null
-                    ? Row(
-                        children: [
-                          Icon(
-                            item.leadingIcon,
-                          ),
-                          SizedBox(width: 16.0),
-                        ],
-                      )
-                    : Container(),
-                item.text != null ? Text(item.text!, style: TextStyle(fontSize: 16)) : item.child!
-              ],
+              children: [_leading(), item.text != null ? Text(item.text!, style: TextStyle(fontSize: 16)) : item.child!],
             ),
             Expanded(child: Container()),
             item.trailingWidget != null ? item.trailingWidget! : Icon(Icons.chevron_right)
@@ -63,6 +53,20 @@ class ListedItemWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _leading() {
+    return (item.leadingIcon != null || item.leadingWidget != null)
+        ? Row(
+            children: [
+              item.leadingWidget ??
+                  Icon(
+                    item.leadingIcon,
+                  ),
+              SizedBox(width: 16.0),
+            ],
+          )
+        : Container();
   }
 }
 

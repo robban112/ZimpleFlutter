@@ -11,12 +11,12 @@ class FirebaseCustomerManager {
   Logger logger = Logger();
   FirebaseCustomerManager({required this.company}) {
     this.database = fb.FirebaseDatabase.instance.reference();
-    this.customerRef = database.reference().child(company).child('Customers');
+    this.customerRef = database.ref.child(company).child('Customers');
   }
 
   Future<List<Customer>> getCustomers() async {
     var snapshot = await customerRef.once();
-    return _mapCustomer(snapshot);
+    return _mapCustomer(snapshot.snapshot);
   }
 
   Stream<List<Customer>> listenCustomers() {
@@ -33,7 +33,7 @@ class FirebaseCustomerManager {
     if (snapshot.value == null) {
       return [];
     }
-    Map<String, dynamic> mapOfMaps = Map.from(snapshot.value);
+    Map<String, dynamic> mapOfMaps = Map.from(snapshot.value as Map<dynamic, dynamic>);
     if (mapOfMaps == null) {
       return [];
     }

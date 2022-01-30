@@ -85,7 +85,7 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
           TextFormField(
             key: _emailFormKey,
             validator: emailValidator,
-            autovalidate: _autoValidate,
+            autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
             onChanged: (value) {
               setState(() {
                 _email = value;
@@ -103,7 +103,7 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
             key: _passwordFormKey,
             validator: passwordValidator,
             keyboardType: TextInputType.visiblePassword,
-            autovalidate: _autoValidate || (widget.hasError ?? false),
+            autovalidateMode: (_autoValidate || (widget.hasError ?? false)) ? AutovalidateMode.always : AutovalidateMode.disabled,
             style: TextStyle(color: Colors.white),
             onChanged: (value) {
               setState(() {

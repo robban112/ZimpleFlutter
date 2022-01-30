@@ -61,7 +61,7 @@ class ThemeNotifier with ChangeNotifier {
     fontFamily: 'FiraSans',
     iconTheme: IconThemeData(color: Colors.black),
     shadowColor: Colors.grey.withOpacity(0.10),
-    bottomAppBarColor: Color(0xffF4F7FB),
+    bottomAppBarColor: Color(0xFFFFFFFF),
   );
 
   ThemeNotifier() {

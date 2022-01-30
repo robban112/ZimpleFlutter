@@ -9,8 +9,8 @@ class FirebaseVacationManager {
   late fb.DatabaseReference absenceRef;
 
   FirebaseVacationManager({required this.company}) {
-    database = fb.FirebaseDatabase.instance.reference();
-    absenceRef = database.reference().child(company).child('Absence');
+    database = fb.FirebaseDatabase.instance.ref();
+    absenceRef = database.ref.child(company).child('Absence');
   }
 
   Future<void> addVacationRequest(
@@ -22,7 +22,7 @@ class FirebaseVacationManager {
 
   Future<List<AbsenceRequest>> getVacationRequests(String userId) {
     return absenceRef.child(userId).once().then((snapshot) {
-      return _parseAbsenceRequestList(snapshot.value, userId);
+      return _parseAbsenceRequestList(snapshot.snapshot.value, userId);
     });
   }
 
@@ -46,9 +46,10 @@ class FirebaseVacationManager {
 
   Future<Map<String, int>> getUnreadAbsenceRequests() async {
     Map<String, int> unreadMap = {};
-    absenceRef.once().then((snapshot) {
+    absenceRef.once().then((databaseEvent) {
+      var snapshot = databaseEvent.snapshot;
       if (snapshot.value == null) return unreadMap;
-      Map<String, dynamic> userMap = Map.from(snapshot.value);
+      Map<String, dynamic> userMap = Map.from(snapshot.value as Map<dynamic, dynamic>);
       userMap.keys.forEach((userKey) {
         int numUnread = _parseAbsenceRequestList(userMap[userKey], userKey).fold<int>(0, (prev, absenceRequest) {
           if (absenceRequest.approved == null) prev += 1;

@@ -19,20 +19,21 @@ class FirebaseUserManager {
   Future<UserParameters> _getUserParameters(String userToken) async {
     final database = FirebaseDatabase.instance.reference();
     print('USER TOKEN: $userToken');
-    var snapshot = await database.reference().child('Users').child(userToken).once();
-
+    var databaseEvent = await database.ref.child('Users').child(userToken).once();
+    var snapshot = databaseEvent.snapshot;
+    Map<dynamic, dynamic> snapshotMap = (snapshot.value as Map<dynamic, dynamic>);
     return UserParameters(
-        company: snapshot.value['company'],
-        isAdmin: snapshot.value['isAdmin'] ?? false,
+        company: snapshotMap['company'],
+        isAdmin: snapshotMap['isAdmin'] ?? false,
         token: userToken,
         email: user?.email ?? "",
-        name: snapshot.value['name'],
-        profilePicturePath: snapshot.value['profilePicturePath'],
-        fcmToken: snapshot.value['fcmToken']);
+        name: snapshotMap['name'],
+        profilePicturePath: (snapshot.value as Map<dynamic, dynamic>)['profilePicturePath'],
+        fcmToken: snapshotMap['fcmToken']);
   }
 
   Future<void> setUserProfileImage(UserParameters user, String filePath) async {
-    final ref = FirebaseDatabase.instance.reference().child('Users').child(user.token);
+    final ref = FirebaseDatabase.instance.ref().child('Users').child(user.token);
     return ref.child("profilePicturePath").set(filePath);
   }
 

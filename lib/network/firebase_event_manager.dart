@@ -23,8 +23,8 @@ class FirebaseEventManager {
     required this.personManager,
     required this.customerManager,
   }) {
-    this.database = fb.FirebaseDatabase.instance.reference();
-    this.eventRef = database.reference().child(company).child('Events');
+    this.database = fb.FirebaseDatabase.instance.ref();
+    this.eventRef = database.ref.child(company).child('Events');
   }
 
   Future<void> changeEvent(Event event) {
@@ -35,11 +35,11 @@ class FirebaseEventManager {
     return eventRef.push();
   }
 
-  Future<String> addEventWithRef(fb.DatabaseReference ref, Event event) {
+  Future<String?> addEventWithRef(fb.DatabaseReference ref, Event event) {
     return ref.set(event.toJson()).then((value) => ref.key);
   }
 
-  Future<String> addEvent(Event event) {
+  Future<String?> addEvent(Event event) {
     fb.DatabaseReference ref = eventRef.push();
     return ref.set(event.toJson()).then((value) => ref.key);
   }
@@ -65,7 +65,7 @@ class FirebaseEventManager {
 
   Future<List<Event>> getEvents() async {
     var snapshot = await eventRef.limitToLast(500).once();
-    return _mapSnapshot(snapshot);
+    return _mapSnapshot(snapshot.snapshot);
   }
 
   Future<List<String>> addVacationPeriod(AbsenceRequest absenceRequest, String? name) async {
@@ -84,7 +84,8 @@ class FirebaseEventManager {
             Person(id: absenceRequest.userId, color: Colors.white, name: ""),
           ],
           eventType: EventType.vacation);
-      String id = await addEvent(event);
+      String? id = await addEvent(event);
+      if (id == null) continue;
       eventIds.add(id);
     }
     return eventIds;
@@ -95,7 +96,7 @@ class FirebaseEventManager {
     if (snapshot.value == null) {
       return [];
     }
-    Map<String, dynamic>? mapOfMaps = Map.from(snapshot.value);
+    Map<String, dynamic>? mapOfMaps = Map.from(snapshot.value as Map<dynamic, dynamic>);
     if (mapOfMaps == null) {
       return [];
     }

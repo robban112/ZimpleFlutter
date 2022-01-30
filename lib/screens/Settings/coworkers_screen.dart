@@ -8,10 +8,9 @@ import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/screens/Settings/Coworkers/add_coworker_screen.dart';
 import 'package:zimple/screens/Settings/Coworkers/coworker_details_screen.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/widgets/floating_add_button.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import 'package:styled_widget/styled_widget.dart';
 
 class CoworkersScreen extends StatefulWidget {
   @override
@@ -38,17 +37,7 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
     PersonManager personManager = context.watch<ManagerProvider>().personManager;
     UserParameters user = context.read<ManagerProvider>().user;
     return Scaffold(
-      floatingActionButton: user.isAdmin
-          ? FloatingActionButton(
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 24,
-              ),
-              onPressed: _onPressedAddUser,
-            )
-          : Container(),
+      floatingActionButton: user.isAdmin ? FloatingAddButton(onPressed: _onPressedAddUser) : Container(),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60),
         child: StandardAppBar("Medarbetare"),

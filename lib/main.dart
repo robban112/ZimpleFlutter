@@ -8,16 +8,14 @@ import 'package:zimple/screens/Login/first_login_screen.dart';
 import 'package:zimple/screens/Login/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/screens/Splash/splash_screen.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'screens/Login/login_screen.dart';
-import 'screens/tab_bar_controller.dart';
+import 'screens/tab_bar_widget.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:flutter/services.dart' show PlatformException;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,8 +78,9 @@ class _ZimpleState extends State<Zimple> {
 
   Future<void> initDynamicLinks() async {
     print("Setting up Firebase Dynamic Link");
-    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-      final Uri? deepLink = dynamicLink?.link;
+    Stream<PendingDynamicLinkData> stream = FirebaseDynamicLinks.instance.onLink;
+    stream.listen((event) {
+      final Uri? deepLink = event.link;
       print("Got deep link: $deepLink");
     });
   }
@@ -225,10 +224,10 @@ class _ZimpleState extends State<Zimple> {
           //   focusColor: green,
           //   scaffoldBackgroundColor: backgroundColor,
           // ),
-          initialRoute: widget.isLoggedIn ? TabBarController.routeName : LoginScreen.routeName,
+          initialRoute: widget.isLoggedIn ? TabBarWidget.routeName : LoginScreen.routeName,
           routes: {
             LoginScreen.routeName: (context) => LoginScreen(),
-            TabBarController.routeName: (context) => TabBarController(),
+            TabBarWidget.routeName: (context) => TabBarWidget(),
             FirstLoginScreen.routeName: (context) => FirstLoginScreen(email: '', token: ''),
             // SettingsScreen.routeName: (context) => SettingsScreen(),
             // TimeReportingScreen.routeName: (context) => TimeReportingScreen(),

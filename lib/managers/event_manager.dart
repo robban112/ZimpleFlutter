@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
 import '../model/event.dart';
 import '../utils/date_utils.dart';
 
 class EventManager {
   List<Event> events;
+
   List<Event> Function(List<Event>)? eventFilter;
 
   Map<String, List<Event>> eventMap = Map<String, List<Event>>();
+
   Map<String, Event> eventKeyMap = Map<String, Event>();
 
   EventManager({required this.events}) {

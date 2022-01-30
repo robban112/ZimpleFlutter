@@ -7,6 +7,7 @@ import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/utils.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 class DrawerWidget extends StatefulWidget {
   final Function(int) setNumberOfDays;
@@ -14,12 +15,15 @@ class DrawerWidget extends StatefulWidget {
   final Map<Person, bool> filteredPersons;
   final void Function(Person) didSetFilterForPersons;
   final List<Person> persons;
-  DrawerWidget(
-      {required this.setNumberOfDays,
-      required this.toggleTimeplanView,
-      required this.filteredPersons,
-      required this.didSetFilterForPersons,
-      required this.persons});
+  final bool isPrivateEvents;
+  DrawerWidget({
+    required this.setNumberOfDays,
+    required this.toggleTimeplanView,
+    required this.filteredPersons,
+    required this.didSetFilterForPersons,
+    required this.persons,
+    required this.isPrivateEvents,
+  });
 
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();
@@ -88,7 +92,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           SizedBox(height: 12),
           _buildSetShouldShowWeekend(),
           SizedBox(height: 12),
-          _buildFilterPersonsItem()
+          (!ManagerProvider.of(context).user.isAdmin && widget.isPrivateEvents) ? Container() : _buildFilterPersonsItem()
         ],
       ),
     );
@@ -109,7 +113,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     );
   }
 
-  Padding _buildFilterPersonsItem() {
+  Widget _buildFilterPersonsItem() {
+    bool isAdmin = ManagerProvider.of(context).user.isAdmin;
+    if (!isAdmin) return Container();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ExpansionPanelList(
@@ -144,30 +150,33 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     itemCount: widget.persons.length,
                     itemBuilder: (context, index) {
                       var person = widget.persons[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                PersonCircleAvatar(person: person),
-                                SizedBox(width: 12.0),
-                                SizedBox(
-                                  width: 100,
-                                  child: ClipRRect(
-                                    child: Text(person.name, overflow: TextOverflow.clip),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Checkbox(
-                                activeColor: Theme.of(context).colorScheme.secondary,
-                                value: widget.filteredPersons[person],
-                                onChanged: (val) {
-                                  widget.didSetFilterForPersons(person);
-                                })
-                          ],
+                      return GestureDetector(
+                        onTap: () => widget.didSetFilterForPersons(person),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  PersonCircleAvatar(person: person),
+                                  SizedBox(width: 12.0),
+                                  SizedBox(
+                                    width: 100,
+                                    child: ClipRRect(
+                                      child: Text(person.name, overflow: TextOverflow.clip),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Checkbox(
+                                  activeColor: Theme.of(context).colorScheme.secondary,
+                                  value: widget.filteredPersons[person],
+                                  onChanged: (val) {
+                                    widget.didSetFilterForPersons(person);
+                                  })
+                            ],
+                          ),
                         ),
                       );
                     },

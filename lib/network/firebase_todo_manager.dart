@@ -12,14 +12,14 @@ class FirebaseTodoManager {
 
   FirebaseTodoManager({required this.company, required this.personManager}) {
     this.database = fb.FirebaseDatabase.instance.reference();
-    this.todoRef = database.reference().child(company).child('Todo');
+    this.todoRef = database.ref.child(company).child('Todo');
   }
 
   Future<List<Todo>> getTodos() async {
     List<Todo> todos = [];
 
-    var snapshot = await todoRef.once();
-    Map<String, dynamic> mapOfMaps = Map.from(snapshot.value);
+    var databaseEvent = await todoRef.once();
+    Map<String, dynamic> mapOfMaps = Map.from(databaseEvent.snapshot.value as Map<dynamic, dynamic>);
     todos = mapTodos(mapOfMaps);
     return todos;
   }

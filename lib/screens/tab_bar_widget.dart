@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
@@ -17,7 +18,7 @@ import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
-import 'package:zimple/utils/constants.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:zimple/utils/utils.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../network/firebase_event_manager.dart';
@@ -28,13 +29,13 @@ import '../managers/person_manager.dart';
 import 'Settings/more_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-class TabBarController extends StatefulWidget {
+class TabBarWidget extends StatefulWidget {
   static final routeName = "tab_bar_screen";
   @override
   _TabBarControllerState createState() => _TabBarControllerState();
 }
 
-class _TabBarControllerState extends State<TabBarController> with TickerProviderStateMixin<TabBarController> {
+class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStateMixin<TabBarWidget> {
   //final _navigatorKey = GlobalKey<NavigatorState>();
 
   late String userName;
@@ -222,10 +223,13 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
     return loadingEvent && loadingTimereport
         ? [_loadingWidget(context), _loadingWidget(context), _loadingWidget(context)]
         : [
-            CalendarScreen(
-              user: user,
-              personManager: personManager,
-              firebaseEventManager: firebaseEventManager,
+            ChangeNotifierProvider(
+              create: (_) => CalendarSettings(),
+              builder: (context, _) => CalendarScreen(
+                user: user,
+                personManager: personManager,
+                firebaseEventManager: firebaseEventManager,
+              ),
             ),
             TimeReportingScreen(
               eventManager: eventManager,
@@ -239,21 +243,22 @@ class _TabBarControllerState extends State<TabBarController> with TickerProvider
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
+    double size = 22;
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.calendar_today),
+        icon: Icon(FeatherIcons.calendar, size: size),
         title: ("Kalender"),
         activeColorPrimary: Theme.of(context).colorScheme.secondary,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.timer),
+        icon: Icon(FeatherIcons.clock, size: size),
         title: ("Tidrapportering"),
         activeColorPrimary: Theme.of(context).colorScheme.secondary,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.more_horiz),
+        icon: Icon(Icons.more_horiz, size: size),
         title: ("Mer"),
         activeColorPrimary: Theme.of(context).colorScheme.secondary,
         inactiveColorPrimary: Colors.grey,

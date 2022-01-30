@@ -4,7 +4,7 @@ import 'package:zimple/screens/Login/forgot_password_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import '../../widgets/authentication_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../tab_bar_controller.dart';
+import '../tab_bar_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = 'login_screen';
@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
       context.loaderOverlay.hide();
-      Navigator.pushNamedAndRemoveUntil(context, TabBarController.routeName, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, TabBarWidget.routeName, (route) => false);
     } catch (e) {
       context.loaderOverlay.hide();
       setState(() {

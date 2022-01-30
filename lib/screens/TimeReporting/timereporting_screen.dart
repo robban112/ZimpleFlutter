@@ -76,7 +76,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
           brightness: Brightness.dark,
           title: Align(
               alignment: Alignment.centerLeft,
-              child: Text("Tidrapportering", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0))),
+              child: Text("Tidrapportering", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 25.0))),
         ),
         body: Stack(
           children: [

@@ -6,7 +6,7 @@ class FirebaseOutlaysManager {
   late fb.DatabaseReference outlaysRef;
 
   FirebaseOutlaysManager({required this.company}) {
-    database = fb.FirebaseDatabase.instance.reference();
-    outlaysRef = database.reference().child(company).child('Outlays');
+    database = fb.FirebaseDatabase.instance.ref();
+    outlaysRef = database.ref.child(company).child('Outlays');
   }
 }
