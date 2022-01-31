@@ -4,7 +4,7 @@ import 'package:provider/src/provider.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
-import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 

@@ -19,7 +19,7 @@ import 'package:zimple/widgets/provider_widget.dart';
 import '../Login/login_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/photo_buttons.dart';
-import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
 
 class MoreScreen extends StatefulWidget {
   static const String routeName = "settings_screen";
@@ -36,8 +36,11 @@ class _MoreScreenState extends State<MoreScreen> {
   File? _image;
   bool isLoadingUploadImage = false;
 
+  late Future<Image?> _future;
+
   @override
   void initState() {
+    this._future = FirebaseStorageManager(company: widget.user.company).getImage(widget.user.profilePicturePath!);
     super.initState();
   }
 
@@ -181,7 +184,6 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   FutureBuilder _profilePicture() {
-    var _future = FirebaseStorageManager(company: widget.user.company).getImage(widget.user.profilePicturePath!);
     return FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -213,7 +215,11 @@ class _MoreScreenState extends State<MoreScreen> {
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(150),
                     child: Container(
-                        width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle), child: _profilePicture()),
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: _profilePicture(),
+                    ),
                   ),
           ),
           Padding(

@@ -6,7 +6,7 @@ import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/utils.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
-import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class DrawerWidget extends StatefulWidget {

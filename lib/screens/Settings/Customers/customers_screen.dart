@@ -8,7 +8,7 @@ import 'package:zimple/screens/Settings/Customers/customer_details_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/floating_add_button.dart';
-import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 import 'add_customer_screen.dart';

@@ -14,6 +14,7 @@ import 'package:zimple/network/firebase_company_manager.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
+import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -96,6 +97,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
         setupFirebaseEventManager();
         setupFirebaseTimereport();
         setupPersonsListener();
+        setupNotesManager();
       });
     });
     super.initState();
@@ -207,6 +209,13 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
   void setupPersonManager(List<Person> persons) {
     personManager = PersonManager(persons: persons);
     managerProvider.personManager = personManager;
+  }
+
+  void setupNotesManager() {
+    managerProvider.firebaseNotesManager = FirebaseNotesManager(
+      company: user.company,
+      personManager: personManager,
+    );
   }
 
   @override

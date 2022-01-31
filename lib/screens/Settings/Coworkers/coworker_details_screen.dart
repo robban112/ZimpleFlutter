@@ -2,12 +2,10 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
-import 'package:provider/src/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
-import 'package:zimple/utils/color_utils.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:styled_widget/styled_widget.dart';
-import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:zimple/widgets/widgets.dart';
 

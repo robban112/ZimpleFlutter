@@ -110,7 +110,13 @@ class AppBarWidget extends StatelessWidget {
                 : Container(),
             actions: [
               CupertinoButton(
-                onPressed: () => Navigator.of(context).push(CupertinoPageRoute(builder: (_) => NotesScreen())),
+                onPressed: () => Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (_) => NotesScreen(
+                      firebaseNotesManager: ManagerProvider.of(context).firebaseNotesManager,
+                    ),
+                  ),
+                ),
                 child: Icon(
                   FeatherIcons.fileText,
                   color: Colors.white,

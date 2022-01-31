@@ -20,6 +20,7 @@ import 'package:zimple/widgets/rectangular_button.dart';
 
 class TimereportingListScreen extends StatefulWidget {
   final String? userId;
+
   TimereportingListScreen({this.userId});
   @override
   _TimereportingListScreenState createState() => _TimereportingListScreenState();
@@ -156,7 +157,9 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                           String key = mappedTimereports!.keys.elementAt(index);
                           return _buildMonthTimereports(_buildHeader(key), mappedTimereports![key]!, eventManager);
                         }) +
-                        [SizedBox(height: 150)],
+                        [
+                          SizedBox(height: 150),
+                        ],
                   ),
                 ),
                 Align(
@@ -293,7 +296,15 @@ class _TimereportRowState extends State<TimereportRow> {
         SizedBox(height: 12.0),
         Row(
           children: [
-            CircleAvatar(backgroundColor: green, radius: 10, child: Icon(Icons.check, size: 14, color: Colors.white)),
+            CircleAvatar(
+              backgroundColor: green,
+              radius: 10,
+              child: Icon(
+                Icons.check,
+                size: 14,
+                color: Colors.white,
+              ),
+            ),
             SizedBox(
               width: 18.0,
             ),
@@ -317,16 +328,17 @@ class _TimereportRowState extends State<TimereportRow> {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: widget.timereport.isCompleted ? Theme.of(context).cardColor.withOpacity(0.5) : Theme.of(context).cardColor,
-                borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).shadowColor,
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                    offset: Offset(-2, 2), // changes position of shadow
-                  )
-                ]),
+              color: widget.timereport.isCompleted ? Theme.of(context).cardColor.withOpacity(0.5) : Theme.of(context).cardColor,
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).shadowColor,
+                  spreadRadius: 1,
+                  blurRadius: 3,
+                  offset: Offset(-2, 2), // changes position of shadow
+                )
+              ],
+            ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(

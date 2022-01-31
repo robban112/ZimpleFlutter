@@ -18,7 +18,7 @@ import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_select_screen.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/image_dialog.dart';
-import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/photo_buttons.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';

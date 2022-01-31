@@ -6,7 +6,7 @@ import 'package:zimple/model/customer.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
-import 'package:zimple/widgets/listed_view.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rounded_button.dart';
 

@@ -8,6 +8,6 @@ export 'event_type.dart';
 export 'event.dart';
 export 'person.dart';
 export 'timereport.dart';
-export 'todo.dart';
+export 'note.dart';
 export 'user_parameters.dart';
 export 'work_category.dart';

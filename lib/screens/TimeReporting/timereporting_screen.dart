@@ -15,6 +15,7 @@ import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/widgets.dart';
 import 'package:zimple/utils/date_utils.dart';
 
