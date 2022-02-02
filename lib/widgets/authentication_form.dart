@@ -20,11 +20,6 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
   late String _email;
   late String _password;
 
-  String? passwordValidator(String? pass) {
-    if (pass == null) return null;
-    return pass.length < 4 ? '*Required' : null;
-  }
-
   bool validateLoginInput() {
     setState(() {
       _autoValidate = true;

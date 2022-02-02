@@ -160,7 +160,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Container(child: RectangularButton(onTap: () => uploadVacation(), text: "Lägg in semester")),
+                      child: Container(child: RectangularButton(onTap: () => uploadVacation(), text: "Ansök frånvaro")),
                     ),
                   ],
                 ),

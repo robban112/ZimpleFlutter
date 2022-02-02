@@ -228,6 +228,14 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
     super.dispose();
   }
 
+  void onLogout() {
+    eventManagerSubscriber.cancel();
+    customerSubscriber.cancel();
+    managerProvider.dispose();
+    contactSubscriber.cancel();
+    personSubscriber.cancel();
+  }
+
   List<Widget> _buildScreens(BuildContext context) {
     return loadingEvent && loadingTimereport
         ? [_loadingWidget(context), _loadingWidget(context), _loadingWidget(context)]
@@ -247,6 +255,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
             ),
             MoreScreen(
               user: this.user,
+              onLogout: onLogout,
             )
           ];
   }

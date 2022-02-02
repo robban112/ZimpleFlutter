@@ -73,9 +73,14 @@ String? emailValidator(String? value) {
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
   RegExp regex = new RegExp(pattern.toString());
-  if (value.isEmpty) return '*Required';
+  if (value.isEmpty) return '* Skriv in ett email';
   if (!regex.hasMatch(value))
-    return '*Enter a valid email';
+    return '* Skriv in ett korrekt email';
   else
     return null;
+}
+
+String? passwordValidator(String? pass) {
+  if (pass == null) return null;
+  return pass.length < 4 ? '* Skriv in ett lösenord' : null;
 }

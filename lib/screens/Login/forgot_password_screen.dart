@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
+import 'package:zimple/widgets/widgets.dart';
 import '../../utils/constants.dart';
 import 'package:zimple/utils/constants.dart';
 
@@ -36,11 +37,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: primaryColor,
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          title: Text("Glömt lösenord"),
-          backgroundColor: primaryColor,
-          elevation: 0,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: StandardAppBar(
+            "Glömt lösenord",
+          ),
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: kPadding),

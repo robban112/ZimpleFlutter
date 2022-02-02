@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -25,7 +26,8 @@ import 'package:zimple/widgets/listed_view/listed_view.dart';
 class MoreScreen extends StatefulWidget {
   static const String routeName = "settings_screen";
   final UserParameters user;
-  const MoreScreen({required this.user});
+  final VoidCallback onLogout;
+  const MoreScreen({required this.user, required this.onLogout});
 
   @override
   _MoreScreenState createState() => _MoreScreenState();
@@ -48,17 +50,9 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   void logout(BuildContext context) async {
+    widget.onLogout();
     await FirebaseAuth.instance.signOut();
-    pushNewScreenWithRouteSettings(
-      context,
-      settings: RouteSettings(name: LoginScreen.routeName),
-      screen: LoginScreen(),
-      withNavBar: false,
-      pageTransitionAnimation: PageTransitionAnimation.cupertino,
-    );
-
-    // Navigator.pushNamedAndRemoveUntil(
-    //     context, LoginScreen.routeName, (route) => false);
+    Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => LoginScreen()), (route) => false);
   }
 
   ListTile buildMenuTile(String title, VoidCallback onTap) {

@@ -11,11 +11,16 @@ import '../utils/constants.dart';
 
 class StandardAppBar extends StatelessWidget {
   final String title;
+
   final Widget? trailing;
+
+  final VoidCallback? onPressedBack;
+
   const StandardAppBar(
     this.title, {
     Key? key,
     this.trailing,
+    this.onPressedBack,
   }) : super(key: key);
 
   @override
@@ -33,7 +38,9 @@ class StandardAppBar extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(title, style: appBarTitleStyle),
       ),
-      leading: NavBarBack(),
+      leading: NavBarBack(
+        onPressed: onPressedBack,
+      ),
       actions: [trailing ?? Container()],
     );
   }
