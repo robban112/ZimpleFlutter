@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/model/customer.dart';
@@ -40,7 +41,9 @@ class _MoreScreenState extends State<MoreScreen> {
 
   @override
   void initState() {
-    this._future = FirebaseStorageManager(company: widget.user.company).getImage(widget.user.profilePicturePath!);
+    if (widget.user.profilePicturePath != null) {
+      this._future = FirebaseStorageManager(company: widget.user.company).getImage(widget.user.profilePicturePath!);
+    }
     super.initState();
   }
 
@@ -218,7 +221,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       width: 150,
                       height: 150,
                       decoration: BoxDecoration(shape: BoxShape.circle),
-                      child: _profilePicture(),
+                      child: widget.user.profilePicturePath == null ? Icon(FontAwesome5.user) : _profilePicture(),
                     ),
                   ),
           ),
