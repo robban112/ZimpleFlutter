@@ -7,7 +7,7 @@ class FirebaseContactManager {
   late fb.DatabaseReference contactRef;
 
   FirebaseContactManager(this.company) {
-    database = fb.FirebaseDatabase.instance.reference();
+    database = fb.FirebaseDatabase.instance.ref();
     contactRef = database.ref.child(company).child('Contacts');
   }
 

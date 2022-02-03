@@ -1,7 +1,8 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
@@ -18,6 +19,7 @@ import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:zimple/screens/Login/login_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:zimple/utils/utils.dart';
@@ -56,9 +58,12 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
   late StreamSubscription<List<Customer>> customerSubscriber;
   late StreamSubscription<List<Contact>> contactSubscriber;
   late StreamSubscription<List<Person>> personSubscriber;
+  late StreamSubscription<TimereportManager> timereportStream;
+  late StreamSubscription<CompanySettings> companySettingsStream;
   late ManagerProvider managerProvider;
   TimereportManager timeReportManager = TimereportManager();
   bool loading = true;
+  bool hasLoggedOut = false;
 
   _TabBarControllerState();
 
@@ -158,7 +163,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
     managerProvider.firebaseTimereportManager = firebaseTimeReportManager;
     managerProvider.timereportManager = TimereportManager();
     timeReportManager = TimereportManager();
-    firebaseTimeReportManager.listenTimereports(user).listen((timereportManager) {
+    timereportStream = firebaseTimeReportManager.listenTimereports(user).listen((timereportManager) {
       print("listen new timereport");
       setState(() {
         this.timeReportManager = timeReportManager;
@@ -172,7 +177,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
   }
 
   void setupCompanySubscriber(FirebaseCompanyManager firebaseCompanyManager) {
-    firebaseCompanyManager.streamCompanySettings().listen(
+    companySettingsStream = firebaseCompanyManager.streamCompanySettings().listen(
           (CompanySettings companySettings) => managerProvider.updateCompanySettings(
             companySettings: companySettings,
           ),
@@ -220,20 +225,31 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
 
   @override
   void dispose() {
-    eventManagerSubscriber.cancel();
-    customerSubscriber.cancel();
-    managerProvider.dispose();
-    contactSubscriber.cancel();
-    personSubscriber.cancel();
+    cancelStreams();
     super.dispose();
   }
 
-  void onLogout() {
-    eventManagerSubscriber.cancel();
-    customerSubscriber.cancel();
+  Future<void> cancelStreams() async {
+    await eventManagerSubscriber.cancel();
+    await customerSubscriber.cancel();
+    await contactSubscriber.cancel();
+    await personSubscriber.cancel();
+    await timereportStream.cancel();
+    await companySettingsStream.cancel();
     managerProvider.dispose();
-    contactSubscriber.cancel();
-    personSubscriber.cancel();
+  }
+
+  Future<void> onLogout(BuildContext context) async {
+    cancelStreams();
+    await FirebaseAuth.instance.signOut();
+
+    Navigator.of(context).pushAndRemoveUntil(
+      CupertinoPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => LoginScreen(),
+      ),
+      (route) => false,
+    );
   }
 
   List<Widget> _buildScreens(BuildContext context) {
@@ -255,7 +271,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
             ),
             MoreScreen(
               user: this.user,
-              onLogout: onLogout,
+              onLogout: () => onLogout(context),
             )
           ];
   }

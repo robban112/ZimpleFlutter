@@ -10,7 +10,7 @@ class FirebaseCustomerManager {
   late fb.DatabaseReference customerRef;
   Logger logger = Logger();
   FirebaseCustomerManager({required this.company}) {
-    this.database = fb.FirebaseDatabase.instance.reference();
+    this.database = fb.FirebaseDatabase.instance.ref();
     this.customerRef = database.ref.child(company).child('Customers');
   }
 

@@ -9,6 +9,8 @@ import 'package:zimple/screens/Login/Signup/step_indicator.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class SignUpScreen extends StatefulWidget {
+  static const String routeName = "sign_up_screen";
+
   const SignUpScreen({Key? key}) : super(key: key);
 
   @override

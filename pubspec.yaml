@@ -19,6 +19,8 @@ dependencies:
   firebase_storage: ^10.2.4
   firebase_messaging: ^11.2.4
   firebase_remote_config: ^2.0.0
+  firebase_crashlytics: ^2.5.0
+  firebase_analytics: ^9.1.0
 
   cupertino_icons: ^1.0.4
   intl: ^0.17.0

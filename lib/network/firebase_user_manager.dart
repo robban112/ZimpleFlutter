@@ -17,7 +17,7 @@ class FirebaseUserManager {
   }
 
   Future<UserParameters> _getUserParameters(String userToken) async {
-    final database = FirebaseDatabase.instance.reference();
+    final database = FirebaseDatabase.instance.ref();
     print('USER TOKEN: $userToken');
     var databaseEvent = await database.ref.child('Users').child(userToken).once();
     var snapshot = databaseEvent.snapshot;
@@ -38,7 +38,7 @@ class FirebaseUserManager {
   }
 
   Future<void> setUserFCMToken(UserParameters user, String fcmToken) async {
-    final ref = FirebaseDatabase.instance.reference().child('Users').child(user.token);
+    final ref = FirebaseDatabase.instance.ref().child('Users').child(user.token);
     return ref.child('fcmToken').set(fcmToken);
   }
 
@@ -50,7 +50,7 @@ class FirebaseUserManager {
     required String iOSLink,
     required String androidLink,
   }) {
-    final ref = FirebaseDatabase.instance.reference().child('Invited');
+    final ref = FirebaseDatabase.instance.ref().child('Invited');
     return ref.push().set({
       'companyId': companyId,
       'name': name,

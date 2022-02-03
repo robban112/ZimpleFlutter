@@ -8,7 +8,7 @@ class FirebasePersonManager {
   late DatabaseReference personsRef;
   late DatabaseReference database;
   FirebasePersonManager({required this.company}) {
-    database = FirebaseDatabase.instance.reference();
+    database = FirebaseDatabase.instance.ref();
     personsRef = database.ref.child(company).child('Persons');
   }
 
@@ -31,20 +31,24 @@ class FirebasePersonManager {
     List<Person> persons = [];
     for (String key in mapOfMaps.keys) {
       dynamic personData = mapOfMaps[key];
-      persons.add(
-        Person(
-          color: hexToColor(personData['color']),
-          name: personData['name'] ?? "",
-          id: personData['id'].toString(),
-          email: personData['email'],
-          profilePicturePath: personData['profilePicturePath'],
-          phonenumber: personData['phonenumber'],
-          iOSLink: personData['iOSLink'],
-          androidLink: personData['androidLink'],
-          ssn: personData['ssn'],
-          address: personData['address'],
-        ),
-      );
+      try {
+        persons.add(
+          Person(
+            color: hexToColor(personData['color']),
+            name: personData['name'] ?? "",
+            id: key,
+            email: personData['email'],
+            profilePicturePath: personData['profilePicturePath'],
+            phonenumber: personData['phonenumber'],
+            iOSLink: personData['iOSLink'],
+            androidLink: personData['androidLink'],
+            ssn: personData['ssn'],
+            address: personData['address'],
+          ),
+        );
+      } catch (error) {
+        print("Unable to parse person: ${personData.toString()} key: ${snapshot.key}");
+      }
     }
     return persons;
   }

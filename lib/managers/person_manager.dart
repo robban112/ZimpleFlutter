@@ -9,11 +9,16 @@ class PersonManager {
   List<Person> getPersonsByIds(List<String> personIds) {
     List<Person> _persons = [];
     personIds.forEach((id) {
-      Person person = persons.firstWhere((person) => person.id == id);
-      if (person != null) {
-        _persons.add(person);
-      } else {
-        throw ("ERROR RETRIEVING PERSON ID");
+      try {
+        Person person = persons.firstWhere((person) => person.id == id);
+        if (person != null) {
+          _persons.add(person);
+        } else {
+          throw ("ERROR RETRIEVING PERSON ID");
+        }
+      } catch (error) {
+        print("Unable to retrieve persons for ids: $personIds, in person list: ${this.persons.map((e) => e.id).toList()}");
+        print(error);
       }
     });
     return _persons;

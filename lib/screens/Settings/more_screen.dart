@@ -16,6 +16,7 @@ import 'package:zimple/screens/Settings/Customers/customers_screen.dart';
 import 'package:zimple/screens/Settings/settings_screen.dart';
 import 'package:zimple/screens/Settings/support_screen.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/service/user_service.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import '../Login/login_screen.dart';
@@ -26,7 +27,7 @@ import 'package:zimple/widgets/listed_view/listed_view.dart';
 class MoreScreen extends StatefulWidget {
   static const String routeName = "settings_screen";
   final UserParameters user;
-  final VoidCallback onLogout;
+  final Future<void> Function() onLogout;
   const MoreScreen({required this.user, required this.onLogout});
 
   @override
@@ -50,9 +51,14 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   void logout(BuildContext context) async {
-    widget.onLogout();
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) => LoginScreen()), (route) => false);
+    await widget.onLogout();
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   CupertinoPageRoute(
+    //     fullscreenDialog: true,
+    //     builder: (context) => LoginScreen(),
+    //   ),
+    //   (route) => false,
+    // );
   }
 
   ListTile buildMenuTile(String title, VoidCallback onTap) {
@@ -176,6 +182,7 @@ class _MoreScreenState extends State<MoreScreen> {
     final fbUserManager = FirebaseUserManager();
     final fbPersonManager = FirebasePersonManager(company: widget.user.company);
     var url = await fbStorageManager.uploadUserProfileImage(file, widget.user);
+    await UserService.of(context).user?.updatePhotoURL(url);
     await fbPersonManager.setUserProfileImage(widget.user, url);
     return fbUserManager.setUserProfileImage(widget.user, url);
   }
