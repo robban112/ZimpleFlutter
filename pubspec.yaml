@@ -1,6 +1,6 @@
-name: zimple
-description: Calendar planning application.
-version: 1.0.0+1
+name: Zimple
+description: Zimple projektvertyg
+version: 1.1.2
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
