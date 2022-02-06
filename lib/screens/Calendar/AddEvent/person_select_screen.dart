@@ -3,7 +3,6 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import '../../../model/person.dart';
 import 'package:zimple/utils/constants.dart';
-//import 'package:decorated_icon/cupertino_will_pop_scope.dart';
 
 class PersonSelectScreen extends StatefulWidget {
   static const String routeName = 'person_select_screen';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 
 class VerticalTimeContainer extends StatelessWidget {

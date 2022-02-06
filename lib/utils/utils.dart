@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/utils/theme_manager.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 
 class Utils {
   static bool isDarkMode(BuildContext context) {

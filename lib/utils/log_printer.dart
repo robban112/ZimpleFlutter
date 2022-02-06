@@ -1,5 +1,4 @@
 import 'package:logger/logger.dart';
-import 'package:flutter/material.dart';
 
 class SimpleLogPrinter extends LogPrinter {
   final String className;

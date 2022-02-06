@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/src/provider.dart';
-import './storage_manager.dart';
 import 'package:zimple/utils/constants.dart';
+
+import './storage_manager.dart';
 
 class ThemeNotifier with ChangeNotifier {
   static ThemeNotifier of(BuildContext context) {

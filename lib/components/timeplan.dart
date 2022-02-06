@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_listview/infinite_listview.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/provider.dart';
-import 'package:zimple/model/event.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/managers/event_manager.dart';
+import 'package:zimple/model/event.dart';
 import 'package:zimple/model/event_type.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
-import 'package:infinite_listview/infinite_listview.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+
 import '../utils/date_utils.dart';
 import '../utils/weekday_to_string.dart';
-import 'package:zimple/utils/constants.dart';
-import 'package:zimple/extensions/string_extensions.dart';
 
 class Timeplan extends StatelessWidget {
   final EventManager eventManager;

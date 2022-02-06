@@ -1,11 +1,9 @@
-import 'package:provider/src/provider.dart';
-import 'package:zimple/model/event_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:zimple/utils/date_utils.dart';
+import 'package:zimple/model/event_layout.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/widgets.dart';
+
 import '../model/event.dart';
-import 'package:zimple/extensions/string_extensions.dart';
 
 class EventContainer extends StatelessWidget {
   //onPress

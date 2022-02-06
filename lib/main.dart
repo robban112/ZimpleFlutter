@@ -2,25 +2,26 @@ import 'dart:async';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/services.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:zimple/screens/Login/Signup/sign_up_screen.dart';
 import 'package:zimple/screens/Login/first_login_screen.dart';
 import 'package:zimple/screens/Login/forgot_password_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:zimple/screens/Splash/splash_screen.dart';
 import 'package:zimple/utils/service/analytics_service.dart';
 import 'package:zimple/utils/service/user_service.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+
 import 'screens/Login/login_screen.dart';
 import 'screens/tab_bar_widget.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:uni_links/uni_links.dart';
 
 // Toggle this to cause an async error to be thrown during initialization
 // and to test that runZonedGuarded() catches the error
