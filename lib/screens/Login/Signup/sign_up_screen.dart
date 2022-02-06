@@ -6,6 +6,7 @@ import 'package:zimple/screens/Login/Signup/enter_password_step.dart';
 import 'package:zimple/screens/Login/Signup/enter_phonenumber_step.dart';
 import 'package:zimple/screens/Login/Signup/sign_up_progress_screen.dart';
 import 'package:zimple/screens/Login/Signup/step_indicator.dart';
+import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -66,6 +67,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           //crossAxisAlignment: CrossAxisAlignment.center,
           //mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            AbstractWaveAnimation(
+              waveKey: GlobalKey<AbstractWaveAnimationState>(),
+              shouldAnimate: false,
+            ),
             Align(alignment: Alignment.topCenter, child: StepIndicator(numSteps: numSteps, currentStep: currentPage)),
             //_buildEnteredInfo(),
             Center(

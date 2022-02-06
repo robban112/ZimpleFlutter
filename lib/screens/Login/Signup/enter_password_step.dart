@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zimple/screens/Login/zimpletextfield.dart';
+import 'package:zimple/screens/Login/components/zimpletextfield.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/widgets.dart';
 

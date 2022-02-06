@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
-import 'rounded_button.dart';
+
 import '../utils/constants.dart';
 //import 'package:flash_chat/constants.dart';
 
@@ -107,7 +107,7 @@ class _AuthenticationFormFieldState extends State<AuthenticationForm> {
               //Do something with the user input.
             },
             obscureText: true,
-            decoration: _textfieldDecoration(Icons.lock, 'PASSWORD'),
+            decoration: _textfieldDecoration(Icons.lock, 'LÖSENORD'),
           ),
         ],
       ),
