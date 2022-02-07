@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -28,7 +29,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
+        preferredSize: appBarSize,
         child: StandardAppBar("Välj kund"),
       ),
       body: buildBody(),

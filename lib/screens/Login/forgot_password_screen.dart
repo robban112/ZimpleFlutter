@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 import 'package:zimple/widgets/widgets.dart';
+
 import '../../utils/constants.dart';
-import 'package:zimple/utils/constants.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   static final routeName = "forgot_password_screen";
@@ -38,7 +39,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Scaffold(
         backgroundColor: primaryColor,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60),
+          preferredSize: appBarSize,
           child: StandardAppBar(
             "Glömt lösenord",
           ),

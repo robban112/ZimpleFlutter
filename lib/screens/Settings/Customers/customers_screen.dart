@@ -52,7 +52,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
         setState(() {});
       },
       child: Scaffold(
-        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Kundbas")),
+        appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Kundbas")),
         floatingActionButton: user.isAdmin
             ? FloatingAddButton(onPressed: () {
                 Navigator.push(

@@ -3,6 +3,7 @@ import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/src/provider.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -18,7 +19,7 @@ class AddContactScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Ny kontakt")),
+        appBar: PreferredSize(preferredSize: Size.fromHeight(appBarHeight), child: StandardAppBar("Ny kontakt")),
         body: Padding(
           padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
           child: Column(

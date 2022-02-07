@@ -69,7 +69,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   Widget build(BuildContext context) {
     print("Building Add Customer Screen");
     return Scaffold(
-        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Lägg till kund")),
+        appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Lägg till kund")),
         body: Stack(
           children: [
             Padding(

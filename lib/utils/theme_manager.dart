@@ -7,7 +7,7 @@ import './storage_manager.dart';
 
 class ThemeNotifier with ChangeNotifier {
   static ThemeNotifier of(BuildContext context) {
-    return context.read<ThemeNotifier>();
+    return context.watch<ThemeNotifier>();
   }
 
   Color get textColor {

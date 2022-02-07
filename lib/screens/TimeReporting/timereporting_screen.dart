@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:zimple/managers/event_manager.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/models.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
+import 'package:zimple/screens/TimeReporting/AddTimereport/add_timereport_easy_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/report_vacation_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/select_vacation_person_screen.dart';
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
-import 'package:zimple/managers/event_manager.dart';
-import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/widgets.dart';
-import 'package:zimple/utils/date_utils.dart';
 
 class TimeReportingScreen extends StatefulWidget {
   static const routeName = "time_reporting_screen";
@@ -106,6 +107,11 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
     return ListedView(
       rowInset: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       items: [
+        ListedItem(
+            leadingIcon: Icons.access_time,
+            text: "Rapportera tid",
+            trailingIcon: Icons.chevron_right,
+            onTap: goToNewAddTimereportingScreen),
         ListedItem(
             leadingIcon: Icons.access_time,
             text: "Rapportera tid",
@@ -203,6 +209,10 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
 
   void goToAddTimereportScreen() {
     pushNewScreen(context, screen: AddTimeReportingScreen(eventManager: widget.eventManager));
+  }
+
+  void goToNewAddTimereportingScreen() {
+    pushNewScreen(context, screen: AddTimereportEasyScreen());
   }
 
   Widget buildLatestTimereportTitle() {

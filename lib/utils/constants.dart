@@ -33,7 +33,7 @@ const textFieldInputDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(25.0)),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Color(0xff3B14C3), width: 2.0),
+    borderSide: BorderSide(color: Color(0xFF2D43C0), width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(25.0)),
   ),
 );
@@ -59,8 +59,8 @@ final Color green = Color(0xff7BC9B5);
 
 final List<BoxShadow> standardShadow = [
   BoxShadow(
-    color: Colors.grey.withOpacity(0.12),
-    spreadRadius: 1,
+    color: Colors.grey.withOpacity(0.06),
+    spreadRadius: 3,
     blurRadius: 3,
     offset: Offset(-2, 2), // changes position of shadow
   )
@@ -84,3 +84,7 @@ String? passwordValidator(String? pass) {
   if (pass == null) return null;
   return pass.length < 4 ? '* Skriv in ett lösenord' : null;
 }
+
+const double appBarHeight = 60;
+
+const Size appBarSize = Size.fromHeight(appBarHeight);

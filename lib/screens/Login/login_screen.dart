@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final double kPadding = 24.0;
 
-  GlobalKey<AbstractWaveAnimationState> abstractWaveKey = GlobalKey<AbstractWaveAnimationState>();
+  GlobalKey<ZimpleDotBackgroundState> abstractWaveKey = GlobalKey<ZimpleDotBackgroundState>();
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
       alignment: Alignment.bottomCenter,
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
+          padding: const EdgeInsets.only(bottom: 12.0),
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (_) => SignUpScreen()));
@@ -70,6 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                     fontSize: 17,
                     color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'FiraSans',
                   ),
                 ),
               ),
@@ -131,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _background(BuildContext context) {
-    return AbstractWaveAnimation(waveKey: abstractWaveKey);
+    return ZimpleDotBackground(waveKey: abstractWaveKey);
   }
 
   Padding _forgotPassword(BuildContext context) {

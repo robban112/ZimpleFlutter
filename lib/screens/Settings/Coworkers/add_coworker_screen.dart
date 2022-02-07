@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
@@ -6,10 +7,10 @@ import 'package:styled_widget/styled_widget.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/encrypter.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/widgets.dart';
-import 'package:clipboard/clipboard.dart';
 
 class AddCoworkerScreen extends StatefulWidget {
   const AddCoworkerScreen({Key? key}) : super(key: key);
@@ -42,7 +43,7 @@ class _AddCoworkerScreenState extends State<AddCoworkerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar('Bjud in')),
+      appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar('Bjud in')),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());

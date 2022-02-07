@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
+
 import '../../utils/constants.dart';
 
 class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Support")),
+        appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Support")),
         body: Column(
           children: [
             //TopHeader(kPadding: kPadding),

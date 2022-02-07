@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:zimple/screens/Calendar/Notes/notes_screen.dart';
-import '../utils/date_utils.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+
 import '../utils/constants.dart';
+import '../utils/date_utils.dart';
 
 class StandardAppBar extends StatelessWidget {
   final String title;
@@ -32,17 +32,46 @@ class StandardAppBar extends StatelessWidget {
         systemNavigationBarColor: Colors.black,
       ),
       elevation: 0.0,
-      brightness: Brightness.dark,
       backgroundColor: primaryColor,
       title: Align(
         alignment: Alignment.centerLeft,
         child: Text(title, style: appBarTitleStyle),
       ),
-      leading: NavBarBack(
-        onPressed: onPressedBack,
-      ),
+      flexibleSpace: _appBarBackground(context),
+      leading: NavBarBack(onPressed: onPressedBack),
       actions: [trailing ?? Container()],
     );
+  }
+
+  Container _appBarBackground(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(
+              6,
+              (index) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(
+                    20,
+                    (rowIndex) => Container(
+                      height: 2,
+                      width: 2,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.25 - 0.04 * index),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ));
   }
 }
 

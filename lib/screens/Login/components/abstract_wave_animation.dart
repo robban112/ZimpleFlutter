@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-class AbstractWaveAnimation extends StatefulWidget {
-  final GlobalKey<AbstractWaveAnimationState> waveKey;
+class ZimpleDotBackground extends StatefulWidget {
+  final GlobalKey<ZimpleDotBackgroundState>? waveKey;
 
   final bool shouldAnimate;
-  const AbstractWaveAnimation({
-    required this.waveKey,
+  const ZimpleDotBackground({
+    this.waveKey,
     this.shouldAnimate = true,
   }) : super(key: waveKey);
 
   @override
-  AbstractWaveAnimationState createState() => AbstractWaveAnimationState();
+  ZimpleDotBackgroundState createState() => ZimpleDotBackgroundState();
 }
 
-class AbstractWaveAnimationState extends State<AbstractWaveAnimation> {
+class ZimpleDotBackgroundState extends State<ZimpleDotBackground> {
   static const double dotSize = 5;
 
   static const double spacing = 25.0;

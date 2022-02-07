@@ -1,8 +1,15 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
@@ -10,17 +17,10 @@ import 'package:zimple/screens/Calendar/AddEvent/contact_person_select_screen.da
 import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/person_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/work_category_select.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
-import 'package:zimple/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:zimple/widgets/start_end_date_selector.dart';
-import 'package:loader_overlay/loader_overlay.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:collection/collection.dart';
-import 'package:zimple/extensions/string_extensions.dart';
+import 'package:zimple/widgets/listed_view/listed_view.dart';
+import 'package:zimple/widgets/start_end_date_selector.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 class AddEventScreen extends StatefulWidget {
   static const String routeName = 'add_event_screen';
@@ -282,7 +282,14 @@ class _AddEventScreenState extends State<AddEventScreen> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 18.0),
         child: Row(
-          children: [Expanded(child: RectangularButton(onTap: changingEvent ? _changeEvent : _addNewEvent, text: "Spara"))],
+          children: [
+            Expanded(
+              child: RectangularButton(
+                onTap: changingEvent ? _changeEvent : _addNewEvent,
+                text: "Spara",
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -291,8 +298,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60), child: StandardAppBar(changingEvent ? "Ändra arbetsorder" : "Ny arbetsorder")),
+      appBar:
+          PreferredSize(preferredSize: appBarSize, child: StandardAppBar(changingEvent ? "Ändra arbetsorder" : "Ny arbetsorder")),
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -303,29 +310,36 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 currentFocus.unfocus();
               }
             },
-            child: SingleChildScrollView(
+            child: CustomScrollView(
               physics: BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildTextField("Titel", null, TextInputType.text, 24, Colors.orange, (title) {
-                    this.title = title;
-                  }, _titleFormKey, title, null),
-                  SizedBox(height: 40),
-                  buildTimeSection(),
-                  const SizedBox(height: 40),
-                  _buildSectionTitle("INFORMATION"),
-                  buildListedView(context),
-                  const SizedBox(
-                    height: 10,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTextField("Titel", null, TextInputType.text, 24, Colors.orange, (title) {
+                        this.title = title;
+                      }, _titleFormKey, title, null),
+                      SizedBox(height: 40),
+                      buildTimeSection(),
+                      const SizedBox(height: 40),
+                      _buildSectionTitle("INFORMATION"),
+                      buildListedView(context),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(height: 20),
+                      _buildSectionTitle("ANTECKNINGAR"),
+                      _buildNotesTextField(),
+                    ],
                   ),
-                  SizedBox(height: 20),
-                  _buildSectionTitle("ANTECKNINGAR"),
-                  _buildNotesTextField(),
-                  _buildActionButtons(),
-                  const SizedBox(height: 150),
-                ],
-              ),
+                ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  fillOverscroll: true,
+                  child: _buildActionButtons(),
+                )
+              ],
             ),
           ),
           _buildPhotoButtons()

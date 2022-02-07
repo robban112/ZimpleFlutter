@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/model/work_category.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
-import 'package:zimple/model/work_category.dart';
 
 class WorkCategorySelectScreen extends StatelessWidget {
   final Function(WorkCategory) onSelectWorkCategory;
@@ -14,7 +14,7 @@ class WorkCategorySelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Välj kategori")),
+        appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Välj kategori")),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Wrap(

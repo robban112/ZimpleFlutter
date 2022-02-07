@@ -95,7 +95,7 @@ class TimeplanDay extends StatelessWidget {
       this.userIdToOnlyShow});
 
   List<Event> _filterForUserIfShould() {
-    var events = eventManager.getEventsByDate(date);
+    var events = eventManager.getEventsByDate(date, eventFilter: eventManager.eventFilter);
     if (userIdToOnlyShow != null) {
       return events.where((event) => event.persons?.any((person) => person.id == userIdToOnlyShow) ?? false).toList();
     } else {
@@ -246,7 +246,7 @@ class TimeplanEventContainer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(event.title,
-                    style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold, color: _dynamicBlackWhite(event.color))),
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: _dynamicBlackWhite(event.color))),
                 SizedBox(height: 4.0),
                 buildTimeRow(),
                 SizedBox(height: 4.0),

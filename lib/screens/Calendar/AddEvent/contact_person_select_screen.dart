@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/src/provider.dart';
 import 'package:zimple/model/contact.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -19,7 +20,7 @@ class ContactPersonSelectScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Contact> contacts = context.watch<ManagerProvider>().contacts;
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Välj kontaktperson")),
+      appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Välj kontaktperson")),
       floatingActionButton: fab(context),
       body: Padding(
         padding: const EdgeInsets.all(12.0),

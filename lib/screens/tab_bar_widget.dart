@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
@@ -14,23 +18,20 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_company_manager.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
-import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/network/firebase_notes_manager.dart';
+import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:zimple/screens/Login/login_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:zimple/utils/utils.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import '../network/firebase_event_manager.dart';
-import '../network/firebase_user_manager.dart';
-import '../network/firebase_person_manager.dart';
+
 import '../managers/event_manager.dart';
 import '../managers/person_manager.dart';
+import '../network/firebase_event_manager.dart';
+import '../network/firebase_person_manager.dart';
+import '../network/firebase_user_manager.dart';
 import 'Settings/more_screen.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class TabBarWidget extends StatefulWidget {
   static final routeName = "tab_bar_screen";
@@ -343,9 +344,10 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
                       true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
                   decoration: NavBarDecoration(
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
+                      topLeft: Radius.circular(0),
+                      topRight: Radius.circular(00),
                     ),
+                    //border: Border.all(color: primaryColor.withOpacity(0.05), width: 2),
                     colorBehindNavBar: Colors.white,
                   ),
                   navBarHeight: 55,

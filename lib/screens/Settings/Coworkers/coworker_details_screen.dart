@@ -1,12 +1,13 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:zimple/model/person.dart';
 import 'package:styled_widget/styled_widget.dart';
+import 'package:zimple/model/person.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class CoworkerDetailsScreen extends StatefulWidget {
@@ -47,7 +48,7 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60),
+          preferredSize: appBarSize,
           child: StandardAppBar(
             widget.person.name,
             trailing: _buildTrailing(),

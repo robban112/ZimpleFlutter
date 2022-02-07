@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/absence_request.dart';
 import 'package:zimple/model/user_parameters.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -181,7 +180,7 @@ class SelectAbsenceType extends StatelessWidget {
   Widget build(BuildContext context) {
     List<AbsenceType> absenceTypes = AbsenceType.values.where((absence) => absence != AbsenceType.unknown).toList();
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.fromHeight(60), child: StandardAppBar("Välj typ av frånvaro")),
+      appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Välj typ av frånvaro")),
       body: SingleChildScrollView(
         child: ListedView(
           items: List.generate(absenceTypes.length, (index) {

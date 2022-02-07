@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
 import 'dart:math' as math;
 import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
+import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 
 class SplashScreen extends StatefulWidget {
   final VoidCallback finishedSplash;
@@ -29,6 +31,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       decoration: BoxDecoration(color: Colors.black),
       child: Stack(
         children: [
+          ZimpleDotBackground(),
           Center(
             child: Container(
               height: 250,

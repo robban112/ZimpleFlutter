@@ -7,17 +7,25 @@ class PersonCircleAvatar extends StatelessWidget {
   final Person person;
   final double radius;
   final double fontSize;
-  PersonCircleAvatar({required this.person, this.radius = 15, this.fontSize = 11.0});
+  final double opacity;
+  final bool withBorder;
+
+  PersonCircleAvatar({required this.person, this.radius = 15, this.fontSize = 11.0, this.opacity = 1, this.withBorder = false});
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Provider.of<ThemeNotifier>(context, listen: true).isDarkMode();
-    return CircleAvatar(
-      radius: this.radius,
-      backgroundColor: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400,
+    return Container(
+      height: radius * 2,
+      width: radius * 2,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isDarkMode ? Colors.grey.shade800.withOpacity(opacity) : Colors.grey.shade400.withOpacity(opacity),
+        border: withBorder ? Border.all(color: Theme.of(context).dividerColor) : null,
+      ),
       child: Center(
         child: Text(
           person.name.characters.first.toUpperCase(),
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11.0),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: fontSize),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zimple/model/note.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/snackbar/snackbar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
@@ -40,7 +41,7 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
+        preferredSize: appBarSize,
         child: StandardAppBar(
           widget.isChangingNote ? "Ändra anteckning" : "Ny Anteckning",
           trailing: TextButton(

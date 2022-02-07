@@ -67,6 +67,11 @@ bool isToday(DateTime date) {
   return (now.year == date.year && now.month == date.month && now.day == date.day);
 }
 
+bool isYesterday(DateTime date) {
+  DateTime now = DateTime.now().subtract(Duration(days: 1));
+  return (now.year == date.year && now.month == date.month && now.day == date.day);
+}
+
 String dateToHourMinute(DateTime date) {
   return DateFormat('HH:mm', locale).format(date);
 }

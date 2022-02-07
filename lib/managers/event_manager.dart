@@ -41,12 +41,12 @@ class EventManager {
       return [];
   }
 
-  List<Event> getEventsByDate(DateTime date) {
+  List<Event> getEventsByDate(DateTime date, {List<Event> Function(List<Event>)? eventFilter}) {
     var key = eventMapKey(date);
     if (eventMap.containsKey(key)) {
       var sortedEvents = sortEventByStartDate(eventMap[key]!);
       if (eventFilter != null)
-        return eventFilter!(sortedEvents);
+        return eventFilter(sortedEvents);
       else
         return sortedEvents;
     }

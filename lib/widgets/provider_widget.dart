@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:zimple/managers/customer_manager.dart';
+import 'package:zimple/managers/event_manager.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/models.dart';
@@ -8,12 +10,10 @@ import 'package:zimple/network/firebase_company_manager.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
+import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
-import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
-import 'package:zimple/managers/event_manager.dart';
-import 'package:zimple/managers/person_manager.dart';
 
 class ManagerProvider extends ChangeNotifier {
   late PersonManager personManager;
@@ -51,6 +51,10 @@ class ManagerProvider extends ChangeNotifier {
 
   static ManagerProvider of(BuildContext context) {
     return context.read<ManagerProvider>();
+  }
+
+  static ManagerProvider watch(BuildContext context) {
+    return context.watch<ManagerProvider>();
   }
 
   void setContacts(List<Contact> contacts) {

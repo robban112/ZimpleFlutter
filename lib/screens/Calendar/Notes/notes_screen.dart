@@ -5,9 +5,9 @@ import 'package:rxdart/subjects.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/screens/Calendar/Notes/add_notes_screen.dart/add_notes_screen.dart';
+import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/alert_dialog/alert_dialog.dart';
 import 'package:zimple/widgets/floating_add_button.dart';
-import 'package:zimple/widgets/snackbar/snackbar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 import 'note_widget.dart';
@@ -47,7 +47,7 @@ class _NotesScreenState extends State<NotesScreen> with SingleTickerProviderStat
         onPressed: _goToAddNote,
       ),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
+        preferredSize: appBarSize,
         child: StandardAppBar("Anteckningar"),
       ),
       body: _body(),
