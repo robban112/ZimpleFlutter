@@ -47,7 +47,10 @@ class ManagerProvider extends ChangeNotifier {
   CompanySettings companySettings = CompanySettings.initial();
 
   List<Contact> contacts = [];
+
   Map<String, int>? absenceRequestReadMap;
+
+  bool mounted = false;
 
   static ManagerProvider of(BuildContext context) {
     return context.read<ManagerProvider>();

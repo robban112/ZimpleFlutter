@@ -1,12 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
+import 'package:zimple/widgets/listed_view/listed_switch.dart';
 
 class ListedItem {
   final Widget? child;
   final String? text;
+  final TextStyle? textStyle;
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final Widget? trailingWidget;
@@ -20,39 +20,54 @@ class ListedItem {
     this.onTap,
     this.trailingWidget,
     this.leadingWidget,
+    this.textStyle,
   });
 }
 
 class ListedItemWidget extends StatelessWidget {
-  const ListedItemWidget(
-      {Key? key, required this.item, this.rowInset = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0)})
-      : super(key: key);
+  const ListedItemWidget({
+    Key? key,
+    required this.item,
+    this.rowInset = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+  }) : super(key: key);
 
   final ListedItem item;
   final EdgeInsets rowInset;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          if (item.onTap != null) item.onTap!();
-        },
-        splashColor: Colors.grey.shade300,
-        child: Padding(
-          padding: this.rowInset,
-          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [_leading(), item.text != null ? Text(item.text!, style: TextStyle(fontSize: 16)) : item.child!],
-            ),
-            Expanded(child: Container()),
-            item.trailingWidget != null ? item.trailingWidget! : Icon(Icons.chevron_right)
-          ]),
-        ),
+    return _inkWell(
+      isTappable: item.onTap != null,
+      child: Padding(
+        padding: this.rowInset,
+        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _leading(),
+              item.text != null ? Text(item.text!, style: item.textStyle ?? TextStyle(fontSize: 16)) : item.child!,
+            ],
+          ),
+          Expanded(child: Container()),
+          item.trailingWidget != null ? item.trailingWidget! : Icon(Icons.chevron_right)
+        ]),
       ),
     );
+  }
+
+  Widget _inkWell({required Widget child, required bool isTappable}) {
+    if (isTappable)
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          splashColor: Colors.grey.shade300,
+          onTap: () {
+            if (item.onTap != null) item.onTap!();
+          },
+          child: child,
+        ),
+      );
+    return child;
   }
 
   Widget _leading() {
@@ -156,6 +171,8 @@ class ListedView extends StatelessWidget {
     var item = items[index];
     if (item is ListedTextField) {
       return _textfieldBuilder(context, item);
+    } else if (item is ListedSwitch) {
+      return _buildListedSwitch(context, item);
     }
     return ListedItemWidget(
       item: item,
@@ -163,45 +180,93 @@ class ListedView extends StatelessWidget {
     );
   }
 
-  Widget _textfieldBuilder(BuildContext context, ListedTextField item) {
-    return Padding(
-      padding: rowInset.copyWith(top: 0, bottom: 0),
-      child: Row(
-        children: [
-          item.leadingIcon != null
-              ? Row(
-                  children: [
-                    Icon(item.leadingIcon),
-                    SizedBox(width: 16.0),
-                  ],
-                )
-              : Container(),
-          Expanded(
-            child: TextFormField(
-              textInputAction: item.isMultipleLine ? TextInputAction.newline : TextInputAction.done,
-              //initialValue: item.initialValue,
-              key: key,
-              style: TextStyle(fontSize: 16),
-              autocorrect: false,
-              keyboardType: item.inputType,
+  Widget _buildListedSwitch(BuildContext context, ListedSwitch item) {
+    return ListedItemWidget(
+      item: ListedItem(
+        text: item.text,
+        leadingIcon: item.leadingIcon,
+        //textStyle: _hintStyle(context),
+        trailingWidget: SizedBox(
+          height: 32,
+          width: 32,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: CupertinoSwitch(
               onChanged: item.onChanged,
-              controller: item.controller,
-              maxLines: item.isMultipleLine ? 25 : null,
-              focusNode: FocusNode(),
-              decoration: InputDecoration(
-                  hintText: item.placeholder,
-                  hintStyle: TextStyle(
-                      fontSize: 16,
-                      color:
-                          ThemeNotifier.of(context).isDarkMode() ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.3)),
-                  //focusColor: focusColor,
-                  focusedBorder: InputBorder.none,
-                  border: InputBorder.none),
+              value: item.initialValue,
             ),
           ),
-        ],
+        ),
       ),
     );
+  }
+
+  Widget _buildLeadingIcon(ListedItem item) {
+    return item.leadingIcon != null
+        ? Row(
+            children: [
+              Icon(item.leadingIcon),
+              SizedBox(width: 16.0),
+            ],
+          )
+        : Container();
+  }
+
+  Widget _textfieldBuilder(BuildContext context, ListedTextField item) {
+    return _multilineTextfield(
+      context,
+      item,
+      child: Padding(
+        padding: rowInset.copyWith(top: 0, bottom: 0),
+        child: Row(
+          children: [
+            _buildLeadingIcon(item),
+            Expanded(
+              child: TextFormField(
+                textInputAction: item.isMultipleLine ? TextInputAction.newline : TextInputAction.done,
+                //initialValue: item.initialValue,
+                key: key,
+                style: TextStyle(fontSize: 16),
+                autocorrect: false,
+                keyboardType: item.inputType,
+                onChanged: item.onChanged,
+                controller: item.controller,
+                maxLines: item.isMultipleLine ? 25 : null,
+                focusNode: FocusNode(),
+                decoration: InputDecoration(
+                    hintText: item.placeholder,
+                    hintStyle: hintStyle(context),
+                    //focusColor: focusColor,
+                    focusedBorder: InputBorder.none,
+                    border: InputBorder.none),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _multilineTextfield(BuildContext context, ListedTextField item, {required Widget child}) {
+    if (item.isMultipleLine) {
+      return Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              child,
+            ],
+          ),
+        ),
+      );
+    } else
+      return child;
+  }
+
+  static TextStyle hintStyle(BuildContext context) {
+    return TextStyle(
+        fontSize: 16,
+        color: ThemeNotifier.of(context).isDarkMode() ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.3));
   }
 }
 

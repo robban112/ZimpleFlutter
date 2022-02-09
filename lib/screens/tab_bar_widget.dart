@@ -49,9 +49,9 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
   FirebaseUserManager firebaseUserManager = FirebaseUserManager();
   late FirebasePersonManager firebasePersonManager;
   late FirebaseCustomerManager firebaseCustomerManager;
-  late EventManager eventManager;
-  late PersonManager personManager;
-  late CustomerManager customerManager;
+  EventManager eventManager = EventManager(events: []);
+  PersonManager personManager = PersonManager(persons: []);
+  CustomerManager customerManager = CustomerManager(customers: []);
   bool loadingEvent = true;
   bool loadingTimereport = true;
   PersistentTabController _controller = PersistentTabController(initialIndex: 0);

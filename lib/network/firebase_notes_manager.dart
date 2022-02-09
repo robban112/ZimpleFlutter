@@ -1,8 +1,8 @@
-import 'package:zimple/model/note.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
-import 'package:flutter/material.dart';
-import '../model/note.dart';
+import 'package:zimple/model/note.dart';
+
 import '../managers/person_manager.dart';
+import '../model/note.dart';
 
 class FirebaseNotesManager {
   String company;
@@ -36,18 +36,36 @@ class FirebaseNotesManager {
       String title = todoData['title'] != null ? todoData['title'] : "";
       String todo = todoData['note'] != null ? todoData['note'] : "";
       String color = todoData['color'] != null ? todoData['color'] : "";
+      String? privateForUser = todoData['privateForUser'] ?? null;
+      bool? isDone = todoData['isDone'];
 
       String createdBy = todoData['createdBy'] != null ? todoData['createdBy'] : "";
-      Note todoObject = Note(id: key, title: title, date: date, note: todo, createdBy: createdBy);
+      Note todoObject = Note(
+        id: key,
+        title: title,
+        date: date,
+        note: todo,
+        createdBy: createdBy,
+        privateForUser: privateForUser,
+        isDone: isDone ?? false,
+      );
       todos.add(todoObject);
     }
     return todos;
   }
 
-  Future<void> addNote({required String title, required String note, required String createdBy}) {
+  Future<void> addNote({required String title, required String note, required String createdBy, String? privateForUser}) {
     fb.DatabaseReference ref = todoRef.push();
     if (ref.key == null) return Future.error(Error());
-    Note newNote = Note(id: ref.key!, title: title, date: DateTime.now(), note: note, createdBy: createdBy);
+    Note newNote = Note(
+      id: ref.key!,
+      title: title,
+      date: DateTime.now(),
+      note: note,
+      createdBy: createdBy,
+      privateForUser: privateForUser,
+      isDone: false,
+    );
     return ref.set(newNote.toJson());
   }
 

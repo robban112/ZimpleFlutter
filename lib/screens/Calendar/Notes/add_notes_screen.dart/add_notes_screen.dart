@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:zimple/model/note.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/service/user_service.dart';
+import 'package:zimple/widgets/listed_view/listed_switch.dart';
 import 'package:zimple/widgets/snackbar/snackbar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
@@ -28,11 +29,14 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
 
   TextEditingController noteController = TextEditingController();
 
+  bool privateNote = false;
+
   @override
   void initState() {
     if (widget.isChangingNote && widget.noteToChange != null) {
       titleController.text = widget.noteToChange!.title;
       noteController.text = widget.noteToChange!.note;
+      privateNote = widget.noteToChange?.privateForUser != null;
     }
     super.initState();
   }
@@ -40,6 +44,7 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: appBarSize,
         child: StandardAppBar(
@@ -52,7 +57,10 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
                 fontSize: 18,
               ),
             ),
-            onPressed: () => widget.isChangingNote ? _changeNote(context) : _saveNote(context),
+            onPressed: () {
+              String uid = UserService.of(context).user!.uid;
+              widget.isChangingNote ? _changeNote(context, uid) : _saveNote(context, uid);
+            },
           ),
         ),
       ),
@@ -61,25 +69,73 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
   }
 
   Widget _body() {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-      child: ListedView(items: [
-        ListedTextField(
-          leadingIcon: Icons.title,
-          placeholder: 'Titel',
-          controller: titleController,
+    ListedTextField item = _notesItem();
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          child: Column(
+            children: [
+              ListedView(
+                items: [
+                  ListedTextField(
+                    leadingIcon: Icons.title,
+                    placeholder: 'Titel',
+                    controller: titleController,
+                  ),
+                  ListedSwitch(
+                    text: 'Privat anteckning',
+                    initialValue: privateNote,
+                    leadingIcon: Icons.privacy_tip,
+                    onChanged: (value) => setState(() => privateNote = value),
+                  ),
+                ],
+              ),
+              _buildLeadingIcon(item),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextFormField(
+                  textInputAction: TextInputAction.newline,
+                  //initialValue: item.initialValue,
+                  style: TextStyle(fontSize: 16),
+                  autocorrect: false,
+                  controller: item.controller,
+                  maxLines: item.isMultipleLine ? 25 : null,
+                  focusNode: FocusNode(),
+                  decoration: InputDecoration(
+                    hintText: item.placeholder,
+                    hintStyle: ListedView.hintStyle(context),
+                    //focusColor: focusColor,
+                    focusedBorder: InputBorder.none,
+                    border: InputBorder.none,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
-        ListedTextField(
-          placeholder: 'Anteckning',
-          controller: noteController,
-          isMultipleLine: true,
-          inputType: TextInputType.multiline,
-        )
-      ]),
+      ),
     );
   }
 
-  void _changeNote(BuildContext context) {
+  ListedTextField _notesItem() {
+    return ListedTextField(placeholder: 'Anteckningar', isMultipleLine: true, controller: noteController);
+  }
+
+  Widget _buildLeadingIcon(ListedItem item) {
+    return item.leadingIcon != null
+        ? Row(
+            children: [
+              Icon(item.leadingIcon),
+              SizedBox(width: 16.0),
+            ],
+          )
+        : Container();
+  }
+
+  void _changeNote(BuildContext context, String uid) {
     if (widget.noteToChange == null) {
       _showSnackbarError();
       Navigator.of(context).pop();
@@ -88,6 +144,7 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
       title: titleController.text,
       note: noteController.text,
       date: DateTime.now(),
+      privateForUser: privateNote ? uid : null,
     );
     ManagerProvider.of(context).firebaseNotesManager.changeNote(note: newNote).then((value) {
       _onSuccess();
@@ -97,12 +154,13 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
     });
   }
 
-  void _saveNote(BuildContext context) {
+  void _saveNote(BuildContext context, String uid) {
     String createdBy = ManagerProvider.of(context).user.name;
     Future<void> addNoteFuture = ManagerProvider.of(context).firebaseNotesManager.addNote(
           title: titleController.text,
           note: noteController.text,
           createdBy: createdBy,
+          privateForUser: privateNote ? uid : null,
         );
     addNoteFuture.then((value) {
       _onSuccess();
