@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ import 'package:zimple/widgets/photo_buttons.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 import 'package:zimple/widgets/start_end_date_selector.dart';
+
 import '../../utils/constants.dart';
 import 'Components/timereport_cost_component.dart';
 
@@ -474,7 +476,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     );
   }
 
-  Future<void> _setEventTimereported() async {
+  Future<void> _setEventTimereported(String timereportId) async {
     var event = selectedEvent;
     if (event != null) {
       if (event.timereported == null) {
@@ -518,7 +520,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     timereport.setImagesStoragePaths(ref.key, filenames);
     await _uploadTimereportImages(filenames, ref.key);
     firebaseTimeReportManager.addTimeReport(timereport, user).then((value) {
-      _setEventTimereported().then((value) {
+      _setEventTimereported(value).then((value) {
         setLoading(false);
         Navigator.of(context).popUntil((route) => route.isFirst);
       });

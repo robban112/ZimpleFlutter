@@ -83,7 +83,6 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
         backgroundColor: primaryColor,
         elevation: 5,
         title: Align(alignment: Alignment.centerLeft, child: Text("Ansök om ledighet", style: appBarTitleStyle)),

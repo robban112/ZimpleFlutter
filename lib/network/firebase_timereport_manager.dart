@@ -1,8 +1,8 @@
 import 'package:firebase_database/firebase_database.dart' as fb;
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
-import 'package:zimple/managers/person_manager.dart';
 
 class FirebaseTimeReportManager {
   String company;
@@ -16,8 +16,10 @@ class FirebaseTimeReportManager {
     timereportRef = database.ref.child(company).child('TimeReport');
   }
 
-  Future<void> addTimeReport(TimeReport timeReport, UserParameters user) {
-    return timereportRef.child(user.token).push().set(timeReport.toJson());
+  Future<String> addTimeReport(TimeReport timeReport, UserParameters user) async {
+    fb.DatabaseReference ref = timereportRef.child(user.token).push();
+    await ref.set(timeReport.toJson());
+    return ref.key!;
   }
 
   fb.DatabaseReference newTimereportRef() {

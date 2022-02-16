@@ -157,19 +157,23 @@ class _NotesScreenState extends State<NotesScreen> with SingleTickerProviderStat
             DismissDirection.endToStart: 0.4,
             DismissDirection.startToEnd: 0.4,
           },
-          confirmDismiss: (direction) {
+          confirmDismiss: (direction) async {
             if (direction == DismissDirection.endToStart) {
-              return showAlertDialog(context: context, title: 'Ta bort anteckning', subtitle: 'Är du säker?')
-                  .then<bool>((value) => false);
+              bool answer = await showAlertDialog(context: context, title: 'Ta bort anteckning', subtitle: 'Är du säker?');
+              if (answer) {
+                _notes.remove(note);
+                _removeNote(note);
+              }
+              return answer;
             } else {
               return Future.value(true);
             }
           },
           onDismissed: (DismissDirection direction) {
+            print("direction: $direction");
             if (direction == DismissDirection.endToStart) {
-              _notes.remove(note);
-              _removeNote(note);
-            } else if (direction == DismissDirection.startToEnd) {
+            } else {
+              print("mark note complete");
               _markNoteComplete(note);
             }
           },
@@ -258,7 +262,9 @@ class _NotesScreenState extends State<NotesScreen> with SingleTickerProviderStat
   }
 
   Future<void> _removeNote(Note note) {
-    return ManagerProvider.of(context).firebaseNotesManager.removeNote(note: note);
+    return ManagerProvider.of(context).firebaseNotesManager.removeNote(note: note).then((value) {
+      _fetchNotes(context);
+    });
   }
 
   void _fetchNotes(BuildContext context) {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/event_layout.dart';
 import 'package:zimple/model/event_type.dart';
-import 'package:zimple/model/work_category.dart';
-import 'person.dart';
+
 import '../utils/date_utils.dart';
+import 'person.dart';
 
 class Event {
   DateTime start;

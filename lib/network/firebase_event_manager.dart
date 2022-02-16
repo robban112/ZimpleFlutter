@@ -1,14 +1,13 @@
-import 'package:zimple/managers/customer_manager.dart';
-import 'package:zimple/managers/event_manager.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/material.dart';
+import 'package:zimple/managers/customer_manager.dart';
+import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/absence_request.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/event_type.dart';
 import 'package:zimple/model/person.dart';
-import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/utils/date_utils.dart';
 
 class FirebaseEventManager {
@@ -139,7 +138,6 @@ class FirebaseEventManager {
         originalImageStoragePaths: imageMap,
         customerKey: customerKey,
         customerContactIndex: customerContactIndex,
-        timereported: timereported,
         workCategoryId: workCategoryId,
         contactKey: contactKey,
         customerRef: customerRef,

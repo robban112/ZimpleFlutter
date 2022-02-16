@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:zimple/model/person.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/model/absence_request.dart';
+import 'package:zimple/model/person.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
-import 'package:loader_overlay/loader_overlay.dart';
-import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -225,23 +225,21 @@ class AbsenceRequestWidget extends StatelessWidget {
   Widget _buildActionButtons(AbsenceRequest absenceRequest) {
     return Row(
       children: [
-        _buildActionButton(
-          color: canApprove(absenceRequest) ? Colors.green : Colors.green.withOpacity(0.5),
-          icon: Icon(
-            Icons.check,
-            color: Colors.white,
-          ),
-          onPressed: canApprove(absenceRequest) ? () => this.approveRequest(absenceRequest) : () {},
-        ),
+        ActionButton(
+            color: canApprove(absenceRequest) ? Colors.green : Colors.green.withOpacity(0.5),
+            icon: Icon(
+              Icons.check,
+              color: Colors.white,
+            ),
+            onPressed: canApprove(absenceRequest) ? () => this.approveRequest(absenceRequest) : () {}),
         const SizedBox(width: 6),
-        _buildActionButton(
-          color: canDisapprove(absenceRequest) ? Colors.red : Colors.red.withOpacity(0.5),
-          icon: Icon(
-            Icons.clear,
-            color: Colors.white,
-          ),
-          onPressed: canDisapprove(absenceRequest) ? () => this.disapproveRequest(absenceRequest) : () {},
-        ),
+        ActionButton(
+            color: canDisapprove(absenceRequest) ? Colors.red : Colors.red.withOpacity(0.5),
+            icon: Icon(
+              Icons.clear,
+              color: Colors.white,
+            ),
+            onPressed: canDisapprove(absenceRequest) ? () => this.disapproveRequest(absenceRequest) : () {}),
       ],
     );
   }
@@ -249,26 +247,6 @@ class AbsenceRequestWidget extends StatelessWidget {
   bool canApprove(AbsenceRequest absenceRequest) => absenceRequest.approved == null ? true : !absenceRequest.approved!;
 
   bool canDisapprove(AbsenceRequest absenceRequest) => absenceRequest.approved == null ? true : absenceRequest.approved!;
-
-  CupertinoButton _buildActionButton({
-    required Color color,
-    required Icon icon,
-    required VoidCallback onPressed,
-  }) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
-      child: Container(
-        height: 45,
-        width: 45,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: color,
-        ),
-        child: icon,
-      ),
-    );
-  }
 
   Column _buildTextColumn(BuildContext context, String title, String subtitle) {
     return Column(
@@ -369,6 +347,36 @@ class AbsenceRequestWidget extends StatelessWidget {
       onPressed: onTap,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
+      ),
+    );
+  }
+}
+
+class ActionButton extends StatelessWidget {
+  const ActionButton({
+    Key? key,
+    required this.color,
+    required this.icon,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final Color color;
+  final Icon icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      child: Container(
+        height: 45,
+        width: 45,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: color,
+        ),
+        child: icon,
       ),
     );
   }
