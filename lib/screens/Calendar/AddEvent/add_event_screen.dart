@@ -231,7 +231,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
-      child: Text(title, style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.w500)),
+      child: ListedTitle(title: title),
     );
   }
 
@@ -548,5 +548,18 @@ class _AddEventScreenState extends State<AddEventScreen> {
         ],
       );
     }));
+  }
+}
+
+class ListedTitle extends StatelessWidget {
+  final String title;
+  const ListedTitle({
+    required this.title,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(title, style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.w500));
   }
 }

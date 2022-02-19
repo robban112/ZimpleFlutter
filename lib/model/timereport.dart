@@ -1,5 +1,6 @@
-import 'package:zimple/utils/date_utils.dart';
 import 'package:uuid/uuid.dart';
+import 'package:zimple/model/models.dart';
+import 'package:zimple/utils/date_utils.dart';
 
 import 'cost.dart';
 
@@ -58,6 +59,39 @@ class TimeReport {
       'isCompleted': this.isCompleted,
       'customerKey': this.customerKey
     };
+  }
+
+  TimeReport copyWith(
+      {DateTime? startDate,
+      DateTime? endDate,
+      int? breakTime,
+      int? totalTime,
+      String? comment,
+      String? eventId,
+      String? userId}) {
+    return TimeReport(
+        id: id,
+        startDate: startDate ?? this.startDate,
+        endDate: endDate ?? this.endDate,
+        breakTime: breakTime ?? this.breakTime,
+        totalTime: totalTime ?? this.totalTime,
+        comment: comment ?? this.comment,
+        costs: this.costs,
+        eventId: eventId ?? this.eventId,
+        customerKey: customerKey,
+        userId: userId ?? this.userId);
+  }
+
+  factory TimeReport.fromEvent(Event event) {
+    return TimeReport(
+        id: "",
+        startDate: event.start,
+        endDate: event.end,
+        breakTime: 0,
+        totalTime: event.end.difference(event.start).inMinutes,
+        eventId: event.id,
+        comment: "",
+        costs: []);
   }
 
   void setImagesStoragePaths(String? key, List<String> filenames) {

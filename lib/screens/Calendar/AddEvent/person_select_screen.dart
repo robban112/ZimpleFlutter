@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
+
 import '../../../model/person.dart';
-import 'package:zimple/utils/constants.dart';
 
 class PersonSelectScreen extends StatefulWidget {
   static const String routeName = 'person_select_screen';
@@ -62,23 +62,12 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Välj personer",
-            style: appBarTitleStyle,
-          ),
+      appBar: appBar(
+        "Välj personer",
+        trailing: TextButton(
+          child: Text("Spara", style: TextStyle(color: Colors.white, fontSize: 17)),
+          onPressed: () => onPop(context),
         ),
-        elevation: 0.0,
-        backgroundColor: primaryColor,
-        actions: [
-          TextButton(
-            child: Text("Spara", style: TextStyle(color: Colors.white, fontSize: 17)),
-            onPressed: () => onPop(context),
-          ),
-        ],
-        leading: NavBarBack(onPressed: () => onPop(context)),
       ),
       body: ListView.builder(
         shrinkWrap: true,

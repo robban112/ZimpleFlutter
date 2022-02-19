@@ -283,19 +283,19 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
       PersistentBottomNavBarItem(
         icon: Icon(FeatherIcons.calendar, size: size),
         title: ("Kalender"),
-        activeColorPrimary: Theme.of(context).colorScheme.secondary,
+        activeColorPrimary: Theme.of(context).iconTheme.color!,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(FeatherIcons.clock, size: size),
         title: ("Tidrapportering"),
-        activeColorPrimary: Theme.of(context).colorScheme.secondary,
+        activeColorPrimary: Theme.of(context).iconTheme.color!,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.more_horiz, size: size),
         title: ("Mer"),
-        activeColorPrimary: Theme.of(context).colorScheme.secondary,
+        activeColorPrimary: Theme.of(context).iconTheme.color!,
         inactiveColorPrimary: Colors.grey,
       ),
     ];

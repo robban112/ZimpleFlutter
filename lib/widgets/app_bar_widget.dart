@@ -8,6 +8,16 @@ import 'package:zimple/widgets/provider_widget.dart';
 
 import '../utils/constants.dart';
 import '../utils/date_utils.dart';
+import 'button/nav_bar_back.dart';
+
+PreferredSize appBar(String title, {Size size = appBarSize, bool withBackButton = true, Widget? trailing}) => PreferredSize(
+      preferredSize: appBarSize,
+      child: StandardAppBar(
+        title,
+        withBackButton: withBackButton,
+        trailing: trailing,
+      ),
+    );
 
 class StandardAppBar extends StatelessWidget {
   final String title;
@@ -16,11 +26,14 @@ class StandardAppBar extends StatelessWidget {
 
   final VoidCallback? onPressedBack;
 
+  final bool withBackButton;
+
   const StandardAppBar(
     this.title, {
     Key? key,
     this.trailing,
     this.onPressedBack,
+    this.withBackButton = true,
   }) : super(key: key);
 
   @override
@@ -38,7 +51,7 @@ class StandardAppBar extends StatelessWidget {
         child: Text(title, style: appBarTitleStyle),
       ),
       flexibleSpace: _appBarBackground(context),
-      leading: NavBarBack(onPressed: onPressedBack),
+      leading: withBackButton ? NavBarBack(onPressed: onPressedBack) : null,
       actions: [trailing ?? Container()],
     );
   }
@@ -72,44 +85,6 @@ class StandardAppBar extends StatelessWidget {
             ),
           ),
         ));
-  }
-}
-
-class NavBarBack extends StatelessWidget {
-  final VoidCallback? onPressed;
-
-  const NavBarBack({
-    Key? key,
-    this.onPressed,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      child: CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: onPressed != null ? () => onPressed!() : () => Navigator.of(context).pop(),
-        child: Container(
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: SizedBox(
-              height: 20,
-              width: 20,
-              child: SvgPicture.asset(
-                'images/arrow_back.svg',
-                color: Colors.white,
-                fit: BoxFit.scaleDown,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 

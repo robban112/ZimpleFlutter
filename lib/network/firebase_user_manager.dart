@@ -1,5 +1,6 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import '../model/user_parameters.dart';
 
 class FirebaseUserManager {
@@ -22,6 +23,7 @@ class FirebaseUserManager {
     var databaseEvent = await database.ref.child('Users').child(userToken).once();
     var snapshot = databaseEvent.snapshot;
     Map<dynamic, dynamic> snapshotMap = (snapshot.value as Map<dynamic, dynamic>);
+    print('COMPANY ID: ${snapshotMap['company']}');
     return UserParameters(
         company: snapshotMap['company'],
         isAdmin: snapshotMap['isAdmin'] ?? false,

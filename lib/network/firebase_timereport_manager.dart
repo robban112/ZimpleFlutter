@@ -34,7 +34,7 @@ class FirebaseTimeReportManager {
     return timereportRef.child(timereport.userId!).child(timereport.id).remove().then((value) => value);
   }
 
-  Future<void>? changeTimereport(TimeReport timereport) {
+  Future<void> changeTimereport(TimeReport timereport) {
     return timereportRef.child(timereport.userId!).child(timereport.id).update(timereport.toJson()).then((value) => value);
   }
 

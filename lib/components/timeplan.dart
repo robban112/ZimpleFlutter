@@ -189,7 +189,7 @@ class TimeplanEventContainer extends StatelessWidget {
 
   bool _shouldShowTimereported(String userToken) {
     if (shouldShowIsTimereported) {
-      var timereported = event.timereported ?? [];
+      var timereported = event.timereported;
       return timereported.contains(userToken);
     }
     return false;

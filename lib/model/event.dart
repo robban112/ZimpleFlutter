@@ -28,10 +28,11 @@ class Event {
   late EventLayout layout;
 
   int? customerContactIndex;
-  List<String>? timereported;
+  List<String> timereported;
   List<Person>? persons;
   List<String>? imageStoragePaths;
   Map<String, dynamic>? originalImageStoragePaths;
+  Map<String, String> timereports;
 
   Event({
     required this.id,
@@ -49,11 +50,12 @@ class Event {
     this.originalImageStoragePaths,
     this.customerKey,
     this.customerContactIndex,
-    this.timereported,
+    this.timereported = const [],
     this.workCategoryId,
     this.contactKey,
     this.isMovingEvent = false,
     this.customerRef,
+    this.timereports = const {},
   });
 
   Map<String, dynamic> toJson() {
@@ -72,30 +74,39 @@ class Event {
       'timereported': this.timereported,
       'eventType': eventType.toString(),
       'workCategoryId': this.workCategoryId,
-      'contactKey': this.contactKey
+      'contactKey': this.contactKey,
+      'timereports': this.timereports,
     };
   }
 
-  Event copyWith({Color? color, DateTime? start, DateTime? end, bool? isMovingEvent}) {
+  Event copyWith(
+      {Color? color,
+      DateTime? start,
+      DateTime? end,
+      bool? isMovingEvent,
+      List<String>? timereported,
+      Map<String, String>? timereports}) {
     return Event(
-        id: this.id,
-        start: start ?? this.start,
-        end: end ?? this.end,
-        title: this.title,
-        eventType: this.eventType,
-        persons: this.persons,
-        color: color ?? this.color,
-        customer: this.customer,
-        location: this.location,
-        phoneNumber: this.phoneNumber,
-        notes: this.notes,
-        imageStoragePaths: this.imageStoragePaths,
-        originalImageStoragePaths: this.originalImageStoragePaths,
-        customerKey: this.customerKey,
-        customerContactIndex: this.customerContactIndex,
-        timereported: this.timereported,
-        workCategoryId: this.workCategoryId,
-        contactKey: this.contactKey,
-        isMovingEvent: isMovingEvent ?? false);
+      id: this.id,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      title: this.title,
+      eventType: this.eventType,
+      persons: this.persons,
+      color: color ?? this.color,
+      customer: this.customer,
+      location: this.location,
+      phoneNumber: this.phoneNumber,
+      notes: this.notes,
+      imageStoragePaths: this.imageStoragePaths,
+      originalImageStoragePaths: this.originalImageStoragePaths,
+      customerKey: this.customerKey,
+      customerContactIndex: this.customerContactIndex,
+      timereported: timereported ?? this.timereported,
+      workCategoryId: this.workCategoryId,
+      contactKey: this.contactKey,
+      isMovingEvent: isMovingEvent ?? false,
+      timereports: timereports ?? this.timereports,
+    );
   }
 }

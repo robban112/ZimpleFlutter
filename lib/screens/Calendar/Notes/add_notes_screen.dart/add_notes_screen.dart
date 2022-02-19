@@ -96,28 +96,17 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
               _buildLeadingIcon(item),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextFormField(
-                  textInputAction: TextInputAction.newline,
-                  //initialValue: item.initialValue,
-                  style: TextStyle(fontSize: 16),
-                  autocorrect: false,
-                  controller: item.controller,
-                  maxLines: item.isMultipleLine ? 25 : null,
-                  focusNode: FocusNode(),
-                  decoration: InputDecoration(
-                    hintText: item.placeholder,
-                    hintStyle: ListedView.hintStyle(context),
-                    //focusColor: focusColor,
-                    focusedBorder: InputBorder.none,
-                    border: InputBorder.none,
-                  ),
-                ),
+                child: _buildNoteFormfield(item),
               )
             ],
           ),
         ),
       ),
     );
+  }
+
+  ListedNotefield _buildNoteFormfield(ListedTextField item) {
+    return ListedNotefield(context: context, item: item);
   }
 
   ListedTextField _notesItem() {
@@ -185,5 +174,39 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
       String message = widget.isChangingNote ? "Anteckning ändrad" : "Anteckning tillagd!";
       showSnackbar(context: context, isSuccess: true, message: message);
     });
+  }
+}
+
+class ListedNotefield extends StatelessWidget {
+  final ListedTextField item;
+
+  final int numberOfLines;
+  const ListedNotefield({
+    Key? key,
+    required this.context,
+    required this.item,
+    this.numberOfLines = 25,
+  }) : super(key: key);
+
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      textInputAction: TextInputAction.newline,
+      //initialValue: item.initialValue,
+      style: TextStyle(fontSize: 16),
+      autocorrect: false,
+      controller: item.controller,
+      maxLines: item.isMultipleLine ? numberOfLines : null,
+      focusNode: FocusNode(),
+      decoration: InputDecoration(
+        hintText: item.placeholder,
+        hintStyle: ListedView.hintStyle(context),
+        //focusColor: focusColor,
+        focusedBorder: InputBorder.none,
+        border: InputBorder.none,
+      ),
+    );
   }
 }

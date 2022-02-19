@@ -3,7 +3,6 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -20,12 +19,7 @@ class _ShowAllTimeReportScreenState extends State<ShowAllTimeReportScreen> {
   Widget build(BuildContext context) {
     List<Person> persons = Provider.of<ManagerProvider>(context, listen: true).personManager.persons;
     return Scaffold(
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        backgroundColor: primaryColor,
-        title: Text("Alla tidrapporter", style: TextStyle(color: Colors.white)),
-        leading: NavBarBack(),
-      ),
+      appBar: appBar("Alla Tidrapporter"),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

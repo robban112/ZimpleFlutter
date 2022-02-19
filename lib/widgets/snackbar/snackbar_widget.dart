@@ -18,7 +18,7 @@ class SnackbarWidget extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
         children: [
-          isSuccess ? _successIcon() : _errorIcon(),
+          isSuccess ? SuccessIcon() : _errorIcon(),
           const SizedBox(width: 12),
           Text(
             message,
@@ -32,10 +32,23 @@ class SnackbarWidget extends StatelessWidget {
     );
   }
 
-  Widget _successIcon() {
+  Widget _errorIcon() {
+    return Icon(
+      FontAwesome5.exclamation_triangle,
+      color: Colors.red,
+    );
+  }
+}
+
+class SuccessIcon extends StatelessWidget {
+  final Size size;
+  const SuccessIcon({Key? key, this.size = const Size(32, 32)}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      height: 32,
-      width: 32,
+      height: size.height,
+      width: size.width,
       decoration: BoxDecoration(
         color: Colors.green,
         shape: BoxShape.circle,
@@ -43,17 +56,10 @@ class SnackbarWidget extends StatelessWidget {
       child: Center(
         child: Icon(
           FontAwesome5.check,
-          size: 16,
+          size: 16 * size.width / 32,
           color: Colors.white,
         ),
       ),
-    );
-  }
-
-  Widget _errorIcon() {
-    return Icon(
-      FontAwesome5.exclamation_triangle,
-      color: Colors.red,
     );
   }
 }

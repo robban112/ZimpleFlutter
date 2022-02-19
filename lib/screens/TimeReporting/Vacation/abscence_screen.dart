@@ -119,14 +119,7 @@ class _AbsenceScreenState extends State<AbsenceScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          backgroundColor: primaryColor,
-          title: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Frånvaro", style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900))),
-          leading: NavBarBack(),
-        ),
+        appBar: appBar("Frånvaro"),
         body: FutureBuilder(
             future: loadVacation,
             builder: (context, AsyncSnapshot<List<AbsenceRequest>> snapshot) {

@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/screens/Settings/Customers/add_customer_screen.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:loader_overlay/loader_overlay.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/widgets/button/nav_bar_back.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 class CustomerDetailsScreen extends StatefulWidget {

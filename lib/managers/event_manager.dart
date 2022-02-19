@@ -111,6 +111,6 @@ class EventManager {
   }
 
   bool hasUserTimreportedCurrentEvent(Event event, String key) {
-    return event.timereported?.contains(key) ?? false;
+    return event.timereported.contains(key);
   }
 }

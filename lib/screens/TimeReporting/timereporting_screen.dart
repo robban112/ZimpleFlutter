@@ -14,10 +14,8 @@ import 'package:zimple/screens/TimeReporting/Vacation/select_vacation_person_scr
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class TimeReportingScreen extends StatefulWidget {
@@ -72,14 +70,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         setState(() {});
       },
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          elevation: 10.0,
-          brightness: Brightness.dark,
-          title: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Tidrapportering", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 25.0))),
-        ),
+        appBar: appBar("Tidrapportering", withBackButton: false),
         body: Stack(
           children: [
             Container(height: size.height, width: size.width),
@@ -109,12 +100,12 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
       items: [
         ListedItem(
             leadingIcon: Icons.access_time,
-            text: "Rapportera tid",
+            text: "Tidrapportera",
             trailingIcon: Icons.chevron_right,
             onTap: goToNewAddTimereportingScreen),
         ListedItem(
             leadingIcon: Icons.access_time,
-            text: "Rapportera tid",
+            text: "Rapportera fristående tid",
             trailingIcon: Icons.chevron_right,
             onTap: goToAddTimereportScreen),
         ListedItem(

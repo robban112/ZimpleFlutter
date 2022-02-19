@@ -47,9 +47,12 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
               children: [
                 Text("Inga kunder kunde hittas i kundbasen", style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold)),
                 SizedBox(height: 12.0),
-                Text(
-                    "Lägg till kunder genom att gå till Verktyg i appen. Tryck sedan på kunder och här kan du enkelt lägga till kunder.",
-                    style: TextStyle(fontSize: 19.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text(
+                      "Lägg till kunder genom att gå till Verktyg i appen. Tryck sedan på kunder och här kan du enkelt lägga till kunder.",
+                      style: TextStyle(fontSize: 16.0)),
+                ),
               ],
             ),
           ));

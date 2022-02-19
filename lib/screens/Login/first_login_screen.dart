@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/screens/tab_bar_widget.dart';
 import 'package:zimple/utils/encrypter.dart';
-import 'package:zimple/widgets/widgets.dart';
+import 'package:zimple/widgets/button/nav_bar_back.dart';
 
 class FirstLoginScreen extends StatefulWidget {
   static const routeName = 'first_login_screen';

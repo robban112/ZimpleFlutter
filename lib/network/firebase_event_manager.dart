@@ -121,6 +121,7 @@ class FirebaseEventManager {
       List<String> imageStoragePaths = _getImagesFromEventData(eventData) ?? [];
       List<Person> persons = _getPersonsFromEventData(eventData);
       Color eventColor = _setEventColorFromPersons(persons);
+      Map<String, String> timereports = _getTimereports(eventData);
       Map<String, dynamic>? imageMap = eventData['images'] == null ? null : Map.from(eventData['images']);
       Event event = Event(
         end: endDate,
@@ -141,6 +142,8 @@ class FirebaseEventManager {
         workCategoryId: workCategoryId,
         contactKey: contactKey,
         customerRef: customerRef,
+        timereported: timereported,
+        timereports: timereports,
       );
       events.add(event);
     }
@@ -189,5 +192,12 @@ class FirebaseEventManager {
       return null;
     }
     return List.from(eventData['timereported']).map((e) => e.toString()).toList();
+  }
+
+  Map<String, String> _getTimereports(dynamic eventData) {
+    if (eventData['timereports'] == null) {
+      return {};
+    }
+    return Map.from(eventData['timereports']);
   }
 }

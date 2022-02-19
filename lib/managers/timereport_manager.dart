@@ -3,8 +3,7 @@ import 'package:zimple/utils/date_utils.dart';
 
 class TimereportManager {
   Map<String, List<TimeReport>> timereportMap = Map<String, List<TimeReport>>();
-  Map<String, List<TimeReport>> timereportDateMap =
-      Map<String, List<TimeReport>>();
+  Map<String, List<TimeReport>> timereportDateMap = Map<String, List<TimeReport>>();
 
   void addTimereport({required String userId, required TimeReport timeReport}) {
     if (!timereportMap.containsKey(userId)) {
@@ -27,6 +26,13 @@ class TimereportManager {
       }
     });
     return sortTimereportsByStartDate(timereports) ?? [];
+  }
+
+  TimeReport? getTimereport(String timereportId, String userId) {
+    List<TimeReport>? userTimereports = timereportMap[userId];
+    if (userTimereports == null) return null;
+
+    return userTimereports.firstWhere((timereport) => timereport.id == timereportId, orElse: null);
   }
 
   //List<TimeReport> getTimeReportsByMonth(DateTime date) {}

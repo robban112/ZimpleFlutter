@@ -106,8 +106,13 @@ class _TimereportDayListViewState extends State<TimereportDayListView> {
         if (events.length > 0)
           Padding(
             padding: const EdgeInsets.only(bottom: 2.0),
-            child: Text("${events.length.toString()} ${getAppendText(events)}",
-                style: TextStyle(fontSize: 12, color: ThemeNotifier.of(context).textColor.withOpacity(0.4))),
+            child: Text(
+              "${events.length.toString()} ${getAppendText(events)}",
+              style: TextStyle(
+                fontSize: 12,
+                color: ThemeNotifier.of(context).textColor.withOpacity(0.4),
+              ),
+            ),
           )
       ],
     );
@@ -128,6 +133,8 @@ class _TimereportDayListViewState extends State<TimereportDayListView> {
       FirebaseCrashlytics.instance.log('UID is null in addtimereporteasy');
       return [];
     }
-    return events.where((event) => event.persons?.any((person) => person.id == uid) ?? false).toList();
+    return events
+        .where((event) => (event.persons?.any((person) => person.id == uid) ?? false) && event.eventType == EventType.event)
+        .toList();
   }
 }

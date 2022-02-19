@@ -82,12 +82,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        elevation: 5,
-        title: Align(alignment: Alignment.centerLeft, child: Text("Ansök om ledighet", style: appBarTitleStyle)),
-        leading: NavBarBack(),
-      ),
+      appBar: appBar("Ansök om ledighet"),
       body: GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);

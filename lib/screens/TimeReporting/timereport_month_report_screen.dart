@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/screens/TimeReporting/Excel/excel_report.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/widgets.dart';
-import 'package:share_plus/share_plus.dart';
 
 class TimereportMonthReportScreen extends StatefulWidget {
   const TimereportMonthReportScreen({required this.timereports, required this.month, Key? key}) : super(key: key);
@@ -122,14 +121,7 @@ class _TimereportMonthReportScreenState extends State<TimereportMonthReportScree
     int _totalMinutesAfterBreak = _totalMinutes - _totalBreakMinutes;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: NavBarBack(),
-        backgroundColor: primaryColor,
-        title: Text(
-          "Månadsrapport ${widget.month}",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      appBar: appBar("Månadsrapport ${widget.month}"),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),

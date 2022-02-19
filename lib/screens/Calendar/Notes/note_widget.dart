@@ -37,10 +37,35 @@ class NoteWidget extends StatelessWidget {
                   style: TextStyle(fontSize: 12, color: ThemeNotifier.of(context).textColor.withOpacity(0.5))),
               const SizedBox(height: 8),
               Text(note.note),
+              if (note.isDone) const SizedBox(height: 8),
+              if (note.isDone) _buildDoneCircleText()
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDoneCircleText() {
+    return Row(
+      children: [
+        Container(
+          height: 18,
+          width: 18,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.green,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: Icon(Icons.check, color: Colors.white, size: 14),
+          ),
+        ),
+        const SizedBox(
+          width: 4,
+        ),
+        Text("Klar"),
+      ],
     );
   }
 

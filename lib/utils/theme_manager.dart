@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/src/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/utils/constants.dart';
 
 import './storage_manager.dart';
@@ -22,9 +22,9 @@ class ThemeNotifier with ChangeNotifier {
       ),
       primarySwatch: Colors.grey,
       primaryColor: Colors.black,
-      backgroundColor: Color(0xff121212),
-      scaffoldBackgroundColor: Color(0xff121212),
-      cardColor: Color(0xff282828),
+      backgroundColor: Color(0xff0F0E0E),
+      scaffoldBackgroundColor: Color(0xff0F0E0E),
+      cardColor: Color(0xff191A19),
       primaryIconTheme: IconThemeData(color: Colors.white),
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo).copyWith(
         secondary: Colors.indigo.shade600,

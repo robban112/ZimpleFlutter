@@ -482,8 +482,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
       if (event.timereported == null) {
         event.timereported = [user.token];
       } else {
-        if (!event.timereported!.contains(user.token)) {
-          event.timereported!.add(user.token);
+        if (!event.timereported.contains(user.token)) {
+          event.timereported.add(user.token);
         }
       }
       await firebaseEventManager.changeEvent(event);
