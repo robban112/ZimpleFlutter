@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:provider/provider.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 
 class ShowAllTimeReportScreen extends StatefulWidget {
   const ShowAllTimeReportScreen({Key? key}) : super(key: key);
@@ -17,7 +16,7 @@ class ShowAllTimeReportScreen extends StatefulWidget {
 class _ShowAllTimeReportScreenState extends State<ShowAllTimeReportScreen> {
   @override
   Widget build(BuildContext context) {
-    List<Person> persons = Provider.of<ManagerProvider>(context, listen: true).personManager.persons;
+    List<Person> persons = PersonManager.of(context).persons;
     return Scaffold(
       appBar: appBar("Alla Tidrapporter"),
       body: SingleChildScrollView(

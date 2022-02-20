@@ -145,10 +145,12 @@ class _AddNotesScreenState extends State<AddNotesScreen> {
 
   void _saveNote(BuildContext context, String uid) {
     String createdBy = ManagerProvider.of(context).user.name;
+    String createdByUid = ManagerProvider.of(context).user.token;
     Future<void> addNoteFuture = ManagerProvider.of(context).firebaseNotesManager.addNote(
           title: titleController.text,
           note: noteController.text,
           createdBy: createdBy,
+          createdByUid: createdByUid,
           privateForUser: privateNote ? uid : null,
         );
     addNoteFuture.then((value) {

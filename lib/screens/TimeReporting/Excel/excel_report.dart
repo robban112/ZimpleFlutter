@@ -1,12 +1,13 @@
 import 'dart:io';
+
 import 'package:excel/excel.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/model/timereport.dart';
-import 'package:path/path.dart';
 import 'package:zimple/utils/date_utils.dart';
 
 class ExcelManager {
@@ -52,8 +53,8 @@ class ExcelManager {
       String customerString = _getCustomerString(timereport, event);
 
       excel.appendRow('Sheet1', [
-        person.ssn,
-        person.name,
+        person?.ssn ?? "",
+        person?.name ?? "",
         customerString,
         dateToYearMonthDay(timereport.startDate),
         getHourDiff(

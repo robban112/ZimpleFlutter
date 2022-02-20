@@ -12,6 +12,7 @@ import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/floating_add_button.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 class CoworkersScreen extends StatefulWidget {
   @override
@@ -25,11 +26,9 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
   }
 
   Widget _buildProfile(Person person) {
-    return CircleAvatar(
-      radius: 15,
-      backgroundColor: person.color,
-      child: Text(person.name.characters.first.toUpperCase(),
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+    return ProfilePictureIcon(
+      person: person,
+      size: Size(32, 32),
     );
   }
 

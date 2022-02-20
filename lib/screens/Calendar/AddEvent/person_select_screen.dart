@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 import '../../../model/person.dart';
 
@@ -82,16 +83,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
   }
 
   _buildPersonCircleAvatar(Person person) {
-    return CircleAvatar(
-      radius: 16,
-      backgroundColor: Colors.grey.shade700,
-      child: Center(
-        child: Text(
-          person.name.characters.first.toUpperCase(),
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11.0),
-        ),
-      ),
-    );
+    return ProfilePictureIcon(person: person, size: Size(35, 35));
   }
 
   _buildPersonRow(Person person) {
@@ -105,7 +97,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
             child: SizedBox(
-              height: 25,
+              height: 35,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

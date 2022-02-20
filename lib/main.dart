@@ -288,11 +288,10 @@ class _ZimpleState extends State<Zimple> {
 
   @override
   Widget build(BuildContext context) {
-    //initializeDateFormatting('sv_se');
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.black,
-        systemNavigationBarColor: Colors.black,
+        statusBarColor: Colors.white,
+        systemNavigationBarColor: Colors.white,
       ),
     );
 

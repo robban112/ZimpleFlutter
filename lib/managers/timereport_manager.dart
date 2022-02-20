@@ -1,9 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/utils/date_utils.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 class TimereportManager {
   Map<String, List<TimeReport>> timereportMap = Map<String, List<TimeReport>>();
   Map<String, List<TimeReport>> timereportDateMap = Map<String, List<TimeReport>>();
+
+  static TimereportManager of(BuildContext context) => context.read<ManagerProvider>().timereportManager;
 
   void addTimereport({required String userId, required TimeReport timeReport}) {
     if (!timereportMap.containsKey(userId)) {
@@ -26,6 +31,18 @@ class TimereportManager {
       }
     });
     return sortTimereportsByStartDate(timereports) ?? [];
+  }
+
+  List<TimeReport> getLatestTimereports({int latestN = 12}) {
+    return getAllTimereports().take(latestN).toList();
+  }
+
+  List<TimeReport> getAllTimereports() {
+    List<TimeReport> timereports = [];
+    timereportMap.forEach((key, value) {
+      timereports += value;
+    });
+    return sortTimereportsByStartDate(timereports)!;
   }
 
   TimeReport? getTimereport(String timereportId, String userId) {

@@ -1,15 +1,20 @@
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:zimple/model/user_parameters.dart';
 
 class FirebaseStorageManager {
   Logger logger = Logger();
+
   String company;
+
   late firebase_storage.Reference storageRef;
+
+  static const int maxSize = 10000000;
+
   FirebaseStorageManager({required this.company}) {
     this.storageRef = firebase_storage.FirebaseStorage.instance.ref().child(company);
   }
@@ -17,11 +22,20 @@ class FirebaseStorageManager {
   Future<Image?> getImage(String path) async {
     storageRef.child(path).fullPath;
     logger.log(Level.info, "Downloading image $path");
-    return storageRef.child(path).getData(10000000).then((bytes) {
-      return bytes == null ? null : Image.memory(bytes, fit: BoxFit.fill);
+    return storageRef.child(path).getData(maxSize).then((bytes) {
+      return bytes == null ? null : Image.memory(bytes, height: 100, width: 100, fit: BoxFit.fitWidth);
     }).catchError((error) {
       logger.log(Level.warning, "Error downloading image: $error");
     });
+  }
+
+  Future<Uint8List?> getData(String path) async {
+    try {
+      return await storageRef.child(path).getData(maxSize);
+    } catch (error) {
+      print("Unable to getData from FirebaseStorage: $error");
+      return null;
+    }
   }
 
   Future<String> uploadEventImage(String eventId, File file, String uuid) async {
@@ -42,6 +56,7 @@ class FirebaseStorageManager {
 
   Future<String> uploadUserProfileImage(File file, UserParameters user) async {
     var url = "User/${user.token}/${file.hashCode}";
+    print("Uploading user profile image: $user, path: $url");
     firebase_storage.UploadTask uploadTask = storageRef.child(url).putFile(file);
     await uploadTask.then((snapshot) => snapshot);
     return url;

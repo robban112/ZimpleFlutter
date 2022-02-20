@@ -2,27 +2,26 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/extensions/string_extensions.dart';
-import 'package:zimple/model/customer.dart';
+import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
-import 'package:zimple/screens/Settings/coworkers_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customers_screen.dart';
+import 'package:zimple/screens/Settings/coworkers_screen.dart';
 import 'package:zimple/screens/Settings/settings_screen.dart';
 import 'package:zimple/screens/Settings/support_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/service/user_service.dart';
 import 'package:zimple/utils/theme_manager.dart';
-import 'package:zimple/widgets/provider_widget.dart';
-import '../Login/login_screen.dart';
-import 'package:image_picker/image_picker.dart';
-import '../../widgets/photo_buttons.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
+import 'package:zimple/widgets/provider_widget.dart';
+
+import '../../widgets/photo_buttons.dart';
 
 class MoreScreen extends StatefulWidget {
   static const String routeName = "settings_screen";
@@ -40,7 +39,7 @@ class _MoreScreenState extends State<MoreScreen> {
   File? _image;
   bool isLoadingUploadImage = false;
 
-  late Future<Image?> _future;
+  Future<Image?>? _future;
 
   @override
   void initState() {
@@ -108,6 +107,8 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   Text _buildTitle() {
+    String _title = "Test";
+    print(widget.user);
     String title = widget.user.email.isBlank() ? widget.user.name : widget.user.email;
     return Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold));
   }
@@ -178,6 +179,10 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   Future<void> _uploadProfileImage(File file) async {
+    setState(() {
+      isLoadingUploadImage = true;
+      this.isSelectingPhotoProvider = false;
+    });
     final fbStorageManager = FirebaseStorageManager(company: widget.user.company);
     final fbUserManager = FirebaseUserManager();
     final fbPersonManager = FirebasePersonManager(company: widget.user.company);
@@ -187,22 +192,27 @@ class _MoreScreenState extends State<MoreScreen> {
     return fbUserManager.setUserProfileImage(widget.user, url);
   }
 
-  FutureBuilder _profilePicture() {
-    return FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.data == null) {
-              return Container();
-            }
-            return snapshot.data;
-          } else {
-            return Padding(
-              padding: const EdgeInsets.all(60.0),
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+  Widget _profilePicture() {
+    Person? loggedInPerson = ManagerProvider.of(context).getLoggedInPerson();
+    //return Container();
+    if (loggedInPerson == null || loggedInPerson.profilePicturePath == null) return Container();
+    return ManagerProvider.of(context).profilePictureService?.getProfilePicture(loggedInPerson.profilePicturePath!) ??
+        Container();
+    // return FutureBuilder(
+    //     future: _future,
+    //     builder: (context, snapshot) {
+    //       if (snapshot.connectionState == ConnectionState.done) {
+    //         if (snapshot.data == null) {
+    //           return Container();
+    //         }
+    //         return snapshot.data;
+    //       } else {
+    //         return Padding(
+    //           padding: const EdgeInsets.all(60.0),
+    //           child: CircularProgressIndicator(),
+    //         );
+    //       }
+    //     });
   }
 
   CircleAvatar _buildProfile() {
@@ -214,38 +224,47 @@ class _MoreScreenState extends State<MoreScreen> {
       child: Stack(
         children: [
           Center(
-            child: imageNull
-                ? Icon(Icons.image, size: 48)
-                : ClipRRect(
-                    borderRadius: BorderRadius.circular(150),
-                    child: Container(
-                      width: 150,
-                      height: 150,
-                      decoration: BoxDecoration(shape: BoxShape.circle),
-                      child: widget.user.profilePicturePath == null ? Icon(FontAwesome5.user) : _profilePicture(),
-                    ),
-                  ),
+            child: _userImage(),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 100.0, bottom: 8.0),
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: FloatingActionButton(
-                backgroundColor: Colors.grey.shade800,
-                mini: true,
-                heroTag: 'Nothing',
-                child: Icon(Icons.photo_camera, color: Colors.white),
-                onPressed: () {
-                  setState(() {
-                    this.isSelectingPhotoProvider = !this.isSelectingPhotoProvider;
-                  });
-                },
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: FloatingActionButton(
+                  backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                  mini: true,
+                  heroTag: 'Nothing',
+                  child: Icon(Icons.photo_camera, color: Colors.white, size: 28),
+                  onPressed: () {
+                    setState(() {
+                      this.isSelectingPhotoProvider = !this.isSelectingPhotoProvider;
+                    });
+                  },
+                ),
               ),
             ),
           )
         ],
       ),
     );
+  }
+
+  Widget _userImage() {
+    if (isLoadingUploadImage) return CircularProgressIndicator();
+    return widget.user.profilePicturePath == null
+        ? Icon(Icons.image, size: 48)
+        : ClipRRect(
+            borderRadius: BorderRadius.circular(150),
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(shape: BoxShape.circle),
+              child: widget.user.profilePicturePath == null ? Icon(FontAwesome5.user) : _profilePicture(),
+            ),
+          );
   }
 
   String _userName() {

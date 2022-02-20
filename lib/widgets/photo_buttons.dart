@@ -1,6 +1,10 @@
 import 'dart:io';
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zimple/utils/theme_manager.dart';
 
 class PhotoButtons extends StatelessWidget {
   final bool isSelectingPhotoProvider;
@@ -11,10 +15,12 @@ class PhotoButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-        duration: Duration(milliseconds: 200),
-        bottom: isSelectingPhotoProvider ? 16 : -300,
-        right: 16.0,
-        left: 16.0,
+      duration: Duration(milliseconds: 200),
+      bottom: isSelectingPhotoProvider ? 16 : -300,
+      right: 16.0,
+      left: 16.0,
+      child: BackdropFilter(
+        filter: isSelectingPhotoProvider ? blurred : normal,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -22,20 +28,26 @@ class PhotoButtons extends StatelessWidget {
             _buildPhotoButton(context, () {
               getImage(ImageSource.camera);
             }, "Ta foto"),
-            SizedBox(height: 1.0),
+            SizedBox(height: 4.0),
             _buildPhotoButton(context, () {
               getImage(ImageSource.gallery);
             }, "Välj foto"),
-            SizedBox(height: 5.0),
+            SizedBox(height: 4.0),
             _buildPhotoButton(context, () {
               didTapCancel();
-            }, "Avbryt"),
+            }, "Avbryt", color: ThemeNotifier.of(context).red.withOpacity(0.15), textColor: ThemeNotifier.of(context).red),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
+  ImageFilter get blurred => ImageFilter.blur(sigmaX: 2, sigmaY: 2);
+
+  ImageFilter get normal => ImageFilter.blur(sigmaX: 0, sigmaY: 0);
+
   Future<void> getImage(ImageSource imageSource) async {
-    final pickedFile = await picker.getImage(source: imageSource).catchError((err) {
+    final pickedFile = await picker.pickImage(source: imageSource).catchError((err) {
       print("Error retrieving image $err");
     });
 
@@ -48,25 +60,31 @@ class PhotoButtons extends StatelessWidget {
     return;
   }
 
-  Widget _buildPhotoButton(BuildContext context, Function onTap, String text) {
+  Widget _buildPhotoButton(BuildContext context, Function onTap, String text, {Color? color, Color? textColor}) {
     return Container(
-      height: 60.0,
-      width: 120,
-      color: Theme.of(context).backgroundColor,
-      child: ButtonTheme(
-        buttonColor: Theme.of(context).backgroundColor,
-        height: 60.0,
-        child: ElevatedButton(
-          child: Text(text, style: TextStyle(fontSize: 17.0)),
-          onPressed: () {
-            onTap();
-          },
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size(100.0, 50.0),
-            elevation: 5,
-            onPrimary: Theme.of(context).colorScheme.secondary,
-            primary: Theme.of(context).primaryColor,
-            //onPrimary: Colors.black,
+      decoration: BoxDecoration(
+        color: ThemeNotifier.of(context).photoButtonColor,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => onTap(),
+        child: Container(
+          height: 60.0,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: color ?? ThemeNotifier.of(context).photoButtonColor,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: ThemeNotifier.of(context).textColor.withOpacity(0.1)),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: textColor ?? ThemeNotifier.of(context).textColor,
+              ),
+            ),
           ),
         ),
       ),

@@ -1,4 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 class CompanySettings {
   final bool isPrivateEvents;
@@ -9,6 +12,8 @@ class CompanySettings {
     required this.isPrivateEvents,
     required this.companyName,
   });
+
+  static CompanySettings of(BuildContext context) => context.read<ManagerProvider>().companySettings;
 
   static bool _kDefaultIsPrivateEvents = false;
 

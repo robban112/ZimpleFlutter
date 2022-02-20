@@ -60,7 +60,7 @@ class _TimereportDayListViewState extends State<TimereportDayListView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTitle(events),
-          SizedBox(height: events.length > 0 ? 12 : 0),
+          SizedBox(height: events.length > 0 ? 8 : 0),
           _buildApproveEventList(events),
         ],
       ),
@@ -101,7 +101,7 @@ class _TimereportDayListViewState extends State<TimereportDayListView> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(getDateTitle(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
+        Text(getDateTitle(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(width: 12),
         if (events.length > 0)
           Padding(

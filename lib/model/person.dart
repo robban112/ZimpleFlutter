@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:zimple/utils/color_utils.dart';
 
 class Person {
-  String name;
-  Color color;
-  String id;
-  String? email;
-  String? profilePicturePath;
-  String? phonenumber;
-  String? iOSLink;
-  String? androidLink;
-  String? ssn;
-  String? address;
+  final String name;
+  final Color color;
+  final String id;
+  final String? email;
+  final String? profilePicturePath;
+  final String? phonenumber;
+  final String? iOSLink;
+  final String? androidLink;
+  final String? ssn;
+  final String? address;
 
   Person({
     required this.name,
@@ -36,5 +36,6 @@ class Person {
         'androidLink': this.androidLink,
         'ssn': this.ssn,
         'address': this.address,
+        'profilePicturePath': this.profilePicturePath,
       };
 }

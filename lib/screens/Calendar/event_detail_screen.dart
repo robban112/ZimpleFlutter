@@ -1,21 +1,23 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
+import 'package:zimple/utils/color_utils.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import '../../utils/date_utils.dart';
-import '../../utils/constants.dart';
+import 'package:zimple/widgets/widgets.dart';
+
 import '../../network/firebase_event_manager.dart';
-import 'package:maps_launcher/maps_launcher.dart';
-import 'package:zimple/utils/color_utils.dart';
-import 'package:collection/collection.dart';
-import 'package:zimple/extensions/string_extensions.dart';
+import '../../utils/constants.dart';
+import '../../utils/date_utils.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final Event event;
@@ -157,17 +159,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       padding: const EdgeInsets.only(left: 10.0),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 15,
-            backgroundColor: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400,
-            child: Center(
-              child: Text(
-                person.name.characters.first.toUpperCase(),
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11.0),
-              ),
-            ),
+          ProfilePictureIcon(
+            person: person,
+            size: Size(30, 30),
           ),
-          SizedBox(width: 24.0),
+          SizedBox(width: 16.0),
           Text(person.name),
         ],
       ),

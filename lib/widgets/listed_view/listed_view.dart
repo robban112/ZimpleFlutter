@@ -93,7 +93,7 @@ class ListedTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
-        child: Text(text, style: TextStyle(fontWeight: FontWeight.w500)));
+        child: Text(text, style: TextStyle(fontWeight: FontWeight.w900, color: Colors.grey.shade500, letterSpacing: 0.5)));
   }
 }
 

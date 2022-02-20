@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/utils/constants.dart';
 
-import './storage_manager.dart';
+import 'zpreferences.dart';
 
 class ThemeNotifier with ChangeNotifier {
   static ThemeNotifier of(BuildContext context) {
@@ -14,6 +14,18 @@ class ThemeNotifier with ChangeNotifier {
     return isDarkMode() ? Colors.white : Colors.black;
   }
 
+  Color get yellow {
+    return isDarkMode() ? Color(0xffFEC260) : Colors.yellow.shade500;
+  }
+
+  Color get photoButtonColor {
+    return isDarkMode() ? Color(0xff191A19) : Color.fromARGB(255, 240, 240, 240);
+  }
+
+  Color get red {
+    return Color(0xffF44E7B);
+  }
+
   final darkTheme = ThemeData(
       appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -22,8 +34,8 @@ class ThemeNotifier with ChangeNotifier {
       ),
       primarySwatch: Colors.grey,
       primaryColor: Colors.black,
-      backgroundColor: Color(0xff0F0E0E),
       scaffoldBackgroundColor: Color(0xff0F0E0E),
+      backgroundColor: Color(0xff0F0E0E),
       cardColor: Color(0xff191A19),
       primaryIconTheme: IconThemeData(color: Colors.white),
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo).copyWith(
@@ -45,9 +57,9 @@ class ThemeNotifier with ChangeNotifier {
 
   final lightTheme = ThemeData(
     primarySwatch: Colors.grey,
-    primaryColor: Colors.white,
-
-    backgroundColor: Colors.white,
+    primaryColor: Color(0xffFCFCFF),
+    scaffoldBackgroundColor: Color(0xffFCFCFF),
+    backgroundColor: Color(0xffF9F6FF),
     colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue).copyWith(
       secondary: Color(0xff3B14C3),
       brightness: Brightness.light,
@@ -67,7 +79,7 @@ class ThemeNotifier with ChangeNotifier {
 
   ThemeNotifier() {
     _themeData = lightTheme;
-    StorageManager.readData('themeMode').then((value) {
+    ZPreferences.readData(Keys.themeMode).then((value) {
       print('value read from storage: ' + value.toString());
       var themeMode = value ?? 'light';
       if (themeMode == 'light') {
@@ -86,13 +98,13 @@ class ThemeNotifier with ChangeNotifier {
 
   void setDarkMode() async {
     _themeData = darkTheme;
-    StorageManager.saveData('themeMode', 'dark');
+    ZPreferences.saveData(Keys.themeMode, 'dark');
     notifyListeners();
   }
 
   void setLightMode() async {
     _themeData = lightTheme;
-    StorageManager.saveData('themeMode', 'light');
+    ZPreferences.saveData(Keys.themeMode, 'light');
     notifyListeners();
   }
 

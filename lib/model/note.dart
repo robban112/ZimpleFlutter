@@ -11,6 +11,8 @@ class Note {
 
   final String createdBy;
 
+  final String createdByUid;
+
   final String? privateForUser;
 
   final bool isDone;
@@ -21,6 +23,7 @@ class Note {
     required this.date,
     required this.note,
     required this.createdBy,
+    required this.createdByUid,
     this.privateForUser,
     this.isDone = false,
   });
@@ -32,6 +35,7 @@ class Note {
       'date': dateStringVerbose(date),
       'note': this.note,
       'createdBy': this.createdBy,
+      'createdByUid': this.createdByUid,
       'privateForUser': this.privateForUser,
       'isDone': this.isDone,
     };
@@ -42,6 +46,7 @@ class Note {
     String? note,
     DateTime? date,
     String? privateForUser,
+    String? createdByUid,
     bool? isDone,
   }) {
     return Note(
@@ -50,6 +55,7 @@ class Note {
       date: date ?? this.date,
       note: note ?? this.note,
       createdBy: this.createdBy,
+      createdByUid: createdByUid ?? this.createdByUid,
       privateForUser: privateForUser ?? this.privateForUser,
       isDone: isDone ?? this.isDone,
     );

@@ -12,10 +12,9 @@ import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/report_vacation_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/select_vacation_person_screen.dart';
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
-import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
+import 'package:zimple/screens/TimeReporting/timereport_card.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
-import 'package:zimple/utils/date_utils.dart';
-import 'package:zimple/utils/weekday_to_string.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class TimeReportingScreen extends StatefulWidget {
@@ -48,13 +47,16 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
   }
 
   Widget _buildSectionTitle(String title, {IconData? leadingIcon}) {
+    return ListedTitle(text: title);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
       child: Row(
         children: [
           leadingIcon != null ? Icon(leadingIcon) : Container(),
           leadingIcon != null ? SizedBox(width: 5.0) : Container(),
-          Text(title, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+          Text(title.toUpperCase(),
+              style: TextStyle(
+                  fontSize: 16.0, fontWeight: FontWeight.bold, color: ThemeNotifier.of(context).textColor.withOpacity(0.25))),
         ],
       ),
     );
@@ -81,10 +83,16 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
                 children: [
                   SizedBox(height: 12.0),
                   _buildLatestTimereports(context),
-                  _buildSectionTitle("Funktioner"),
+                  _buildSectionTitle("Funktioner".toUpperCase()),
                   _buildFunctionsListedView(),
-                  widget.user.isAdmin ? _buildSectionTitle("Admin") : Container(),
-                  widget.user.isAdmin ? _buildAdminFunctionsListedView(absenceMap) : Container()
+                  widget.user.isAdmin
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: _buildSectionTitle("Admin".toUpperCase()),
+                        )
+                      : Container(),
+                  widget.user.isAdmin ? _buildAdminFunctionsListedView(absenceMap) : Container(),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -176,22 +184,30 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
   }
 
   Widget _buildLatestTimereports(BuildContext context) {
-    List<TimeReport> timereports =
-        Provider.of<ManagerProvider>(context, listen: true).timereportManager.getTimereports(widget.user.token);
+    List<TimeReport> timereports = getLatestTimereports();
     return timereports.isNotEmpty
         ? Column(
             children: [
               buildLatestTimereportTitle(),
-              SizedBox(height: 12.0),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
-                child: TimeReportList(timereports: timereports.take(12).toList(), eventManager: widget.eventManager),
+                child: TimeReportList(
+                  timereports: timereports.take(12).toList(),
+                  eventManager: widget.eventManager,
+                ),
               ),
               SizedBox(height: 24.0),
             ],
           )
         : Container();
+  }
+
+  List<TimeReport> getLatestTimereports() {
+    if (widget.user.isAdmin) {
+      return TimereportManager.of(context).getLatestTimereports();
+    }
+    return TimereportManager.of(context).getTimereports(widget.user.token);
   }
 
   void goToShowAllTimereportScreen() {
@@ -212,7 +228,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Mina senaste tidrapporter", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
+          Text("Senaste rapporter", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
           TextButton(
             child: Text("Visa alla", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
             onPressed: () {
@@ -224,125 +240,6 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
           )
         ],
       ),
-    );
-  }
-}
-
-class TimeReportList extends StatelessWidget {
-  final List<TimeReport> timereports;
-  final EventManager eventManager;
-  TimeReportList({required this.timereports, required this.eventManager});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: timereports
-          .map(
-            (timereport) =>
-                TimeReportCard(timereport: timereport, event: eventManager.getEventForKey(key: timereport.eventId ?? "")),
-          )
-          .toList(),
-    );
-  }
-}
-
-class TimeReportCard extends StatefulWidget {
-  final TimeReport timereport;
-  final Event? event;
-  TimeReportCard({required this.timereport, this.event});
-  @override
-  _TimeReportCardState createState() => _TimeReportCardState();
-}
-
-class _TimeReportCardState extends State<TimeReportCard> {
-  static final highlightColor = Colors.white.withOpacity(0.05);
-  static final softHighlightColor = highlightColor.withOpacity(0.03);
-  static final shadowColor = Colors.black87;
-  static final softShadowColor = shadowColor.withOpacity(0.15);
-  @override
-  Widget build(BuildContext context) {
-    var spacing = 8.0;
-    var eventAvailable = widget.event != null;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.all(Radius.circular(18.0)),
-          boxShadow: [
-            BoxShadow(color: softHighlightColor, offset: Offset(-3, -3), spreadRadius: 0, blurRadius: 3),
-            BoxShadow(color: softShadowColor, offset: Offset(3, 3), spreadRadius: 0.5, blurRadius: 8),
-          ],
-        ),
-        width: 175,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
-            splashColor: Colors.grey.shade300,
-            onTap: () {
-              pushNewScreen(context,
-                  screen: TimereportingDetails(
-                    timereport: widget.timereport,
-                  ));
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildFirstRow(),
-                  SizedBox(height: spacing),
-                  Text(widget.event?.customer ?? ""),
-                  SizedBox(height: spacing),
-                  widget.event != null
-                      ? ListPersonCircleAvatar(persons: widget.event?.persons ?? [], radius: 10, fontSize: 9)
-                      : SizedBox(height: 20),
-                  SizedBox(height: spacing),
-                  Row(
-                    children: [
-                      Text(dateToHourMinute(widget.timereport.startDate)),
-                      Text(" - "),
-                      Text(dateToHourMinute(widget.timereport.endDate))
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _getHourDiff() {
-    return getHourDiff(
-      widget.timereport.startDate,
-      widget.timereport.endDate,
-      minutesBreak: widget.timereport.breakTime,
-    );
-  }
-
-  Row buildFirstRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(dayNumberInMonth(widget.timereport.startDate), style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
-            Text(dateToAbbreviatedString(widget.timereport.startDate), style: TextStyle(color: Colors.grey))
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(_getHourDiff(), style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.w400)),
-            Text("timmar", style: TextStyle(color: Colors.grey))
-          ],
-        )
-      ],
     );
   }
 }

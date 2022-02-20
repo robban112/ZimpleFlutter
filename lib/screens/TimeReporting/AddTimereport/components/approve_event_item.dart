@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/TimeReporting/AddTimereport/change_timereport_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/service/user_service.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/snackbar/snackbar_widget.dart';
@@ -20,24 +19,42 @@ class ApproveEventItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("rebuilt approve event item");
     if (event.eventType != EventType.event) return Container();
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-        boxShadow: ThemeNotifier.of(context).isDarkMode() ? null : standardShadow,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildTitleDescriptionText(context),
-            const SizedBox(width: 6),
-            _buildActionButtons(context),
-          ],
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => goToChangeTimereport(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          boxShadow: ThemeNotifier.of(context).isDarkMode() ? null : standardShadow,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildProfilePicture(context),
+                      const SizedBox(width: 6),
+                      _buildTitle(context),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  _buildDescriptionText(context),
+                ],
+              ),
+              const SizedBox(width: 6),
+              _buildActionButtons(context),
+            ],
+          ),
         ),
       ),
     );
@@ -53,59 +70,88 @@ class ApproveEventItem extends StatelessWidget {
 
   List<Widget> _buildActionButtonChildren(BuildContext context) {
     if (hasUserTimereportedThisEvent(context)) {
-      return [Icon(Icons.arrow_right)];
+      return [
+        Text("Ändra",
+            style: TextStyle(color: ThemeNotifier.of(context).textColor.withOpacity(0.5), fontSize: 12, fontFamily: 'FiraSans')),
+        const SizedBox(width: 8),
+        _nextIcon(context)
+      ];
     }
     return [
-      Column(
-        children: [
-          ActionButton(
-            color: ThemeNotifier.of(context).isDarkMode() ? Color(0xffFEC260) : Colors.yellow.shade500,
-            icon: Icon(FontAwesome.pencil, color: Colors.black),
-            onPressed: () => changeEvent(context),
-          ),
-          const SizedBox(height: 6),
-          Text("Ändra", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))
-        ],
-      ),
       if (!hasUserTimereportedThisEvent(context)) const SizedBox(width: 12),
       if (!hasUserTimereportedThisEvent(context))
         Column(
           children: [
             ActionButton(
-                color: Colors.green, icon: Icon(Icons.check, color: Colors.white), onPressed: () => approveEvent(context)),
-            const SizedBox(height: 6),
-            Text("Godkänn", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                color: Colors.green,
+                icon: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+                onPressed: () => approveEvent(context)),
+            // const SizedBox(height: 6),
+            // Text("Godkänn", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
           ],
         ),
     ];
   }
 
-  Widget _buildTitleDescriptionText(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width * 0.55,
-          child: _buildDynamicContent(context),
+  Widget _nextIcon(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 0.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: ThemeNotifier.of(context).textColor.withOpacity(0.03),
+          borderRadius: BorderRadius.circular(10),
         ),
-      ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: NextArrow(),
+        ),
+      ),
     );
   }
 
-  Widget _buildDynamicContent(BuildContext context) {
+  Widget _buildDescriptionText(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.55,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: AnimatedSwitcher(
+                key: UniqueKey(),
+                duration: const Duration(milliseconds: 300),
+                child: _buildDynamicDescription(context),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDynamicDescription(BuildContext context) {
     if (hasUserTimereportedThisEvent(context)) {
       TimeReport? timereport = getUserTimereport(context);
       if (timereport == null) return Container();
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTitle(context),
-          const SizedBox(height: 6),
           Row(
             children: [
-              SuccessIcon(size: Size(24, 24)),
-              const SizedBox(width: 4),
-              Text("Tidrapporterat:", style: TextStyle(fontSize: 14)),
+              SuccessIcon(size: const Size(18, 18)),
+              const SizedBox(width: 8),
+              Text("Tidrapporterat:",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: ThemeNotifier.of(context).textColor,
+                      fontWeight: FontWeight.normal,
+                      fontFamily: 'FiraSans')),
               const SizedBox(width: 4),
               getTimeBetween(timereport.startDate, timereport.endDate),
             ],
@@ -113,64 +159,30 @@ class ApproveEventItem extends StatelessWidget {
         ],
       );
     } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 6),
-          _buildTitle(context),
-          const SizedBox(height: 6),
-          buildTimeRow(),
-          const SizedBox(height: 6),
-          _buildProfilePictures(context),
-        ],
-      );
+      return buildTimeRow();
     }
   }
 
   Widget _buildTitle(BuildContext context) {
-    if (event.customerKey == null) return _title(event.title);
+    if (event.customerKey == null) return _title(context, event.title);
     Customer? customer = ManagerProvider.of(context).customerManager.getCustomer(event.customerKey!);
-    if (customer == null) return _title(event.title);
-    return _title(customer.name + " • " + event.title);
+    if (customer == null) return _title(context, event.title);
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.5,
+      child: _title(context, customer.name + " • " + event.title),
+    );
   }
 
-  Text _title(String text) => Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
+  Text _title(BuildContext context, String text) => Text(text,
+      maxLines: 3,
+      style: TextStyle(
+          fontSize: 16, fontWeight: FontWeight.bold, color: ThemeNotifier.of(context).textColor, fontFamily: 'FiraSans'));
 
-  Widget _buildProfilePictures(BuildContext context) {
-    if (event.persons == null) return Container();
-    List<Person> persons = event.persons!;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 48,
-          height: 20,
-          child: Stack(
-            alignment: Alignment.topLeft,
-            children: List.generate(
-              persons.take(3).length,
-              (index) => Padding(
-                padding: EdgeInsets.only(left: index * 12),
-                child: PersonCircleAvatar(
-                  radius: 10,
-                  person: persons[index],
-                  opacity: opacityForIndex(index),
-                  //withBorder: true,
-                  fontSize: 9,
-                ),
-              ),
-            ).reversed.toList(),
-          ),
-        ),
-        if (persons.length > 3)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 17.0),
-            child: Text("+${persons.length - 3}",
-                style: TextStyle(fontSize: 12, color: ThemeNotifier.of(context).textColor.withOpacity(0.4))),
-          )
-        else
-          const SizedBox(width: 10)
-      ],
+  Widget _buildProfilePicture(BuildContext context) {
+    Person? person = ManagerProvider.of(context).getLoggedInPerson();
+    return ProfilePictureIcon(
+      person: person,
+      size: Size(24, 24),
     );
   }
 
@@ -178,23 +190,15 @@ class ApproveEventItem extends StatelessWidget {
     if (event.eventType == EventType.vacation) {
       return Container();
     }
-    return Row(
-      children: [
-        Text(
-            getHourDiffPresentable(event.start, event.end) +
-                " tim | " +
-                dateToHourMinute(event.start) +
-                " - " +
-                dateToHourMinute(event.end),
-            style: TextStyle()),
-      ],
+    return TimeBetweenText(
+      start: event.start,
+      end: event.end,
+      withHours: true,
     );
   }
 
   Widget getTimeBetween(DateTime start, DateTime end) {
-    return Text(
-      dateToHourMinute(start) + " - " + dateToHourMinute(end),
-    );
+    return TimeBetweenText(start: start, end: end);
   }
 
   double opacityForIndex(int index) {
@@ -234,7 +238,7 @@ class ApproveEventItem extends StatelessWidget {
     return timereport;
   }
 
-  void changeEvent(BuildContext context) {
+  void goToChangeTimereport(BuildContext context) {
     if (hasUserTimereportedThisEvent(context)) {
       TimeReport? timereport = getUserTimereport(context);
       if (timereport == null) {

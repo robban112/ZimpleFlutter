@@ -40,12 +40,14 @@ class FirebaseNotesManager {
       bool? isDone = todoData['isDone'];
 
       String createdBy = todoData['createdBy'] != null ? todoData['createdBy'] : "";
+      String createdByUid = todoData['createdByUid'] != null ? todoData['createdByUid'] : "";
       Note todoObject = Note(
         id: key,
         title: title,
         date: date,
         note: todo,
         createdBy: createdBy,
+        createdByUid: createdByUid,
         privateForUser: privateForUser,
         isDone: isDone ?? false,
       );
@@ -54,7 +56,13 @@ class FirebaseNotesManager {
     return todos;
   }
 
-  Future<void> addNote({required String title, required String note, required String createdBy, String? privateForUser}) {
+  Future<void> addNote({
+    required String title,
+    required String note,
+    required String createdBy,
+    required String createdByUid,
+    String? privateForUser,
+  }) {
     fb.DatabaseReference ref = todoRef.push();
     if (ref.key == null) return Future.error(Error());
     Note newNote = Note(
@@ -63,6 +71,7 @@ class FirebaseNotesManager {
       date: DateTime.now(),
       note: note,
       createdBy: createdBy,
+      createdByUid: createdByUid,
       privateForUser: privateForUser,
       isDone: false,
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/note.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/theme_manager.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 class NoteWidget extends StatelessWidget {
   final Note note;
@@ -32,9 +34,20 @@ class NoteWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              Text("${note.createdBy} • ${dateString(note.date)}",
-                  style: TextStyle(fontSize: 12, color: ThemeNotifier.of(context).textColor.withOpacity(0.5))),
+              Row(
+                children: [
+                  ProfilePictureIcon(person: PersonManager.of(context).getPersonById(note.createdByUid)),
+                  const SizedBox(width: 6),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+                      Text("${note.createdBy} • ${dateString(note.date)}",
+                          style: TextStyle(fontSize: 12, color: ThemeNotifier.of(context).textColor.withOpacity(0.5))),
+                    ],
+                  ),
+                ],
+              ),
               const SizedBox(height: 8),
               Text(note.note),
               if (note.isDone) const SizedBox(height: 8),

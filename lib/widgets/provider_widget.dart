@@ -12,8 +12,10 @@ import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
+import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
+import 'package:zimple/utils/service/profile_picture_service.dart';
 
 class ManagerProvider extends ChangeNotifier {
   late PersonManager personManager;
@@ -43,6 +45,8 @@ class ManagerProvider extends ChangeNotifier {
   late CustomerManager customerManager;
 
   late FirebaseNotesManager firebaseNotesManager;
+
+  ProfilePictureService? profilePictureService;
 
   CompanySettings companySettings = CompanySettings.initial();
 
@@ -88,6 +92,25 @@ class ManagerProvider extends ChangeNotifier {
   void updateCompanySettings({required CompanySettings companySettings}) {
     this.companySettings = companySettings;
     notifyListeners();
+  }
+
+  Future<void> initProfilePictureService() async {
+    this.profilePictureService = ProfilePictureService(
+        profilePicturePaths: personManager.getProfilePicturePaths(),
+        firebaseStorageManager: FirebaseStorageManager(company: user.company));
+    return profilePictureService?.init();
+  }
+
+  Person? getLoggedInPerson() {
+    return personManager.getPersonById(user.token);
+  }
+
+  Image? getLoggedInUserImage() {
+    return getPersonImage(getLoggedInPerson());
+  }
+
+  Image? getPersonImage(Person? person) {
+    return profilePictureService?.getProfilePicture(person?.profilePicturePath);
   }
 }
 

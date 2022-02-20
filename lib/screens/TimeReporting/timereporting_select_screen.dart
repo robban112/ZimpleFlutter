@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/components/timeplan.dart';
+import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/user_parameters.dart';
-import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/widgets/button/nav_bar_back.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 class TimeReportingSelectScreen extends StatefulWidget {

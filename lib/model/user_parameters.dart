@@ -15,4 +15,10 @@ class UserParameters {
       required this.name,
       required this.profilePicturePath,
       required this.fcmToken});
+
+  @override
+  String toString() {
+    return {'name': name, 'email': email, 'company': company, 'profilePicturePath': profilePicturePath, 'token': token}
+        .toString();
+  }
 }

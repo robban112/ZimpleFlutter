@@ -1,10 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:zimple/widgets/widgets.dart';
+
 import '../model/person.dart';
 
 class PersonManager {
   List<Person> persons;
 
   PersonManager({required this.persons});
+
+  static PersonManager of(BuildContext context) => context.read<ManagerProvider>().personManager;
 
   List<Person> getPersonsByIds(List<String> personIds) {
     List<Person> _persons = [];
@@ -24,8 +29,16 @@ class PersonManager {
     return _persons;
   }
 
-  Person getPersonById(String id) {
-    return persons.firstWhere((p) => p.id == id);
+  List<String> getPersonIds() => this.persons.map((person) => person.id).toList();
+
+  List<String> getProfilePicturePaths() => this.persons.map((person) => person.profilePicturePath).whereType<String>().toList();
+
+  Person? getPersonById(String id) {
+    try {
+      return persons.firstWhere((p) => p.id == id, orElse: null);
+    } catch (error) {
+      return null;
+    }
   }
 
   void updatePerson(Person person) {

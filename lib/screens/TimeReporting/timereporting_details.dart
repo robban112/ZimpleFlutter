@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/timereport.dart';
@@ -9,17 +11,15 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/event_detail_screen.dart';
+import 'package:zimple/screens/TimeReporting/AddTimereport/change_timereport_screen.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/generate_invoice_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
-import 'package:zimple/utils/theme_manager.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/widgets/button/nav_bar_back.dart';
 import 'package:zimple/widgets/conditional_widget.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/page_dots_indicator.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import 'package:loader_overlay/loader_overlay.dart';
-import 'package:zimple/extensions/string_extensions.dart';
 
 class TimereportingDetails extends StatefulWidget {
   final TimeReport? timereport;
@@ -33,7 +33,7 @@ class TimereportingDetails extends StatefulWidget {
 
 class _TimereportingDetailsState extends State<TimereportingDetails> {
   final _key = GlobalKey();
-  final List<String> actionsSingleTimereport = ["Markera färdig", "Ta bort"];
+  final List<String> actionsSingleTimereport = ["Markera färdig", "Ändra", "Ta bort"];
   final List<String> actionsMultipleTimereport = ["Markera färdiga", "Ta bort alla", "Skapa faktura"];
 
   AppBar _buildAppbar(BuildContext context, UserParameters user) {
@@ -178,6 +178,17 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     });
   }
 
+  void goToChangeTimereportScreen() {
+    if (widget.timereport == null) return;
+    Future.delayed(Duration(milliseconds: 800)).then((value) {
+      pushNewScreen(context,
+          screen: ChangeTimereportScreen(
+            timereport: widget.timereport!,
+            isChangingTimereport: true,
+          ));
+    });
+  }
+
   void handleClick(String value) {
     switch (value) {
       case 'Markera färdiga':
@@ -196,6 +207,9 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
         break;
       case 'Skapa faktura':
         goToCreateInvoiceScreen();
+        break;
+      case 'Ändra':
+        goToChangeTimereportScreen();
     }
   }
 

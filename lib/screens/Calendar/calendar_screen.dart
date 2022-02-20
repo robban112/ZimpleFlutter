@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -6,16 +7,17 @@ import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
-import 'package:flutter/material.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/screens/drawer.dart';
+import 'package:zimple/utils/zpreferences.dart';
 import 'package:zimple/widgets/floating_add_button.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+
 import '../../components/week_page_controller_new.dart';
-import '../../network/firebase_event_manager.dart';
-import '../../network/firebase_user_manager.dart';
 import '../../managers/event_manager.dart';
 import '../../managers/person_manager.dart';
+import '../../network/firebase_event_manager.dart';
+import '../../network/firebase_user_manager.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/days_changed_controller.dart';
 import '../../widgets/rounded_button.dart';
@@ -29,13 +31,18 @@ class CalendarSettings extends ChangeNotifier {
 
   int numberOfDays = 7;
 
+  Future<void> init() async {
+    this.shouldSkipWeekends = await ZPreferences.readData<bool>(Keys.calendarIsShowingWeekend) ?? true;
+  }
+
   void setNumberOfDays(int numberOfDays) {
     this.numberOfDays = numberOfDays;
     notifyListeners();
   }
 
-  void setShouldSkipWeekend(bool skip) {
+  Future<void> setShouldSkipWeekend(bool skip) async {
     this.shouldSkipWeekends = skip;
+    await ZPreferences.saveData<bool>(Keys.calendarIsShowingWeekend, skip);
     notifyListeners();
   }
 
@@ -84,8 +91,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   bool isMovingEvent = false;
 
-  bool isPrivateEvents = false;
-
   late Map<Person, bool> _filteredPersons;
 
   WeekPageController daysChangedController = WeekPageController();
@@ -101,9 +106,43 @@ class _CalendarScreenState extends State<CalendarScreen> {
     firebaseUserManager = FirebaseUserManager();
     _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
     Future.delayed(Duration.zero, () {
-      _setupCompanySettingsListener(context);
+      initFilteredPersons();
+      //_setupCompanySettingsListener(context);
     });
+
     //filteredPersons = widget.personManager.persons;
+  }
+
+  Future<void> initFilteredPersons() async {
+    List<String>? savedSelectedPersons = await ZPreferences.getStringList(Keys.calendarFilteredPersons);
+    CompanySettings companySettings = CompanySettings.of(context);
+    if (companySettings.isPrivateEvents && !widget.user.isAdmin) {
+      // Filter only this user
+
+      _filteredPersons = Map<Person, bool>.fromIterable(
+        widget.personManager.persons,
+        key: (person) => person,
+        value: (person) {
+          if (widget.user.isAdmin) return true;
+          if (person.id == widget.user.token)
+            return true;
+          else
+            return false;
+        },
+      );
+    } else if (savedSelectedPersons != null) {
+      // Filter all saved users
+
+      _filteredPersons.keys.forEach((person) {
+        if (savedSelectedPersons.contains(person.id)) {
+          setState(() => _filteredPersons[person] = true);
+        } else {
+          setState(() => _filteredPersons[person] = false);
+        }
+      });
+    }
+    _applyFilterForPersons(ManagerProvider.of(context).eventManager);
+    setState(() {});
   }
 
   @override
@@ -122,7 +161,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         filteredPersons: this._filteredPersons,
         didSetFilterForPersons: (person) => this._didSetFilterForPersons(eventManager, person),
         persons: widget.personManager.persons,
-        isPrivateEvents: this.isPrivateEvents,
+        isPrivateEvents: CompanySettings.of(context).isPrivateEvents,
       ),
       body: _buildBody(context, eventManager),
     );
@@ -352,29 +391,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
       this._filteredPersons[person] = !this._filteredPersons[person]!;
       _applyFilterForPersons(eventManager);
     });
+    ZPreferences.saveData(Keys.calendarFilteredPersons, selectedPersons());
   }
 
-  void _setupCompanySettingsListener(BuildContext context) {
-    CompanySettings companySettings = context.read<ManagerProvider>().companySettings;
-    if (companySettings.isPrivateEvents) {
-      setState(() => this.isPrivateEvents = true);
-      this._filteredPersons = Map<Person, bool>.fromIterable(
-        widget.personManager.persons,
-        key: (person) => person,
-        value: (person) {
-          if (widget.user.isAdmin) return true;
-          if (person.id == widget.user.token)
-            return true;
-          else
-            return false;
-        },
-      );
-    } else {
-      _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
-    }
-    _applyFilterForPersons(ManagerProvider.of(context).eventManager);
-    setState(() {});
-  }
+  List<String> selectedPersons() => this
+      ._filteredPersons
+      .keys
+      .map((person) {
+        if (_filteredPersons[person]!)
+          return person;
+        else
+          return null;
+      })
+      .whereType<Person>()
+      .map((Person person) => person.id)
+      .toList();
 
   void didTapEvent(Event event) {
     if (isCopyingEvent) {

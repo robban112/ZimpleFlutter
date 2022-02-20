@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -10,12 +11,11 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/screens/TimeReporting/timereport_month_report_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/widgets/button/nav_bar_back.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/utils/date_utils.dart';
-import 'package:collection/collection.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
 
 class TimereportingListScreen extends StatefulWidget {
@@ -30,8 +30,11 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
   var isSelectingMultiple = false;
 
   Map<String, List<TimeReport>>? mappedTimereports = Map<String, List<TimeReport>>();
+
   Map<TimeReport, bool> selectedTimereports = Map<TimeReport, bool>();
+
   Map<Person, bool> selectedPersons = Map<Person, bool>();
+
   late TimereportManager timereportManager;
 
   @override

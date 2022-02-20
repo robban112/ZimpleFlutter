@@ -99,7 +99,9 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
         setState(() {
           loading = false;
         });
+
         setupPersonManager(persons);
+        managerProvider.initProfilePictureService();
         setupFirebaseEventManager();
         setupFirebaseTimereport();
         setupPersonsListener();
@@ -254,11 +256,12 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
   }
 
   List<Widget> _buildScreens(BuildContext context) {
+    CalendarSettings calendarSettings = CalendarSettings()..init();
     return loadingEvent && loadingTimereport
         ? [_loadingWidget(context), _loadingWidget(context), _loadingWidget(context)]
         : [
             ChangeNotifierProvider(
-              create: (_) => CalendarSettings(),
+              create: (_) => calendarSettings,
               builder: (context, _) => CalendarScreen(
                 user: user,
                 personManager: personManager,

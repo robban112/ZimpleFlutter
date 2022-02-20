@@ -451,10 +451,13 @@ class _AddEventScreenState extends State<AddEventScreen> {
     ]);
   }
 
-  ListPersonCircleAvatar buildSelectedPersonsAvatars() => ListPersonCircleAvatar(persons: this.selectedPersons);
+  ListPersonCircleAvatar buildSelectedPersonsAvatars() => ListPersonCircleAvatar(
+        persons: this.selectedPersons,
+        alignment: WrapAlignment.end,
+      );
 
   Future getImage(ImageSource imageSource) async {
-    final pickedFile = await picker.getImage(source: imageSource);
+    final pickedFile = await picker.pickImage(source: imageSource);
 
     setState(() {
       if (pickedFile != null) {
@@ -560,6 +563,6 @@ class ListedTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(title, style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.w500));
+    return Text(title, style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.w900, letterSpacing: 0.5));
   }
 }
