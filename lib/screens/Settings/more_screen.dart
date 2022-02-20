@@ -212,21 +212,6 @@ class _MoreScreenState extends State<MoreScreen> {
     if (loggedInPerson == null || loggedInPerson.profilePicturePath == null) return Container();
     return ManagerProvider.of(context).profilePictureService?.getProfilePicture(loggedInPerson.profilePicturePath!) ??
         Container();
-    // return FutureBuilder(
-    //     future: _future,
-    //     builder: (context, snapshot) {
-    //       if (snapshot.connectionState == ConnectionState.done) {
-    //         if (snapshot.data == null) {
-    //           return Container();
-    //         }
-    //         return snapshot.data;
-    //       } else {
-    //         return Padding(
-    //           padding: const EdgeInsets.all(60.0),
-    //           child: CircularProgressIndicator(),
-    //         );
-    //       }
-    //     });
   }
 
   CircleAvatar _buildProfile() {
