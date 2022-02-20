@@ -598,37 +598,17 @@ class PreviewImagesComponent extends StatelessWidget {
 
 class SelectImagesComponent extends StatelessWidget {
   final bool isSelectingPhotoProvider;
+
   final Function didTapCancel;
+
   final Function(File) didPickImage;
 
   final picker = ImagePicker();
 
   SelectImagesComponent({required this.isSelectingPhotoProvider, required this.didPickImage, required this.didTapCancel});
 
-  Widget _buildPhotoButton(Function onTap, String text) {
-    return Container(
-      height: 60.0,
-      width: 120,
-      child: ButtonTheme(
-        height: 60.0,
-        child: ElevatedButton(
-          child: Text(text, style: TextStyle(fontSize: 17.0)),
-          onPressed: () {
-            onTap();
-          },
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size(100.0, 50.0),
-            elevation: 5,
-            primary: Colors.white,
-            onPrimary: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-
   Future getImage(ImageSource imageSource) async {
-    final pickedFile = await picker.getImage(source: imageSource);
+    final pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
       print("Picked Image");
       didPickImage(File(pickedFile.path));
@@ -640,13 +620,18 @@ class SelectImagesComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PhotoButtons(
-        isSelectingPhotoProvider: this.isSelectingPhotoProvider, didTapCancel: didTapCancel, didReceiveImage: didPickImage);
+      isSelectingPhotoProvider: this.isSelectingPhotoProvider,
+      didTapCancel: didTapCancel,
+      didReceiveImage: didPickImage,
+    );
   }
 }
 
 class NotesComponent extends StatelessWidget {
   final TextEditingController controller;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   NotesComponent({required this.controller});
 
   Widget divider() {

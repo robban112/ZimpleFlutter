@@ -21,6 +21,7 @@ class ApproveEventItem extends StatelessWidget {
   Widget build(BuildContext context) {
     if (event.eventType != EventType.event) return Container();
     return CupertinoButton(
+      key: ValueKey(event.id.hashCode ^ event.timereported.hashCode),
       padding: EdgeInsets.zero,
       onPressed: () => goToChangeTimereport(context),
       child: Container(
@@ -209,7 +210,6 @@ class ApproveEventItem extends StatelessWidget {
 
   bool hasUserTimereportedThisEvent(BuildContext context) {
     User user = UserService.of(context).user!;
-    print("timereported ${event.id}: " + event.timereports.toString());
     return event.timereports.keys.contains(user.uid);
   }
 
@@ -245,11 +245,17 @@ class ApproveEventItem extends StatelessWidget {
         _showError(context);
         return;
       }
-      pushNewScreen(context, screen: ChangeTimereportScreen(timereport: timereport, isChangingTimereport: true));
+      pushNewScreen(context,
+          screen: ChangeTimereportScreen(
+            timereport: timereport,
+            isChangingTimereport: true,
+            event: event,
+          ));
     } else {
       pushNewScreen(
         context,
         screen: ChangeTimereportScreen(
+          event: event,
           timereport: TimeReport.fromEvent(event),
           isChangingTimereport: false,
         ),

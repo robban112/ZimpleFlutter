@@ -23,8 +23,11 @@ import 'package:zimple/widgets/provider_widget.dart';
 
 class TimereportingDetails extends StatefulWidget {
   final TimeReport? timereport;
+
   final List<TimeReport>? listTimereports;
+
   final bool isViewingSingle;
+
   TimereportingDetails({this.timereport, this.listTimereports}) : isViewingSingle = timereport != null;
 
   @override
@@ -180,9 +183,12 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
 
   void goToChangeTimereportScreen() {
     if (widget.timereport == null) return;
-    Future.delayed(Duration(milliseconds: 800)).then((value) {
+    Event? event = EventManager.of(context).getEventForKey(key: widget.timereport!.eventId);
+    if (event == null) return;
+    Future.delayed(Duration(milliseconds: 200)).then((value) {
       pushNewScreen(context,
           screen: ChangeTimereportScreen(
+            event: event,
             timereport: widget.timereport!,
             isChangingTimereport: true,
           ));

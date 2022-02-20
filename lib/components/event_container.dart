@@ -44,6 +44,7 @@ class EventContainer extends StatelessWidget {
     double descHeight = _getDescHeight(event.customer ?? '', eventLayout, titleHeight);
 
     return Padding(
+      key: ValueKey(event.id.hashCode ^ eventLayout.height.hashCode ^ eventLayout.width.hashCode),
       padding: EdgeInsets.only(right: 1.0),
       child: GestureDetector(
         onTap: () => didTapEvent(event),

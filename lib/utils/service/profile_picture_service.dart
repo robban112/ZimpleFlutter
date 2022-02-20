@@ -60,6 +60,10 @@ class ProfilePictureService {
     }
   }
 
+  void updateProfilePic(String profilePicturePath, File file) {
+    profilePictures[profilePicturePath] = Image.file(file, height: 100, width: 100, fit: BoxFit.fitWidth);
+  }
+
   bool isCached(String profilePicturePath) => this.cachedImages.contains(profilePicturePath);
 
   Future<Image?> getCachedImage(String profilePicturePath) async {

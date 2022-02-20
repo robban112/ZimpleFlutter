@@ -232,10 +232,14 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
           TextButton(
             child: Text("Visa alla", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
             onPressed: () {
-              pushNewScreen(context,
-                  screen: TimereportingListScreen(
-                    userId: widget.user.token,
-                  ));
+              if (widget.user.isAdmin) {
+                goToShowAllTimereportScreen();
+              } else {
+                pushNewScreen(context,
+                    screen: TimereportingListScreen(
+                      userId: widget.user.token,
+                    ));
+              }
             },
           )
         ],

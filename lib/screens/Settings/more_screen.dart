@@ -35,8 +35,11 @@ class MoreScreen extends StatefulWidget {
 
 class _MoreScreenState extends State<MoreScreen> {
   bool isSelectingPhotoProvider = false;
+
   final picker = ImagePicker();
+
   File? _image;
+
   bool isLoadingUploadImage = false;
 
   Future<Image?>? _future;
@@ -189,6 +192,7 @@ class _MoreScreenState extends State<MoreScreen> {
     var url = await fbStorageManager.uploadUserProfileImage(file, widget.user);
     await UserService.of(context).user?.updatePhotoURL(url);
     await fbPersonManager.setUserProfileImage(widget.user, url);
+    ManagerProvider.of(context).profilePictureService?.updateProfilePic(url, file);
     return fbUserManager.setUserProfileImage(widget.user, url);
   }
 

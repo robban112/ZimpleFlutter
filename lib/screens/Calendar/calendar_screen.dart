@@ -104,7 +104,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
     dateAggregator = firstDayOfWeek(DateTime.now());
     firebaseStorageManager = FirebaseStorageManager(company: widget.user.company);
     firebaseUserManager = FirebaseUserManager();
-    _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
+    _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => false);
+    _applyFilterForPersons(ManagerProvider.of(context).eventManager);
     Future.delayed(Duration.zero, () {
       initFilteredPersons();
       //_setupCompanySettingsListener(context);

@@ -1,14 +1,22 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zimple/widgets/widgets.dart';
+
 import '../model/event.dart';
 import '../utils/date_utils.dart';
+
+typedef EventFilter = List<Event> Function(List<Event>);
 
 class EventManager {
   List<Event> events;
 
-  List<Event> Function(List<Event>)? eventFilter;
+  EventFilter? eventFilter;
 
   Map<String, List<Event>> eventMap = Map<String, List<Event>>();
 
   Map<String, Event> eventKeyMap = Map<String, Event>();
+
+  static EventManager of(BuildContext context) => context.read<ManagerProvider>().eventManager;
 
   EventManager({required this.events}) {
     orderEventByWeek(this.events);
@@ -41,7 +49,7 @@ class EventManager {
       return [];
   }
 
-  List<Event> getEventsByDate(DateTime date, {List<Event> Function(List<Event>)? eventFilter}) {
+  List<Event> getEventsByDate(DateTime date, {EventFilter? eventFilter}) {
     var key = eventMapKey(date);
     if (eventMap.containsKey(key)) {
       var sortedEvents = sortEventByStartDate(eventMap[key]!);
@@ -53,9 +61,15 @@ class EventManager {
     return [];
   }
 
-  List<Event> getEventByStartDate(DateTime date, int daysForward) {
+  List<Event> getEventByStartDate(DateTime date, int daysForward, {EventFilter? eventFilter}) {
     List<Event> events = [];
-    for (var i = 0; i < daysForward; i++) events += getEventsByDate(date.add(Duration(days: i)));
+    for (var i = 0; i < daysForward; i++)
+      events += getEventsByDate(
+        date.add(
+          Duration(days: i),
+        ),
+        eventFilter: eventFilter,
+      );
 
     return events;
   }

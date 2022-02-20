@@ -205,6 +205,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
     managerProvider.firebaseEventManager = firebaseEventManager;
     eventManagerSubscriber = firebaseEventManager.listenEvents().listen((eventManager) {
       if (!mounted) return;
+      eventManager.eventFilter = this.eventManager.eventFilter;
       setState(() {
         this.eventManager = eventManager;
         managerProvider.setEventManager(eventManager);

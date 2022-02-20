@@ -19,11 +19,11 @@ class FirebaseStorageManager {
     this.storageRef = firebase_storage.FirebaseStorage.instance.ref().child(company);
   }
 
-  Future<Image?> getImage(String path) async {
+  Future<Image?> getImage(String path, {double? height, double? width, BoxFit? fit}) async {
     storageRef.child(path).fullPath;
     logger.log(Level.info, "Downloading image $path");
     return storageRef.child(path).getData(maxSize).then((bytes) {
-      return bytes == null ? null : Image.memory(bytes, height: 100, width: 100, fit: BoxFit.fitWidth);
+      return bytes == null ? null : Image.memory(bytes, height: height, width: width, fit: fit);
     }).catchError((error) {
       logger.log(Level.warning, "Error downloading image: $error");
     });
