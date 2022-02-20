@@ -1,5 +1,4 @@
 import 'package:firebase_database/firebase_database.dart' as fb;
-import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/utils/date_utils.dart';
 
 class FirebaseSignupManager {
@@ -8,6 +7,17 @@ class FirebaseSignupManager {
   FirebaseSignupManager() {
     fb.DatabaseReference database = fb.FirebaseDatabase.instance.ref();
     this.ref = database.ref;
+  }
+
+  Future<void> trackNewUser(
+      {required String calendarId, required String userId, required String userEmail, required String userPhone}) {
+    return this.ref.child("NewUsers").push().set({
+      'id': userId,
+      'userEmail': userEmail,
+      'userPhone': userPhone,
+      'createdDate': dateStringVerbose(DateTime.now()),
+      'companyId': calendarId,
+    });
   }
 
   Future<String> createCompany({
@@ -26,6 +36,7 @@ class FirebaseSignupManager {
           'email': userEmail,
           'name': userEmail,
           'isAdmin': true,
+          'isSuperAdmin': true,
           'color': '66CC99',
           'id': userId,
           'phonenumber': userPhone,

@@ -73,6 +73,12 @@ class _SignUpProgressScreenState extends State<SignUpProgressScreen> {
       UserCredential credential = await createUser(widget.email, widget.password);
       String companyId = await createCompany(credential);
       await addUserToUserDatabase(userId: credential.user!.uid, companyId: companyId);
+      await FirebaseSignupManager().trackNewUser(
+        userId: credential.user!.uid,
+        userEmail: widget.email,
+        userPhone: widget.phonenumber,
+        calendarId: companyId,
+      );
       completeSetup();
     } catch (error) {
       print("Couldn't Create calendar");

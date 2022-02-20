@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/extensions/string_extensions.dart';
@@ -11,6 +10,7 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
+import 'package:zimple/screens/Settings/Coworkers/add_coworker_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customers_screen.dart';
 import 'package:zimple/screens/Settings/coworkers_screen.dart';
 import 'package:zimple/screens/Settings/settings_screen.dart';
@@ -38,7 +38,7 @@ class _MoreScreenState extends State<MoreScreen> {
 
   final picker = ImagePicker();
 
-  File? _image;
+  File? overrideUserImage;
 
   bool isLoadingUploadImage = false;
 
@@ -134,6 +134,14 @@ class _MoreScreenState extends State<MoreScreen> {
             onTap: () {
               pushNewScreen(context, screen: CoworkersScreen());
             }),
+        if (widget.user.isAdmin)
+          ListedItem(
+              trailingIcon: Icons.chevron_right,
+              leadingIcon: Icons.people,
+              text: "Bjud in användare",
+              onTap: () {
+                pushNewScreen(context, screen: AddCoworkerScreen());
+              }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
             leadingIcon: Icons.support_agent,
@@ -170,7 +178,7 @@ class _MoreScreenState extends State<MoreScreen> {
       didReceiveImage: (file) {
         setState(() {
           this.isLoadingUploadImage = true;
-          this._image = file;
+          this.overrideUserImage = file;
         });
         this._uploadProfileImage(file).then((value) {
           setState(() {
@@ -183,6 +191,7 @@ class _MoreScreenState extends State<MoreScreen> {
 
   Future<void> _uploadProfileImage(File file) async {
     setState(() {
+      overrideUserImage = file;
       isLoadingUploadImage = true;
       this.isSelectingPhotoProvider = false;
     });
@@ -192,11 +201,12 @@ class _MoreScreenState extends State<MoreScreen> {
     var url = await fbStorageManager.uploadUserProfileImage(file, widget.user);
     await UserService.of(context).user?.updatePhotoURL(url);
     await fbPersonManager.setUserProfileImage(widget.user, url);
-    ManagerProvider.of(context).profilePictureService?.updateProfilePic(url, file);
+    await ManagerProvider.of(context).profilePictureService?.updateProfilePic(url, file);
     return fbUserManager.setUserProfileImage(widget.user, url);
   }
 
   Widget _profilePicture() {
+    if (overrideUserImage != null) return Image.file(overrideUserImage!);
     Person? loggedInPerson = ManagerProvider.of(context).getLoggedInPerson();
     //return Container();
     if (loggedInPerson == null || loggedInPerson.profilePicturePath == null) return Container();
@@ -266,7 +276,7 @@ class _MoreScreenState extends State<MoreScreen> {
               width: 150,
               height: 150,
               decoration: BoxDecoration(shape: BoxShape.circle),
-              child: widget.user.profilePicturePath == null ? Icon(FontAwesome5.user) : _profilePicture(),
+              child: _profilePicture(),
             ),
           );
   }
