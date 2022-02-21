@@ -95,44 +95,40 @@ class AppBarWidget extends StatelessWidget {
 
   final bool hasMenu;
 
+  final VoidCallback? onTapFilter;
+
   AppBarWidget({
     this.dateStream,
     this.title = "",
     this.hasMenu = false,
+    this.onTapFilter,
   });
 
   TextStyle _titleStyle() => TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.w900, letterSpacing: 0.1);
 
   @override
   Widget build(BuildContext context) {
+    bool shouldShowFilter = ManagerProvider.of(context).user.isAdmin;
+    if (!ManagerProvider.of(context).companySettings.isPrivateEvents) {
+      shouldShowFilter = true;
+    }
+
     return StreamBuilder(
         stream: dateStream,
         initialData: DateTime.now(),
         builder: (context, AsyncSnapshot<DateTime> snapshot) {
           return AppBar(
-            title: dateStream != null ? dateWidget(snapshot) : Text(title, style: _titleStyle()),
-            leading: hasMenu
-                ? IconButton(
-                    icon: SizedBox(height: 24, width: 24, child: SvgPicture.asset('images/menu.svg', color: Colors.white)),
-                    onPressed: () {
-                      ProviderWidget.of(context).drawerKey.currentState?.openDrawer();
-                    },
-                  )
-                : Container(),
-            actions: [
-              CupertinoButton(
-                onPressed: () => Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (_) => NotesScreen(
-                      firebaseNotesManager: ManagerProvider.of(context).firebaseNotesManager,
+            title: dateStream != null
+                ? Padding(
+                    padding: EdgeInsets.only(
+                      left: 40,
                     ),
-                  ),
-                ),
-                child: Icon(
-                  FeatherIcons.fileText,
-                  color: Colors.white,
-                ),
-              ),
+                    child: dateWidget(snapshot))
+                : Text(title, style: _titleStyle()),
+            leading: hasMenu ? _menuButton(context) : Container(),
+            actions: [
+              if (shouldShowFilter) _buildFilterButton(),
+              _notesButton(context),
             ],
             backgroundColor: primaryColor,
             brightness: Brightness.dark,
@@ -143,9 +139,56 @@ class AppBarWidget extends StatelessWidget {
         });
   }
 
+  Container _buildFilterButton() {
+    return Container(
+      height: 50,
+      width: 40,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onTapFilter,
+        child: Icon(
+          FeatherIcons.filter,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  IconButton _menuButton(BuildContext context) {
+    return IconButton(
+      padding: EdgeInsets.zero,
+      icon: SizedBox(height: 24, width: 24, child: SvgPicture.asset('images/menu.svg', color: Colors.white)),
+      onPressed: () {
+        ProviderWidget.of(context).drawerKey.currentState?.openDrawer();
+      },
+    );
+  }
+
+  Container _notesButton(BuildContext context) {
+    return Container(
+      height: 50,
+      width: 40,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (_) => NotesScreen(
+              firebaseNotesManager: ManagerProvider.of(context).firebaseNotesManager,
+            ),
+          ),
+        ),
+        child: Icon(
+          FeatherIcons.fileText,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
   Widget dateWidget(AsyncSnapshot<DateTime> snapshot) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(dateStringMonth(snapshot.data!) + "  |  V." + weekNumber(snapshot.data!).toString(), style: _titleStyle()),
       ],

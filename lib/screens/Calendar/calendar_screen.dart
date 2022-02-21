@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -8,6 +9,7 @@ import 'package:zimple/model/event.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
+import 'package:zimple/screens/Calendar/Filter/filter_persons_page.dart';
 import 'package:zimple/screens/drawer.dart';
 import 'package:zimple/utils/zpreferences.dart';
 import 'package:zimple/widgets/floating_add_button.dart';
@@ -30,6 +32,8 @@ class CalendarSettings extends ChangeNotifier {
   bool shouldSkipWeekends = false;
 
   int numberOfDays = 7;
+
+  bool canFilter = false;
 
   Future<void> init() async {
     this.shouldSkipWeekends = await ZPreferences.readData<bool>(Keys.calendarIsShowingWeekend) ?? true;
@@ -104,7 +108,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     dateAggregator = firstDayOfWeek(DateTime.now());
     firebaseStorageManager = FirebaseStorageManager(company: widget.user.company);
     firebaseUserManager = FirebaseUserManager();
-    _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => false);
+    _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
     _applyFilterForPersons(ManagerProvider.of(context).eventManager);
     Future.delayed(Duration.zero, () {
       initFilteredPersons();
@@ -141,6 +145,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
           setState(() => _filteredPersons[person] = false);
         }
       });
+    } else {
+      _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
     }
     _applyFilterForPersons(ManagerProvider.of(context).eventManager);
     setState(() {});
@@ -186,6 +192,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Stack(
       children: [
         WeekPageControllerNew(
+          onTapFilter: showFilterPage,
           daysChangedController: daysChangedController,
           didTapEvent: didTapEvent,
           didTapHour: _didTapHour,
@@ -271,29 +278,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget buildCopyWidget() {
+    double width = MediaQuery.of(context).size.width;
+    double cancelButtonWidth = isMovingEvent ? (width / 2) - 24 : width - 32;
     return isMovingEvent || isCopyingEvent
         ? Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
+            padding: const EdgeInsets.only(bottom: 20.0, left: 16, right: 16),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Expanded(
-                    child: _buildSmallButton(
-                      title: 'Avbryt',
-                      onPressed: _onTapCancel,
-                      color: Colors.red,
-                    ),
-                  ),
+                  ZButton(onTap: _onTapCancel, text: "Avbryt", type: ZButtonType.red, width: cancelButtonWidth),
+                  if (isMovingEvent) SizedBox(width: 16),
                   isMovingEvent
-                      ? Expanded(
-                          child: _buildSmallButton(
-                            title: 'Spara',
-                            onPressed: _onTapSave,
-                            color: Colors.green,
-                          ),
-                        )
+                      ? ZButton(onTap: _onTapSave, text: "Spara", type: ZButtonType.green, width: cancelButtonWidth)
                       : Container(),
                 ],
               ),
@@ -311,6 +309,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
         textColor: Colors.white,
         color: color,
         onTap: onPressed,
+      ),
+    );
+  }
+
+  void showFilterPage() {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => FilterPersonsPage(
+        preSelectedPersons: _filteredPersons,
+        selected: (selected) {
+          this._filteredPersons.keys.forEach((person) {
+            this._filteredPersons[person] = selected.contains(person);
+          });
+          setState(() {});
+          ZPreferences.saveData(Keys.calendarFilteredPersons, selectedPersons());
+        },
       ),
     );
   }

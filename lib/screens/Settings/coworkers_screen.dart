@@ -28,7 +28,8 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
   Widget _buildProfile(Person person) {
     return ProfilePictureIcon(
       person: person,
-      size: Size(32, 32),
+      size: Size(40, 40),
+      fontSize: 16,
     );
   }
 

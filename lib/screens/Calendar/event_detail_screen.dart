@@ -161,6 +161,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         children: [
           ProfilePictureIcon(
             person: person,
+            fontSize: 16,
             size: Size(30, 30),
           ),
           SizedBox(width: 16.0),
@@ -198,7 +199,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         iconData: category.icon,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text("Kategori", style: greyText), Text(category.name)],
+          children: [
+            Text("Kategori", style: greyText),
+            Text(category.name),
+          ],
         ));
   }
 

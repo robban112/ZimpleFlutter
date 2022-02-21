@@ -25,7 +25,9 @@ class TimeBetweenText extends StatelessWidget {
       text: TextSpan(
         children: [
           if (withHours)
-            TextSpan(text: getHourDiff(start, end, minutesBreak: minutesBreak) + " tim", style: style(context, isBold: true)),
+            TextSpan(
+                text: getHourDiff(start, end, minutesBreak: minutesBreak) + " tim",
+                style: style(context, isBold: true, fontSize: 16)),
           if (withHours) TextSpan(text: " | ", style: style(context)),
           TextSpan(text: dateToHourMinute(start), style: style(context)),
           TextSpan(text: " - ", style: style(context)),
@@ -35,9 +37,9 @@ class TimeBetweenText extends StatelessWidget {
     );
   }
 
-  TextStyle style(BuildContext context, {bool isBold = false}) => TextStyle(
+  TextStyle style(BuildContext context, {bool isBold = false, double fontSize = 14}) => TextStyle(
       color: ThemeNotifier.of(context).textColor,
-      fontSize: 14,
+      fontSize: fontSize,
       fontWeight: isBold ? FontWeight.w900 : FontWeight.normal,
       fontFamily: 'FiraSans');
 }

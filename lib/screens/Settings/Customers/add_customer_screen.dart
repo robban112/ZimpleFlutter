@@ -5,10 +5,11 @@ import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/widgets/rounded_button.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 class AddCustomerScreen extends StatefulWidget {
   AddCustomerScreen({this.customerToChange});
@@ -105,18 +106,10 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
         contacts != [] ? buildContactList() : Container(),
         SizedBox(height: 16.0),
         Center(
-          child: RoundedButton(
-            text: "Lägg till kontakt",
-            color: Colors.white,
-            textColor: Colors.black,
-            fontSize: 14.0,
-            onTap: () {
-              setState(() {
-                contacts.add(Contact("", "", "", ""));
-              });
-            },
-          ),
-        ),
+            child: RectangularButton(
+          text: 'Lägg till kontakt',
+          onTap: () => setState(() => contacts.add(Contact("", "", "", ""))),
+        )),
         SizedBox(height: 100),
       ],
     );
@@ -206,32 +199,25 @@ class SaveCancelActionButtons extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 18.0),
+        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 18.0),
         child: Row(
           children: [
             Expanded(
-              child: RoundedButton(
+              child: RectangularButton(
                 text: "Avbryt",
-                color: Colors.white,
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                textColor: Colors.black,
-                fontSize: 17.0,
+                onTap: () => Navigator.of(context).pop(),
+                color: ThemeNotifier.of(context).red,
+                padding: EdgeInsets.symmetric(horizontal: 8),
               ),
             ),
-            SizedBox(width: 15),
             Expanded(
-              child: RoundedButton(
+              child: RectangularButton(
                 text: "Spara",
-                color: Theme.of(context).colorScheme.secondary,
-                onTap: () {
-                  didTapSave();
-                },
-                textColor: Colors.white,
-                fontSize: 17.0,
+                onTap: didTapSave,
+                color: Colors.green,
+                padding: EdgeInsets.symmetric(horizontal: 8),
               ),
-            )
+            ),
           ],
         ),
       ),

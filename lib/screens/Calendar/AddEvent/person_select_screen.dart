@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
@@ -25,7 +26,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
   @override
   void initState() {
     super.initState();
-    selectedPersonsMap = new Map.fromIterable(widget.persons, key: (person) => person, value: (person) => false);
+    selectedPersonsMap = Map.fromIterable(widget.persons, key: (person) => person, value: (person) => false);
     widget.preSelectedPersons?.forEach((person) {
       selectedPersonsMap[person] = true;
     });
@@ -42,10 +43,10 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
   }
 
   Widget _buildCheckMark(Person person) {
-    if (selectedPersonsMap[person] ?? false)
-      return Icon(FeatherIcons.checkCircle, color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), size: 32);
+    if (isSelected(person))
+      return Icon(FeatherIcons.check, color: Colors.white, size: 32);
     else
-      return Icon(Icons.circle_outlined, color: Theme.of(context).colorScheme.secondary.withOpacity(0.35), size: 32);
+      return Icon(Icons.circle_outlined, color: Theme.of(context).colorScheme.secondary.withOpacity(0.1), size: 32);
   }
 
   void _togglePerson(Person person) => setState(
@@ -60,6 +61,8 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
     Navigator.of(context).pop();
   }
 
+  bool isSelected(Person person) => selectedPersonsMap[person] ?? false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +75,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
       ),
       body: ListView.builder(
         shrinkWrap: true,
-        padding: EdgeInsets.only(top: 8.0),
+        padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
           var person = widget.persons[index];
           return _buildPersonRow(person);
@@ -83,7 +86,11 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
   }
 
   _buildPersonCircleAvatar(Person person) {
-    return ProfilePictureIcon(person: person, size: Size(35, 35));
+    return ProfilePictureIcon(
+      person: person,
+      size: Size(40, 40),
+      fontSize: 16,
+    );
   }
 
   _buildPersonRow(Person person) {
@@ -92,12 +99,13 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
           _togglePerson(person);
           _performCallback();
         },
-        child: Container(
-          color: Colors.transparent,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          color: isSelected(person) ? ThemeNotifier.of(context).zgreen : Theme.of(context).scaffoldBackgroundColor,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
             child: SizedBox(
-              height: 35,
+              height: 40,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -105,7 +113,12 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
                     children: [
                       _buildPersonCircleAvatar(person),
                       SizedBox(width: 12.0),
-                      Text(person.name, style: TextStyle(fontSize: 17.0)),
+                      Text(person.name,
+                          style: TextStyle(
+                            fontSize: 17.0,
+                            color: isSelected(person) ? Colors.white : ThemeNotifier.of(context).textColor,
+                            fontWeight: isSelected(person) ? FontWeight.bold : FontWeight.normal,
+                          )),
                     ],
                   ),
                   _buildCheckMark(person),
@@ -114,5 +127,79 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
             ),
           ),
         ));
+  }
+}
+
+class PersonSelectRow extends StatelessWidget {
+  final VoidCallback onTapPerson;
+
+  final bool isSelected;
+
+  final Person person;
+
+  final Color? backgroundColor;
+
+  final Color? textColor;
+
+  const PersonSelectRow({
+    Key? key,
+    required this.onTapPerson,
+    required this.isSelected,
+    required this.person,
+    this.backgroundColor,
+    this.textColor,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildPersonRow(context, person);
+  }
+
+  _buildPersonCircleAvatar(Person person) {
+    return ProfilePictureIcon(
+      person: person,
+      size: Size(40, 40),
+      fontSize: 16,
+    );
+  }
+
+  _buildPersonRow(BuildContext context, Person person) {
+    return GestureDetector(
+        onTap: onTapPerson,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          color: isSelected ? ThemeNotifier.of(context).zgreen : backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: SizedBox(
+              height: 40,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      _buildPersonCircleAvatar(person),
+                      SizedBox(width: 12.0),
+                      Text(person.name,
+                          style: TextStyle(
+                            fontSize: 17.0,
+                            color: isSelected ? Colors.white : (textColor ?? ThemeNotifier.of(context).textColor),
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          )),
+                    ],
+                  ),
+                  _buildCheckMark(context, person),
+                ],
+              ),
+            ),
+          ),
+        ));
+  }
+
+  Widget _buildCheckMark(BuildContext context, Person person) {
+    if (isSelected)
+      return Icon(FeatherIcons.check, color: Colors.white, size: 32);
+    else
+      return Icon(Icons.circle_outlined, color: Theme.of(context).colorScheme.secondary.withOpacity(0.1), size: 32);
   }
 }

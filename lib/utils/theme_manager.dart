@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:zimple/utils/constants.dart';
 
 import 'zpreferences.dart';
 
@@ -23,7 +22,11 @@ class ThemeNotifier with ChangeNotifier {
   }
 
   Color get red {
-    return Color(0xffF44E7B);
+    return Color.fromARGB(255, 247, 90, 132);
+  }
+
+  Color get zgreen {
+    return Color.fromARGB(255, 19, 173, 119);
   }
 
   final darkTheme = ThemeData(
@@ -68,7 +71,6 @@ class ThemeNotifier with ChangeNotifier {
       actionTextColor: Colors.white,
     ),
     //accentColor: Colors.lightBlue,
-    buttonColor: green,
     primaryIconTheme: IconThemeData(color: Colors.white),
     dividerColor: Colors.black,
     fontFamily: 'FiraSans',

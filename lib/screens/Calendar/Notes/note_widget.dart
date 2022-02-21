@@ -36,7 +36,7 @@ class NoteWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  ProfilePictureIcon(person: PersonManager.of(context).getPersonById(note.createdByUid)),
+                  ProfilePictureIcon(person: PersonManager.of(context).getPersonById(note.createdByUid), size: Size(30, 30)),
                   const SizedBox(width: 6),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

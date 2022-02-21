@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/utils.dart';
-import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
+import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -115,7 +115,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   Widget _buildFilterPersonsItem() {
     bool isAdmin = ManagerProvider.of(context).user.isAdmin;
-    if (!isAdmin) return Container();
+    if (!isAdmin && CompanySettings.of(context).isPrivateEvents) return Container();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ExpansionPanelList(

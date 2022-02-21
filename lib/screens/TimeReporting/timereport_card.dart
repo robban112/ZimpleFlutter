@@ -76,8 +76,13 @@ class _TimeReportCardState extends State<TimeReportCard> {
                 children: [
                   buildFirstRow(),
                   SizedBox(height: spacing),
-                  Text(widget.event?.customer ?? "", style: TextStyle(fontSize: 14)),
-                  SizedBox(height: spacing),
+                  Row(
+                    children: [
+                      _buildWorkCategoryBadge(),
+                      if (isWorkCategoryAvailable) const SizedBox(width: 8),
+                      Text(widget.event?.location ?? widget.event?.customer ?? "", style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
                   const SizedBox(height: 10),
                   TimeBetweenText(
                     start: widget.timereport.startDate,
@@ -94,20 +99,31 @@ class _TimeReportCardState extends State<TimeReportCard> {
     );
   }
 
+  bool get isWorkCategoryAvailable => widget.event?.workCategoryId != null;
+
+  Widget _buildWorkCategoryBadge() {
+    if (!isWorkCategoryAvailable) return Container();
+    WorkCategory category = WorkCategory(widget.event!.workCategoryId!);
+    return buildWorkCategoryBadge(category, size: 20);
+  }
+
   Row buildFirstRow() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 0.0),
-              child: ProfilePictureIcon(person: PersonManager.of(context).getPersonById(widget.timereport.userId ?? "")),
+              child: ProfilePictureIcon(
+                  size: Size(30, 30),
+                  fontSize: 14,
+                  person: PersonManager.of(context).getPersonById(widget.timereport.userId ?? "")),
             ),
             const SizedBox(width: 6),
-            Container(width: 130, child: _buildTitle(context)),
+            Container(width: 120, child: _buildTitle(context)),
           ],
         ),
         const SizedBox(width: 8),

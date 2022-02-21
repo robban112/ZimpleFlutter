@@ -35,6 +35,12 @@ class _SignUpProgressScreenState extends State<SignUpProgressScreen> {
     super.initState();
   }
 
+  /*
+  ! GÖR 
+  TODO: DO THIS
+  * * HEJ
+  ? WTF
+  */
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -20,6 +20,7 @@ class WeekPageControllerNew extends StatelessWidget {
   final Function(Event) didLongPressEvent;
   final Function(DateTime, int) didTapHour;
   final Function(DateTime, int) didDoubleTapHour;
+  final VoidCallback onTapFilter;
 
   WeekPageControllerNew({
     Key? key,
@@ -28,6 +29,7 @@ class WeekPageControllerNew extends StatelessWidget {
     required this.didTapHour,
     required this.didDoubleTapHour,
     required this.didLongPressEvent,
+    required this.onTapFilter,
   }) : super(key: key);
 
   Widget buildContainer(BuildContext context, DateTime date) {
@@ -54,6 +56,7 @@ class WeekPageControllerNew extends StatelessWidget {
     int numberOfDays = CalendarSettings.watch(context).numberOfDays;
     print("Rebuilt WeekPageController");
     return InnerWeekPageController(
+      onTapFilter: onTapFilter,
       screenWidth: width,
       widgetBuilder: (date) => buildContainer(context, date),
       numberOfDays: numberOfDays,
@@ -67,13 +70,15 @@ class InnerWeekPageController extends StatefulWidget {
   final int numberOfDays;
   final WidgetBuilder widgetBuilder;
   final WeekPageController daysChangedController;
-  InnerWeekPageController(
-      {Key? key,
-      required this.screenWidth,
-      required this.widgetBuilder,
-      required this.numberOfDays,
-      required this.daysChangedController})
-      : super(key: key);
+  final VoidCallback onTapFilter;
+  InnerWeekPageController({
+    Key? key,
+    required this.screenWidth,
+    required this.widgetBuilder,
+    required this.numberOfDays,
+    required this.daysChangedController,
+    required this.onTapFilter,
+  }) : super(key: key);
   @override
   _InnerWeekPageControllerState createState() => _InnerWeekPageControllerState(UniqueKey(), daysChangedController);
 }
@@ -152,7 +157,6 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
 
   @override
   Widget build(BuildContext context) {
-    print("Building InnerWeekPageController");
     return Scaffold(
       key: _scaffoldKey,
       appBar: PreferredSize(
@@ -160,6 +164,7 @@ class _InnerWeekPageControllerState extends State<InnerWeekPageController> {
         child: AppBarWidget(
           hasMenu: true,
           dateStream: streamController.stream,
+          onTapFilter: widget.onTapFilter,
         ),
       ),
       body: NotificationListener<ScrollNotification>(
