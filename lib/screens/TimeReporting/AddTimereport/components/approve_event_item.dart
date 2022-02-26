@@ -121,7 +121,7 @@ class ApproveEventItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: MediaQuery.of(context).size.width * 0.55,
+            width: MediaQuery.of(context).size.width * 0.60,
             child: Align(
               alignment: Alignment.centerLeft,
               child: AnimatedSwitcher(

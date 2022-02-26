@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,9 @@ import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/screens/Login/login_screen.dart';
+import 'package:zimple/screens/Payment/payment_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/utils/utils.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -259,7 +262,12 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
   List<Widget> _buildScreens(BuildContext context) {
     CalendarSettings calendarSettings = CalendarSettings()..init();
     return loadingEvent && loadingTimereport
-        ? [_loadingWidget(context), _loadingWidget(context), _loadingWidget(context)]
+        ? [
+            _loadingWidget(context),
+            _loadingWidget(context),
+            _loadingWidget(context),
+            _loadingWidget(context),
+          ]
         : [
             ChangeNotifierProvider(
               create: (_) => calendarSettings,
@@ -274,6 +282,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
               personManager: personManager,
               user: user,
             ),
+            PaymentScreen(),
             MoreScreen(
               user: this.user,
               onLogout: () => onLogout(context),
@@ -283,24 +292,33 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     double size = 22;
+    Color inactiveColor = Colors.grey;
+    Color activeColor = ThemeNotifier.of(context).green;
+    //Color activeColor = Color.fromARGB(255, 90, 71, 156);
     return [
       PersistentBottomNavBarItem(
         icon: Icon(FeatherIcons.calendar, size: size),
-        title: ("Kalender"),
-        activeColorPrimary: Theme.of(context).iconTheme.color!,
-        inactiveColorPrimary: Colors.grey,
+        title: ("Planera"),
+        activeColorPrimary: Color(0xff7CD8EC),
+        inactiveColorPrimary: inactiveColor,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(FeatherIcons.clock, size: size),
-        title: ("Tidrapportering"),
-        activeColorPrimary: Theme.of(context).iconTheme.color!,
-        inactiveColorPrimary: Colors.grey,
+        title: ("Rapportera"),
+        activeColorPrimary: ThemeNotifier.of(context).yellow,
+        inactiveColorPrimary: inactiveColor,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.more_horiz, size: size),
+        icon: Icon(FontAwesomeIcons.coins, size: size),
+        title: ("Ekonomi"),
+        activeColorPrimary: ThemeNotifier.of(context).green,
+        inactiveColorPrimary: inactiveColor,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(FontAwesomeIcons.cog, size: size),
         title: ("Mer"),
-        activeColorPrimary: Theme.of(context).iconTheme.color!,
-        inactiveColorPrimary: Colors.grey,
+        activeColorPrimary: Colors.white,
+        inactiveColorPrimary: inactiveColor,
       ),
     ];
   }
@@ -323,7 +341,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
             color: Theme.of(context).primaryColor)
         : LoaderOverlay(
             overlayWidget: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.secondary),
+              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).bottomNavigationBarTheme.backgroundColor!),
             ),
             overlayOpacity: 0.0,
             child: Stack(
@@ -339,7 +357,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
                   items: _navBarsItems(),
                   confineInSafeArea: true,
                   //backgroundColor: Color(0xffF4F7FB),
-                  backgroundColor: Theme.of(context).bottomAppBarColor,
+                  backgroundColor: ThemeNotifier.darkThemePrimaryBg,
                   handleAndroidBackButtonPress: true,
                   resizeToAvoidBottomInset:
                       true, // This needs to be true if you want to move up the screen when keyboard appears.
@@ -347,14 +365,14 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
                   hideNavigationBarWhenKeyboardShows:
                       true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
                   decoration: NavBarDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(0),
-                      topRight: Radius.circular(00),
-                    ),
-                    //border: Border.all(color: primaryColor.withOpacity(0.05), width: 2),
+                    // borderRadius: BorderRadius.only(
+                    //   topLeft: Radius.circular(7),
+                    //   topRight: Radius.circular(7),
+                    // ),
+                    border: Border(top: BorderSide(color: ThemeNotifier.of(context).textColor, width: 0.1)),
                     colorBehindNavBar: Colors.white,
                   ),
-                  navBarHeight: 55,
+                  navBarHeight: kBottomNavigationBarHeight,
                   popAllScreensOnTapOfSelectedTab: true,
                   popActionScreens: PopActionScreensType.all,
                   itemAnimationProperties: ItemAnimationProperties(
@@ -366,7 +384,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
                     // Screen transition animation on change of selected tab.
                     animateTabTransition: false,
                   ),
-                  navBarStyle: NavBarStyle.style8, // Choose the nav bar style with this property.
+                  navBarStyle: NavBarStyle.style12, // Choose the nav bar style with this property.
                 ),
               ],
             ));

@@ -284,35 +284,56 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       children: [
         Container(
           padding: EdgeInsets.only(left: 0),
-          decoration: BoxDecoration(color: widget.event.color, borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          decoration: BoxDecoration(
+            color: widget.event.color,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(30),
+            ),
+          ),
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  margin: EdgeInsets.only(top: 8),
+                  height: 4,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 24.0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: width * 0.65),
-                          child: Text(widget.event.title,
-                              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600, color: textColor)),
+                        Row(
+                          children: [
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: width * 0.65),
+                              child: Text(widget.event.title,
+                                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w900, color: textColor)),
+                            ),
+                          ],
                         ),
+                        buildActions(textColor),
                       ],
                     ),
-                    buildActions(textColor),
+                    SizedBox(height: 4.0),
+                    shouldShowTime
+                        ? Text('${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}',
+                            style: TextStyle(color: textColor.withAlpha(120), fontSize: 20.0, fontWeight: FontWeight.w500))
+                        : Container()
                   ],
                 ),
-                SizedBox(height: 4.0),
-                shouldShowTime
-                    ? Text('${dateToHourMinute(widget.event.start)} - ${dateToHourMinute(widget.event.end)}',
-                        style: TextStyle(color: textColor.withAlpha(120), fontSize: 20.0, fontWeight: FontWeight.w500))
-                    : Container()
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],

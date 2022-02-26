@@ -185,7 +185,7 @@ class ZButton extends StatelessWidget {
       case ZButtonType.red:
         return ThemeNotifier.of(context).red;
       case ZButtonType.green:
-        return ThemeNotifier.of(context).zgreen;
+        return ThemeNotifier.of(context).green;
       case ZButtonType.opaque:
         return Colors.white.withOpacity(0.1);
     }

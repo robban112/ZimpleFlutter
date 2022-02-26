@@ -290,8 +290,8 @@ class _ZimpleState extends State<Zimple> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.white,
-        systemNavigationBarColor: Colors.white,
+        statusBarColor: ThemeNotifier.darkThemePrimaryBg,
+        systemNavigationBarColor: ThemeNotifier.darkThemePrimaryBg,
       ),
     );
 

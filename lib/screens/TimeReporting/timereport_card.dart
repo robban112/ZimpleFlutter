@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
-import 'package:zimple/model/event.dart';
 import 'package:zimple/model/models.dart';
-import 'package:zimple/model/timereport.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
@@ -40,21 +37,21 @@ class TimeReportCard extends StatefulWidget {
 class _TimeReportCardState extends State<TimeReportCard> {
   static final highlightColor = Colors.white.withOpacity(0.05);
   static final softHighlightColor = highlightColor.withOpacity(0.03);
-  static final shadowColor = Colors.black87;
+  static final shadowColor = Colors.black87.withOpacity(0.01);
   static final softShadowColor = shadowColor.withOpacity(0.15);
   @override
   Widget build(BuildContext context) {
     var spacing = 8.0;
     var eventAvailable = widget.event != null;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.all(Radius.circular(18.0)),
           boxShadow: [
-            BoxShadow(color: softHighlightColor, offset: Offset(-3, -3), spreadRadius: 0, blurRadius: 3),
-            BoxShadow(color: softShadowColor, offset: Offset(3, 3), spreadRadius: 0.5, blurRadius: 8),
+            BoxShadow(color: softHighlightColor, offset: Offset(-1, -1), spreadRadius: 0, blurRadius: 5),
+            BoxShadow(color: softShadowColor, offset: Offset(2, 2), spreadRadius: 0.1, blurRadius: 5),
           ],
         ),
         width: 220,
@@ -80,7 +77,9 @@ class _TimeReportCardState extends State<TimeReportCard> {
                     children: [
                       _buildWorkCategoryBadge(),
                       if (isWorkCategoryAvailable) const SizedBox(width: 8),
-                      Text(widget.event?.location ?? widget.event?.customer ?? "", style: TextStyle(fontSize: 14)),
+                      Container(
+                          width: 168,
+                          child: Text(widget.event?.location ?? widget.event?.customer ?? "", style: TextStyle(fontSize: 14))),
                     ],
                   ),
                   const SizedBox(height: 10),

@@ -25,11 +25,15 @@ class ThemeNotifier with ChangeNotifier {
     return Color.fromARGB(255, 247, 90, 132);
   }
 
-  Color get zgreen {
+  Color get green {
     return Color.fromARGB(255, 19, 173, 119);
   }
 
-  final darkTheme = ThemeData(
+  static final Color lightThemePrimaryBg = Color(0xffFCFCFF);
+
+  static final Color darkThemePrimaryBg = Color(0xff0F0E0E);
+
+  late final darkTheme = ThemeData(
       appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
@@ -37,12 +41,12 @@ class ThemeNotifier with ChangeNotifier {
       ),
       primarySwatch: Colors.grey,
       primaryColor: Colors.black,
-      scaffoldBackgroundColor: Color(0xff0F0E0E),
-      backgroundColor: Color(0xff0F0E0E),
+      scaffoldBackgroundColor: darkThemePrimaryBg,
+      backgroundColor: darkThemePrimaryBg,
       cardColor: Color(0xff191A19),
       primaryIconTheme: IconThemeData(color: Colors.white),
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo).copyWith(
-        secondary: Colors.indigo.shade600,
+        secondary: Color(0xFF3949AB),
         brightness: Brightness.dark,
       ),
       snackBarTheme: SnackBarThemeData(
@@ -56,15 +60,18 @@ class ThemeNotifier with ChangeNotifier {
       fontFamily: 'FiraSans',
       iconTheme: IconThemeData(color: Colors.white),
       shadowColor: Colors.black.withOpacity(0.1),
-      bottomAppBarColor: Colors.black);
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: darkThemePrimaryBg,
+      ),
+      bottomAppBarColor: Color(0xff0F0E0E));
 
-  final lightTheme = ThemeData(
+  late final lightTheme = ThemeData(
     primarySwatch: Colors.grey,
-    primaryColor: Color(0xffFCFCFF),
-    scaffoldBackgroundColor: Color(0xffFCFCFF),
-    backgroundColor: Color(0xffF9F6FF),
+    primaryColor: lightThemePrimaryBg,
+    scaffoldBackgroundColor: lightThemePrimaryBg,
+    backgroundColor: lightThemePrimaryBg,
     colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue).copyWith(
-      secondary: Color(0xff3B14C3),
+      secondary: Color(0xff3617F9),
       brightness: Brightness.light,
     ),
     snackBarTheme: SnackBarThemeData(
@@ -76,7 +83,10 @@ class ThemeNotifier with ChangeNotifier {
     fontFamily: 'FiraSans',
     iconTheme: IconThemeData(color: Colors.black),
     shadowColor: Colors.grey.withOpacity(0.10),
-    bottomAppBarColor: Color(0xFFFFFFFF),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: darkThemePrimaryBg,
+    ),
+    bottomAppBarColor: lightThemePrimaryBg,
   );
 
   ThemeNotifier() {

@@ -18,13 +18,13 @@ import 'package:zimple/network/firebase_user_manager.dart';
 import 'package:zimple/utils/service/profile_picture_service.dart';
 
 class ManagerProvider extends ChangeNotifier {
-  late PersonManager personManager;
+  PersonManager personManager = PersonManager(persons: []);
 
-  late EventManager eventManager;
+  EventManager eventManager = EventManager(events: []);
 
   late UserParameters user;
 
-  late List<Customer> customers;
+  List<Customer> customers = [];
 
   late FirebaseCustomerManager firebaseCustomerManager;
 
@@ -42,7 +42,7 @@ class ManagerProvider extends ChangeNotifier {
 
   late TimereportManager timereportManager;
 
-  late CustomerManager customerManager;
+  CustomerManager customerManager = CustomerManager(customers: []);
 
   late FirebaseNotesManager firebaseNotesManager;
 

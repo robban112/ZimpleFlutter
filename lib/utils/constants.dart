@@ -44,6 +44,8 @@ final TextStyle greyText = TextStyle(
   fontSize: 14.0,
 );
 
+const TextStyle titleStyle = TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0);
+
 final Color shadedGrey = Color(0xffF5F6F9);
 //final Color primaryColor = Color(0xff303E52);
 final Color primaryColor = Colors.black;

@@ -101,7 +101,7 @@ class _PersonSelectScreenState extends State<PersonSelectScreen> {
         },
         child: AnimatedContainer(
           duration: Duration(milliseconds: 300),
-          color: isSelected(person) ? ThemeNotifier.of(context).zgreen : Theme.of(context).scaffoldBackgroundColor,
+          color: isSelected(person) ? ThemeNotifier.of(context).green : Theme.of(context).scaffoldBackgroundColor,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
             child: SizedBox(
@@ -168,7 +168,7 @@ class PersonSelectRow extends StatelessWidget {
         onTap: onTapPerson,
         child: AnimatedContainer(
           duration: Duration(milliseconds: 300),
-          color: isSelected ? ThemeNotifier.of(context).zgreen : backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+          color: isSelected ? ThemeNotifier.of(context).green : backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: SizedBox(

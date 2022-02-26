@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zimple/screens/Calendar/Notes/notes_screen.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
 import '../utils/constants.dart';
@@ -45,7 +46,7 @@ class StandardAppBar extends StatelessWidget {
         systemNavigationBarColor: Colors.black,
       ),
       elevation: 0.0,
-      backgroundColor: primaryColor,
+      backgroundColor: ThemeNotifier.darkThemePrimaryBg,
       title: Align(
         alignment: Alignment.centerLeft,
         child: Text(title, style: appBarTitleStyle),
@@ -118,19 +119,13 @@ class AppBarWidget extends StatelessWidget {
         initialData: DateTime.now(),
         builder: (context, AsyncSnapshot<DateTime> snapshot) {
           return AppBar(
-            title: dateStream != null
-                ? Padding(
-                    padding: EdgeInsets.only(
-                      left: 40,
-                    ),
-                    child: dateWidget(snapshot))
-                : Text(title, style: _titleStyle()),
+            title: dateStream != null ? dateWidget(snapshot) : Text(title, style: _titleStyle()),
             leading: hasMenu ? _menuButton(context) : Container(),
             actions: [
               if (shouldShowFilter) _buildFilterButton(),
               _notesButton(context),
             ],
-            backgroundColor: primaryColor,
+            backgroundColor: ThemeNotifier.darkThemePrimaryBg,
             brightness: Brightness.dark,
             toolbarHeight: 75.0,
             //iconTheme: IconThemeData(color: Colors.white),

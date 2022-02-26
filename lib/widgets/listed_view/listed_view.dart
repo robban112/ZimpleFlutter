@@ -85,14 +85,21 @@ class ListedItemWidget extends StatelessWidget {
   }
 }
 
-class ListedTitle extends StatelessWidget {
-  const ListedTitle({Key? key, required this.text}) : super(key: key);
+class ListedTitleItem extends ListedItem {
+  final String title;
+  ListedTitleItem({required this.title});
+}
 
+class ListedTitle extends StatelessWidget {
+  const ListedTitle({Key? key, required this.text, this.padding = const EdgeInsets.only(left: 16.0, bottom: 4.0)})
+      : super(key: key);
+
+  final EdgeInsets padding;
   final String text;
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(left: 16.0, bottom: 4.0),
+        padding: padding,
         child: Text(text, style: TextStyle(fontWeight: FontWeight.w900, color: Colors.grey.shade500, letterSpacing: 0.5)));
   }
 }
@@ -172,7 +179,7 @@ class ListedView extends StatelessWidget {
     if (item is ListedTextField) {
       return _textfieldBuilder(context, item);
     } else if (item is ListedSwitch) {
-      return _buildListedSwitch(context, item);
+      return _buildListedSwitch(context, item, rowInset);
     }
     return ListedItemWidget(
       item: item,
@@ -180,8 +187,9 @@ class ListedView extends StatelessWidget {
     );
   }
 
-  Widget _buildListedSwitch(BuildContext context, ListedSwitch item) {
+  Widget _buildListedSwitch(BuildContext context, ListedSwitch item, EdgeInsets rowInset) {
     return ListedItemWidget(
+      rowInset: rowInset,
       item: ListedItem(
         text: item.text,
         leadingIcon: item.leadingIcon,

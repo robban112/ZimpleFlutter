@@ -154,14 +154,7 @@ class _MoreScreenState extends State<MoreScreen> {
             leadingIcon: Icons.settings,
             text: "Inställningar",
             onTap: () {
-              pushNewScreen(context, screen: SettingsScreen());
-            }),
-        ListedItem(
-            trailingIcon: Icons.chevron_right,
-            leadingIcon: Icons.logout,
-            text: "Logga ut",
-            onTap: () {
-              logout(context);
+              pushNewScreen(context, screen: SettingsScreen(onLogout: widget.onLogout));
             }),
       ],
     );

@@ -1,14 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/utils/date_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:zimple/utils/theme_manager.dart';
+
+import '../managers/event_layout_manager.dart';
 import '../model/event.dart';
+import '../utils/date_utils.dart';
 import 'vertical_time_container.dart';
 import 'week_header.dart';
-import '../managers/event_layout_manager.dart';
-import '../utils/date_utils.dart';
-import 'package:zimple/utils/constants.dart';
 
 class WeekView extends StatelessWidget {
   WeekView({
@@ -62,7 +63,7 @@ class WeekView extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: primaryColor,
+        color: ThemeNotifier.darkThemePrimaryBg,
       ),
       child: Column(
         children: <Widget>[
