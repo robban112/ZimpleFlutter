@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -373,21 +374,18 @@ class _AddEventScreenState extends State<AddEventScreen> {
   ListedView buildListedView(BuildContext context) {
     return ListedView(hidesFirstLastSeparator: false, rowInset: EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0), items: [
       ListedItem(
-          leadingIcon: Icons.group,
-          text: "Personer",
-          trailingWidget: Row(
-            children: [buildSelectedPersonsAvatars(), Icon(Icons.chevron_right)],
-          ),
-          onTap: () {
-            pushNewScreen(context,
-                screen: PersonSelectScreen(
-                  persons: widget.persons,
-                  personCallback: this.selectPersons,
-                  preSelectedPersons: selectedPersons,
-                ));
-          }),
+        leadingIcon: FeatherIcons.userPlus,
+        text: "Personer",
+        trailingWidget: Row(
+          children: [
+            buildSelectedPersonsAvatars(),
+            Icon(Icons.chevron_right),
+          ],
+        ),
+        onTap: () => _onTapAddPersons(context),
+      ),
       ListedItem(
-          leadingIcon: Icons.person,
+          leadingIcon: FeatherIcons.briefcase,
           text: "Kund",
           trailingWidget: Row(
             children: [
@@ -403,30 +401,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   : Icon(Icons.chevron_right),
             ],
           ),
-          onTap: () {
-            print("Tapped");
-            pushNewScreen(context, screen: CustomerSelectScreen(
-              didSelectCustomer: (customer, contact) {
-                setState(() {
-                  selectedCustomerContactPerson = contact;
-                  selectedCustomer = customer;
-                  locationController.text = customer.address ?? "";
-                  phonenumberController.text = customer.contacts[contact].phoneNumber;
-                  companyController.text = customer.name;
-                });
-              },
-            ));
-          }),
+          onTap: () => _onTapAddCustomer(context)),
       _buildTypeOfWorkRow(),
       _buildContactPersonRow(),
       ListedTextField(
-          leadingIcon: Icons.business_center,
+          leadingIcon: FeatherIcons.briefcase,
           placeholder: "Kund fritext",
           onChanged: (customer) => this.customer = customer,
           key: _companyFormKey,
           controller: companyController),
       ListedTextField(
-          leadingIcon: Icons.location_on,
+          leadingIcon: FeatherIcons.mapPin,
           placeholder: "Address",
           onChanged: (location) => this.location = location,
           key: _locationFormKey,
@@ -451,7 +436,31 @@ class _AddEventScreenState extends State<AddEventScreen> {
     ]);
   }
 
+  Future<dynamic> _onTapAddCustomer(BuildContext context) {
+    return pushNewScreen(context, screen: CustomerSelectScreen(
+      didSelectCustomer: (customer, contact) {
+        setState(() {
+          selectedCustomerContactPerson = contact;
+          selectedCustomer = customer;
+          locationController.text = customer.address ?? "";
+          phonenumberController.text = customer.contacts[contact].phoneNumber;
+          companyController.text = customer.name;
+        });
+      },
+    ));
+  }
+
+  Future<dynamic> _onTapAddPersons(BuildContext context) {
+    return pushNewScreen(context,
+        screen: PersonSelectScreen(
+          persons: widget.persons,
+          personCallback: this.selectPersons,
+          preSelectedPersons: selectedPersons,
+        ));
+  }
+
   ListPersonCircleAvatar buildSelectedPersonsAvatars() => ListPersonCircleAvatar(
+        widthMultiplier: 0.5,
         persons: this.selectedPersons,
         alignment: WrapAlignment.end,
       );

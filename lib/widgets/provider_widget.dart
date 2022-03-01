@@ -12,6 +12,7 @@ import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
+import 'package:zimple/network/firebase_product_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
@@ -55,6 +56,8 @@ class ManagerProvider extends ChangeNotifier {
   Map<String, int>? absenceRequestReadMap;
 
   bool mounted = false;
+
+  FirebaseProductManager get firebaseProductManager => FirebaseProductManager(company: this.user.company);
 
   static ManagerProvider of(BuildContext context) {
     return context.read<ManagerProvider>();

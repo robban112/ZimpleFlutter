@@ -2,14 +2,18 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/extensions/string_extensions.dart';
+import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
+import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
+import 'package:zimple/screens/Settings/CompanySettings/company_settings_screen.dart';
 import 'package:zimple/screens/Settings/Coworkers/add_coworker_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customers_screen.dart';
 import 'package:zimple/screens/Settings/coworkers_screen.dart';
@@ -20,6 +24,7 @@ import 'package:zimple/utils/service/user_service.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
+import 'package:zimple/widgets/widgets.dart';
 
 import '../../widgets/photo_buttons.dart';
 
@@ -71,34 +76,29 @@ class _MoreScreenState extends State<MoreScreen> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: appBar(CompanySettings.of(context).companyName.capitalize(), withBackButton: false),
       body: Stack(
         children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              height: 160,
-              width: width,
-              decoration: BoxDecoration(
-                  color: primaryColor,
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0))),
-            ),
+          ZimpleDotBackground(
+            shouldAnimate: false,
           ),
           SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 80),
+                const SizedBox(height: 24),
                 _buildProfile(),
-                SizedBox(height: 10),
+                const SizedBox(height: 12),
                 _buildTitle(),
-                SizedBox(height: 8),
+                const SizedBox(height: 4),
                 widget.user.isAdmin
                     ? Text(
                         "Admin",
                         textAlign: TextAlign.center,
                       )
                     : Container(),
+                const SizedBox(height: 12),
                 buildListMenu(context)
               ],
             ),
@@ -120,6 +120,14 @@ class _MoreScreenState extends State<MoreScreen> {
     return ListedView(
       rowInset: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       items: [
+        if (widget.user.isAdmin)
+          ListedItem(
+              trailingIcon: Icons.chevron_right,
+              leadingIcon: FeatherIcons.info,
+              text: "Företagsinställningar",
+              onTap: () {
+                pushNewScreen(context, screen: CompanySettingsScreen());
+              }),
         ListedItem(
             leadingIcon: Icons.people_alt_outlined,
             trailingIcon: Icons.chevron_right,
@@ -207,39 +215,44 @@ class _MoreScreenState extends State<MoreScreen> {
         Container();
   }
 
-  CircleAvatar _buildProfile() {
+  Widget _buildProfile() {
     var imageNull = widget.user.profilePicturePath == null;
     bool isDarkMode = ThemeNotifier.of(context).isDarkMode();
-    return CircleAvatar(
-      radius: 75,
-      backgroundColor: Colors.grey.shade900,
-      child: Stack(
-        children: [
-          Center(
-            child: _userImage(),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 100.0, bottom: 8.0),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                width: 50,
-                child: FloatingActionButton(
-                  backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
-                  mini: true,
-                  heroTag: 'Nothing',
-                  child: Icon(Icons.photo_camera, color: Colors.white, size: 28),
-                  onPressed: () {
-                    setState(() {
-                      this.isSelectingPhotoProvider = !this.isSelectingPhotoProvider;
-                    });
-                  },
-                ),
+    return Container(
+      width: width(context),
+      child: Align(
+        child: CircleAvatar(
+          radius: 75,
+          backgroundColor: Colors.grey.shade900,
+          child: Stack(
+            children: [
+              Center(
+                child: _userImage(),
               ),
-            ),
-          )
-        ],
+              Padding(
+                padding: const EdgeInsets.only(left: 100.0, bottom: 8.0),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: FloatingActionButton(
+                      backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                      mini: true,
+                      heroTag: 'Nothing',
+                      child: Icon(Icons.photo_camera, color: Colors.white, size: 28),
+                      onPressed: () {
+                        setState(() {
+                          this.isSelectingPhotoProvider = !this.isSelectingPhotoProvider;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

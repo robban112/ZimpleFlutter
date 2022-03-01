@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -215,7 +216,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.group),
+                  Icon(FeatherIcons.users),
                   SizedBox(width: 25.0),
                   Text(" ${widget.event.persons!.length} personer", style: TextStyle(color: Colors.grey)),
                 ],
@@ -256,12 +257,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ? Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildParameter(iconData: Icons.business, title: 'Kund', subtitle: customer.name),
+                      _buildParameter(iconData: FeatherIcons.briefcase, title: 'Kund', subtitle: customer.name),
                     ],
                   )
                 : Container(),
             (widget.event.customer != null && widget.event.customer != "")
-                ? _buildParameter(iconData: Icons.business, title: 'Kund fritext', subtitle: widget.event.customer!)
+                ? _buildParameter(iconData: FeatherIcons.briefcase, title: 'Kund fritext', subtitle: widget.event.customer!)
                 : Container(),
             _buildLocation(),
             _buildPhoneNumber(),
@@ -379,7 +380,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     Contact? contact = contacts.firstWhereOrNull((c) => c.id == contactKey);
     if (contact == null) return Container();
     return _buildParameter(
-        iconData: Icons.contact_phone,
+        iconData: FeatherIcons.phone,
         title: '${contact.name}',
         isRichText: true,
         subtitle: contact.phoneNumber,

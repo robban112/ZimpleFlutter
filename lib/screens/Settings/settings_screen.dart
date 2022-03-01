@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/company_settings.dart';
+import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
@@ -33,37 +34,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
         preferredSize: appBarSize,
         child: StandardAppBar("Inställningar"),
       ),
-      body: Consumer<ThemeNotifier>(
-        builder: (context, theme, _) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-            child: Column(
-              children: [
-                if (ManagerProvider.of(context).user.isAdmin) _buildSetPrivateWorkordersRow(context),
-                const SizedBox(height: 12),
-                ListedView(
-                  rowInset: EdgeInsets.symmetric(vertical: 12),
-                  items: [
-                    ListedSwitch(
-                      text: 'Dark Mode',
-                      initialValue: theme.isDarkMode(),
-                      leadingIcon: Icons.privacy_tip,
-                      onChanged: (value) => theme.isDarkMode() ? theme.setLightMode() : theme.setDarkMode(),
-                    ),
-                    ListedItem(
-                        trailingIcon: Icons.chevron_right,
-                        leadingIcon: Icons.logout,
-                        text: "Logga ut",
-                        onTap: () {
-                          widget.onLogout();
-                        }),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
+      body: Stack(
+        children: [
+          ZimpleDotBackground(
+            shouldAnimate: false,
+          ),
+          _body(),
+        ],
       ),
+    );
+  }
+
+  Consumer<ThemeNotifier> _body() {
+    return Consumer<ThemeNotifier>(
+      builder: (context, theme, _) {
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          child: Column(
+            children: [
+              ListedView(
+                rowInset: EdgeInsets.symmetric(vertical: 12),
+                items: [
+                  ListedSwitch(
+                    text: 'Dark Mode',
+                    initialValue: theme.isDarkMode(),
+                    leadingIcon: Icons.dark_mode,
+                    onChanged: (value) => theme.isDarkMode() ? theme.setLightMode() : theme.setDarkMode(),
+                  ),
+                  if (ManagerProvider.of(context).user.isAdmin)
+                    ListedSwitch(
+                      text: 'Visa medarbetare endast deras egna arbetsordrar',
+                      textWidth: width(context) * 0.6,
+                      initialValue: context.watch<ManagerProvider>().companySettings.isPrivateEvents,
+                      leadingIcon: Icons.privacy_tip_outlined,
+                      onChanged: onSetPrivateWorkOrder,
+                    ),
+                  ListedItem(
+                      trailingIcon: Icons.chevron_right,
+                      leadingIcon: Icons.logout,
+                      text: "Logga ut",
+                      onTap: () {
+                        widget.onLogout();
+                      }),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -90,14 +108,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         CupertinoSwitch(
           value: context.watch<ManagerProvider>().companySettings.isPrivateEvents,
-          onChanged: (val) {
-            CompanySettings companySettings = ManagerProvider.of(context).companySettings;
-            CompanySettings newCompanySettings = companySettings.copyWith(isPrivateEvents: val);
-            ManagerProvider.of(context).firebaseCompanyManager.updateCompanySettings(companySettings: newCompanySettings);
-          },
+          onChanged: onSetPrivateWorkOrder,
         ),
       ],
     );
+  }
+
+  void onSetPrivateWorkOrder(bool val) {
+    CompanySettings companySettings = ManagerProvider.of(context).companySettings;
+    CompanySettings newCompanySettings = companySettings.copyWith(isPrivateEvents: val);
+    ManagerProvider.of(context).firebaseCompanyManager.updateCompanySettings(companySettings: newCompanySettings);
   }
 
   Widget _buildRowItem({required String title, required Widget child}) {

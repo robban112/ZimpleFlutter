@@ -74,6 +74,7 @@ class ThemeNotifier with ChangeNotifier {
       secondary: Color(0xff3617F9),
       brightness: Brightness.light,
     ),
+    cardColor: Colors.white,
     snackBarTheme: SnackBarThemeData(
       actionTextColor: Colors.white,
     ),

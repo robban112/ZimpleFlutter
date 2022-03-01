@@ -70,7 +70,7 @@ void showSnackbar({
   required String message,
 }) {
   final snackBar = SnackBar(
-    backgroundColor: Colors.black.withOpacity(0.9),
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     content: SnackbarWidget(
       isSuccess: isSuccess,
       message: message,

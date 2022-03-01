@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -7,7 +8,6 @@ import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customer_details_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
-import 'package:zimple/widgets/floating_add_button.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -46,23 +46,19 @@ class _CustomerScreenState extends State<CustomerScreen> {
   Widget build(BuildContext context) {
     print("Building Customer Screen");
     var customers = Provider.of<ManagerProvider>(context, listen: true).customers;
-    var user = Provider.of<ManagerProvider>(context, listen: false).user;
+
     return FocusDetector(
       onFocusGained: () {
         setState(() {});
       },
       child: Scaffold(
-        appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Kundbas")),
-        floatingActionButton: user.isAdmin
-            ? FloatingAddButton(onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddCustomerScreen(),
-                  ),
-                );
-              })
-            : Container(),
+        appBar: PreferredSize(
+          preferredSize: appBarSize,
+          child: StandardAppBar(
+            "Kundbas",
+            trailing: _addCustomerTextButton(),
+          ),
+        ),
         body: SingleChildScrollView(
           child: ListedView(
               items: List.generate(customers.length, (index) {
@@ -89,36 +85,20 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   pushNewScreen(context, screen: CustomerDetailsScreen(customer: customer));
                 });
           })),
-          // child: Column(
-          //   children: [
-          //     TopHeader(kPadding: kPadding),
-          //     Padding(
-          //       padding: EdgeInsets.symmetric(
-          //           vertical: kPadding, horizontal: kPadding),
-          //       child: Container(),
-          //     ),
-          //     ExpansionPanelList(
-          //       expansionCallback: (int index, bool isExpanded) {
-          //         setState(() {
-          //           customerPanels[index].isExpanded = !isExpanded;
-          //         });
-          //       },
-          //       children: customerPanels.asMap().entries.map((entry) {
-          //         int index = entry.key;
-          //         var panel = entry.value;
-          //         var customer = panel.customer;
-          //         return ExpansionPanel(
-          //             isExpanded: panel.isExpanded,
-          //             headerBuilder: (BuildContext context, bool isExpanded) {
-          //               return expandableHeader(index, isExpanded, customer);
-          //             },
-          //             body: expandableBody(customer));
-          //       }).toList(),
-          //     ),
-          //   ],
-          // ),
         ),
       ),
+    );
+  }
+
+  Widget _addCustomerTextButton() {
+    var user = Provider.of<ManagerProvider>(context, listen: false).user;
+    if (!user.isAdmin) return Container();
+    return Container(
+      padding: EdgeInsets.only(right: 16),
+      child: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: _onPressedAddCustomer,
+          child: Text("Lägg till", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white))),
     );
   }
 
@@ -193,41 +173,13 @@ class _CustomerScreenState extends State<CustomerScreen> {
           );
         });
   }
-}
 
-class TopHeader extends StatelessWidget {
-  const TopHeader({
-    Key? key,
-    required this.kPadding,
-  }) : super(key: key);
-
-  final double kPadding;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0))),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: kPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                "Kunder",
-                style: TextStyle(color: Colors.white, fontSize: 21.0, fontWeight: FontWeight.w600),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0, top: 12.0),
-                child: Text(
-                  "Här kan du enkelt lägga till ditt företags kunder och kontaktpersoner. " +
-                      "\nLägg sedan till dom enkelt i planeringen.",
-                  style: TextStyle(fontSize: 15.0, color: Colors.white, fontWeight: FontWeight.w100),
-                ),
-              )
-            ],
-          ),
-        ));
+  void _onPressedAddCustomer() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddCustomerScreen(),
+      ),
+    );
   }
 }

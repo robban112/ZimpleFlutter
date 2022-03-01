@@ -8,6 +8,7 @@ import 'package:zimple/screens/Login/Signup/sign_up_progress_screen.dart';
 import 'package:zimple/screens/Login/Signup/step_indicator.dart';
 import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -69,7 +70,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           //mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ZimpleDotBackground(
-              shouldAnimate: false,
+              shouldAnimate: true,
+              overrideColor: ThemeNotifier.of(context).textColor,
             ),
             Align(alignment: Alignment.topCenter, child: StepIndicator(numSteps: numSteps, currentStep: currentPage)),
             //_buildEnteredInfo(),

@@ -1,4 +1,5 @@
 export 'absence_request.dart';
+export 'company_settings.dart';
 export 'contact.dart';
 export 'cost.dart';
 export 'customer.dart';

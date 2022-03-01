@@ -4,9 +4,13 @@ class ZimpleDotBackground extends StatefulWidget {
   final GlobalKey<ZimpleDotBackgroundState>? waveKey;
 
   final bool shouldAnimate;
+
+  final Color? overrideColor;
+
   const ZimpleDotBackground({
     this.waveKey,
     this.shouldAnimate = true,
+    this.overrideColor,
   }) : super(key: waveKey);
 
   @override
@@ -103,6 +107,7 @@ class ZimpleDotBackgroundState extends State<ZimpleDotBackground> {
                 dotSize: dotSize,
                 index: hIndex,
                 animationDuration: animationDuration,
+                overrideColor: widget.overrideColor,
               ),
             ),
           );
@@ -175,6 +180,7 @@ class AnimatingDot extends StatefulWidget {
   final double minDotSize;
   final Duration animationDuration;
   final bool shouldAnimate;
+  final Color? overrideColor;
   const AnimatingDot({
     required this.index,
     required this.dotSize,
@@ -183,6 +189,7 @@ class AnimatingDot extends StatefulWidget {
     required this.minDotSize,
     required this.animationDuration,
     required this.shouldAnimate,
+    this.overrideColor,
   }) : super(key: animateKey);
 
   @override
@@ -238,13 +245,15 @@ class _AnimatingDotState extends State<AnimatingDot> with SingleTickerProviderSt
         width: sizeAnimation.value,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.01 * (sizeAnimation.value / widget.dotSize) + 0.12),
+            color: color.withOpacity(0.01 * (sizeAnimation.value / widget.dotSize) + 0.12),
             shape: BoxShape.circle,
           ),
         ),
       ),
     );
   }
+
+  Color get color => widget.overrideColor ?? Colors.white;
 }
 
 class Position {

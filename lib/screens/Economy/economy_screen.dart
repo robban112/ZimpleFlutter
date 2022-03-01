@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:zimple/screens/Payment/Offert/create_offer_screen.dart';
+import 'package:zimple/screens/Economy/Offert/SavedProducts/saved_products_screen.dart';
+import 'package:zimple/screens/Economy/Offert/create_offer_screen.dart';
+import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
-class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({Key? key}) : super(key: key);
+class EconomyScreen extends StatefulWidget {
+  const EconomyScreen({Key? key}) : super(key: key);
 
   @override
-  _PaymentScreenState createState() => _PaymentScreenState();
+  _EconomyScreenState createState() => _EconomyScreenState();
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+class _EconomyScreenState extends State<EconomyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +26,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
             "Ekonomi",
             withBackButton: false,
           )),
-      body: _body(context),
+      body: Stack(
+        children: [
+          ZimpleDotBackground(
+            shouldAnimate: false,
+          ),
+          _body(context),
+        ],
+      ),
     );
   }
 
@@ -42,13 +52,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ListedView(
             rowInset: EdgeInsets.symmetric(vertical: 12),
             items: [
-              ListedItem(text: "Skapa faktura", leadingIcon: FontAwesomeIcons.fileInvoice),
+              ListedItem(text: "Skapa faktura", leadingIcon: FeatherIcons.fileText),
               ListedItem(
                 text: "Skapa offert",
-                leadingIcon: FontAwesomeIcons.fileInvoice,
+                leadingIcon: FeatherIcons.fileText,
                 onTap: () => pushNewScreen(
                   context,
                   screen: CreateOfferScreen(),
+                ),
+              ),
+              ListedItem(
+                text: "Produkter / tjänster",
+                leadingWidget: SvgPicture.asset('images/shop.svg', color: Theme.of(context).iconTheme.color),
+                onTap: () => pushNewScreen(
+                  context,
+                  screen: SavedProductsScreen(),
                 ),
               ),
             ],

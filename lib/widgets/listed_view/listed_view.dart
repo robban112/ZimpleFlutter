@@ -12,16 +12,19 @@ class ListedItem {
   final Widget? trailingWidget;
   final Widget? leadingWidget;
   final VoidCallback? onTap;
-  ListedItem({
-    this.child,
-    this.text,
-    this.leadingIcon,
-    this.trailingIcon,
-    this.onTap,
-    this.trailingWidget,
-    this.leadingWidget,
-    this.textStyle,
-  });
+  final bool withHorizontalPadding;
+  final double? textWidth;
+  ListedItem(
+      {this.child,
+      this.text,
+      this.leadingIcon,
+      this.trailingIcon,
+      this.onTap,
+      this.trailingWidget,
+      this.leadingWidget,
+      this.textStyle,
+      this.textWidth,
+      this.withHorizontalPadding = true});
 }
 
 class ListedItemWidget extends StatelessWidget {
@@ -39,13 +42,13 @@ class ListedItemWidget extends StatelessWidget {
     return _inkWell(
       isTappable: item.onTap != null,
       child: Padding(
-        padding: this.rowInset,
+        padding: item.withHorizontalPadding ? this.rowInset : EdgeInsets.symmetric(vertical: 12),
         child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               _leading(),
-              item.text != null ? Text(item.text!, style: item.textStyle ?? TextStyle(fontSize: 16)) : item.child!,
+              item.text != null ? _buildText(context, item.textWidth) : item.child!,
             ],
           ),
           Expanded(child: Container()),
@@ -54,6 +57,14 @@ class ListedItemWidget extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildText(BuildContext context, double? width) => Container(
+        width: width,
+        child: Text(
+          item.text!,
+          style: item.textStyle ?? TextStyle(fontSize: 16),
+        ),
+      );
 
   Widget _inkWell({required Widget child, required bool isTappable}) {
     if (isTappable)
@@ -194,6 +205,7 @@ class ListedView extends StatelessWidget {
         text: item.text,
         leadingIcon: item.leadingIcon,
         //textStyle: _hintStyle(context),
+        textWidth: item.textWidth,
         trailingWidget: SizedBox(
           height: 32,
           width: 32,

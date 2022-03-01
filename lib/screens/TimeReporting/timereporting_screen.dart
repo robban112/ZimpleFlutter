@@ -7,6 +7,7 @@ import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
+import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/screens/TimeReporting/AddTimereport/add_timereport_easy_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/report_vacation_screen.dart';
@@ -14,7 +15,6 @@ import 'package:zimple/screens/TimeReporting/Vacation/select_vacation_person_scr
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereport_card.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
-import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class TimeReportingScreen extends StatefulWidget {
@@ -48,18 +48,6 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
 
   Widget _buildSectionTitle(String title, {IconData? leadingIcon}) {
     return ListedTitle(text: title);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
-      child: Row(
-        children: [
-          leadingIcon != null ? Icon(leadingIcon) : Container(),
-          leadingIcon != null ? SizedBox(width: 5.0) : Container(),
-          Text(title.toUpperCase(),
-              style: TextStyle(
-                  fontSize: 16.0, fontWeight: FontWeight.bold, color: ThemeNotifier.of(context).textColor.withOpacity(0.25))),
-        ],
-      ),
-    );
   }
 
   @override
@@ -75,7 +63,9 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         appBar: appBar("Tidrapportering", withBackButton: false),
         body: Stack(
           children: [
-            Container(height: size.height, width: size.width),
+            ZimpleDotBackground(
+              shouldAnimate: false,
+            ),
             SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Column(

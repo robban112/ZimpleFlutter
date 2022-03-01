@@ -11,19 +11,15 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
-import 'package:zimple/model/company_settings.dart';
-import 'package:zimple/model/contact.dart';
-import 'package:zimple/model/customer.dart';
-import 'package:zimple/model/person.dart';
-import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_company_manager.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
 import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
+import 'package:zimple/screens/Economy/economy_screen.dart';
 import 'package:zimple/screens/Login/login_screen.dart';
-import 'package:zimple/screens/Payment/payment_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_screen.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/utils/utils.dart';
@@ -282,7 +278,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
               personManager: personManager,
               user: user,
             ),
-            PaymentScreen(),
+            EconomyScreen(),
             MoreScreen(
               user: this.user,
               onLogout: () => onLogout(context),
@@ -315,7 +311,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
         inactiveColorPrimary: inactiveColor,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(FontAwesomeIcons.cog, size: size),
+        icon: Icon(FeatherIcons.settings, size: size),
         title: ("Mer"),
         activeColorPrimary: Colors.white,
         inactiveColorPrimary: inactiveColor,

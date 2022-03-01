@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -330,7 +331,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     return Column(
       children: [
         _buildParameter(iconData: Icons.location_city, title: "Plats", subtitle: event.location ?? ""),
-        _buildParameter(iconData: Icons.business, title: "Kund", subtitle: event.customer ?? ""),
+        _buildParameter(iconData: FeatherIcons.briefcase, title: "Kund", subtitle: event.customer ?? ""),
         event.notes.isNotBlank()
             ? _buildParameter(iconData: Icons.event_note, title: "Arbetsorder anteckning", subtitle: event.notes ?? "")
             : Container(),
