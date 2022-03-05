@@ -1,5 +1,6 @@
 export 'package:zimple/widgets/app_bar_widget.dart';
 export 'package:zimple/widgets/button/close_button.dart';
+export 'package:zimple/widgets/button/delete_button.dart';
 export 'package:zimple/widgets/button/nav_bar_back.dart';
 export 'package:zimple/widgets/button/next_arrow.dart';
 export 'package:zimple/widgets/button/save_text_button.dart';
@@ -11,3 +12,5 @@ export 'package:zimple/widgets/profile_picture_icon.dart';
 export 'package:zimple/widgets/provider_widget.dart';
 export 'package:zimple/widgets/rectangular_button.dart';
 export 'package:zimple/widgets/text/time_between_text.dart';
+
+export 'background_widget.dart';

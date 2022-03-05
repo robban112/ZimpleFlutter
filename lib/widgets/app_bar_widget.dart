@@ -51,13 +51,18 @@ class StandardAppBar extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(title, style: appBarTitleStyle),
       ),
-      flexibleSpace: _appBarBackground(context),
+      flexibleSpace: AppBarBackground(),
       leading: withBackButton ? NavBarBack(onPressed: onPressedBack) : null,
       actions: [trailing ?? Container()],
     );
   }
+}
 
-  Container _appBarBackground(BuildContext context) {
+class AppBarBackground extends StatelessWidget {
+  const AppBarBackground({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
         width: MediaQuery.of(context).size.width,
         height: double.infinity,
@@ -125,6 +130,7 @@ class AppBarWidget extends StatelessWidget {
               if (shouldShowFilter) _buildFilterButton(),
               _notesButton(context),
             ],
+            flexibleSpace: AppBarBackground(),
             backgroundColor: ThemeNotifier.darkThemePrimaryBg,
             brightness: Brightness.dark,
             toolbarHeight: 75.0,

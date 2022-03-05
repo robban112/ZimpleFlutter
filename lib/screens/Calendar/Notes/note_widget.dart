@@ -37,13 +37,14 @@ class NoteWidget extends StatelessWidget {
               Row(
                 children: [
                   ProfilePictureIcon(person: PersonManager.of(context).getPersonById(note.createdByUid), size: Size(30, 30)),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
                       Text("${note.createdBy} • ${dateString(note.date)}",
                           style: TextStyle(fontSize: 12, color: ThemeNotifier.of(context).textColor.withOpacity(0.5))),
+                      //const SizedBox(height: 3),
+                      Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
                     ],
                   ),
                 ],

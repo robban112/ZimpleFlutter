@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/model/company_settings.dart';
+import 'package:zimple/model/models.dart';
 import 'package:zimple/screens/Economy/Offert/OfferPreview/offer_preview_screen.dart';
+import 'package:zimple/screens/Economy/Offert/SelectProduct/select_product_screen.dart';
+import 'package:zimple/screens/TimeReporting/Invoice/model/invoice.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class CreateOfferScreen extends StatefulWidget {
@@ -15,6 +19,8 @@ class CreateOfferScreen extends StatefulWidget {
 
 class _CreateOfferScreenState extends State<CreateOfferScreen> {
   static const double spacing = 16;
+
+  static const EdgeInsets rowInset = EdgeInsets.symmetric(vertical: 12);
 
   late final TextEditingController senderController =
       TextEditingController(text: ManagerProvider.of(context).getLoggedInPerson()?.name);
@@ -35,11 +41,13 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
 
   late final TextEditingController ibanController = TextEditingController(text: CompanySettings.of(context).iban);
 
+  List<InvoiceItem> selectedProducts = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(preferredSize: Size.fromHeight(appBarHeight), child: StandardAppBar("Skapa offert")),
-      body: _body(context),
+      body: BackgroundWidget(child: _body(context)),
     );
   }
 
@@ -66,10 +74,63 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
               Text("Bank uppgifter", style: titleStyle),
               smallDivider(),
               _buildBankInfoInputFields(),
+              divider(),
+              Text("Produkter / Tjänster", style: titleStyle),
+              smallDivider(),
+              _buildAddProductsFields(),
+              const SizedBox(height: 48),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAddProductsFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ListedView(
+        //   rowInset: rowInset,
+        //   items: [
+        //     ListedItem(
+        //       leadingIcon: FeatherIcons.archive,
+        //       text: "Lägg till produkt",
+        //       onTap: _onTapSelectProduct,
+        //     ),
+        //   ],
+        // ),
+        smallDivider(),
+        Wrap(
+          runSpacing: 8,
+          children: List.generate(
+            selectedProducts.length,
+            (index) => ProductAmountItem(
+              productAmount: selectedProducts[index],
+              onTapDeleteProduct: () => _onDeleteAddedProduct(selectedProducts[index]),
+            ),
+          ),
+        ),
+        divider(),
+        Container(
+          width: width(context),
+          child: CupertinoButton(
+            onPressed: _onTapSelectProduct,
+            padding: EdgeInsets.zero,
+            child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: ThemeNotifier.of(context).textColor,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+                  child: Text("+ Lägg till produkt", style: textStyle(context)),
+                )),
+          ),
+        ),
+      ],
     );
   }
 
@@ -148,18 +209,25 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
         children: [
           Container(child: Align(alignment: Alignment.centerLeft, child: Text("Förhandsvisning", style: titleStyle))),
           const SizedBox(height: 16),
-          Container(
-            width: width(context) * 0.5,
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: _onPresedPreviewOffer,
-                child: OfferPage(
-                  aspectRatio: 0.5,
+          GestureDetector(
+            onTap: _onPresedPreviewOffer,
+            child: Container(
+              width: width(context) * 0.5,
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IgnorePointer(
+                  ignoring: true,
+                  child: Container(
+                      height: 200,
+                      width: 200,
+                      color: Theme.of(context).cardColor,
+                      child: OfferPDF(
+                        selectedProducts: selectedProducts,
+                      )),
                 ),
               ),
             ),
@@ -171,6 +239,71 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
   }
 
   void _onPresedPreviewOffer() {
-    showCupertinoDialog(context: context, builder: (_) => OfferPreviewScreen());
+    showCupertinoDialog(context: context, builder: (_) => OfferPreviewScreen(selectedProducts: selectedProducts));
+  }
+
+  void _onTapSelectProduct() async {
+    var amountProduct = await pushNewScreen(
+      context,
+      screen: SelectProductScreen(),
+    );
+    if (amountProduct is InvoiceItem) setState(() => selectedProducts.add(amountProduct));
+  }
+
+  void _onDeleteAddedProduct(InvoiceItem productAmount) => setState(() => selectedProducts.remove(productAmount));
+}
+
+class ProductAmountItem extends StatelessWidget {
+  final InvoiceItem productAmount;
+
+  final VoidCallback onTapDeleteProduct;
+
+  const ProductAmountItem({
+    Key? key,
+    required this.productAmount,
+    required this.onTapDeleteProduct,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 75,
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: ThemeNotifier.of(context).textColor.withOpacity(0.1),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  productAmount.description,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "${productAmount.quantity.toString()} st x ${productAmount.unitPrice.toInt().toString()} kr / h = ${(productAmount.quantity * productAmount.unitPrice)} kr",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+            DeleteButton(onTapDelete: onTapDeleteProduct),
+          ],
+        ),
+      ),
+    );
   }
 }

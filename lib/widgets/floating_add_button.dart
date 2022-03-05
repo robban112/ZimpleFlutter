@@ -4,6 +4,7 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 
 class FloatingAddButton extends StatelessWidget {
   final VoidCallback onPressed;
+
   const FloatingAddButton({
     Key? key,
     required this.onPressed,

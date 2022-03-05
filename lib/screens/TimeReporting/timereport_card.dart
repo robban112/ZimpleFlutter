@@ -5,6 +5,7 @@ import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/utils/date_utils.dart';
+import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
 import 'package:zimple/widgets/widgets.dart';
 
@@ -47,13 +48,13 @@ class _TimeReportCardState extends State<TimeReportCard> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.all(Radius.circular(18.0)),
-          boxShadow: [
-            BoxShadow(color: softHighlightColor, offset: Offset(-1, -1), spreadRadius: 0, blurRadius: 5),
-            BoxShadow(color: softShadowColor, offset: Offset(2, 2), spreadRadius: 0.1, blurRadius: 5),
-          ],
-        ),
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.all(Radius.circular(18.0)),
+            boxShadow: [
+              BoxShadow(color: softHighlightColor, offset: Offset(-1, -1), spreadRadius: 0, blurRadius: 5),
+              BoxShadow(color: softShadowColor, offset: Offset(2, 2), spreadRadius: 0.1, blurRadius: 5),
+            ],
+            border: Border.all(color: ThemeNotifier.of(context).textColor.withOpacity(0.1))),
         width: 220,
         child: Material(
           color: Colors.transparent,

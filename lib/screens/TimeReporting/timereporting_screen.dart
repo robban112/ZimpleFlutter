@@ -7,7 +7,6 @@ import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
-import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/screens/TimeReporting/AddTimereport/add_timereport_easy_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/report_vacation_screen.dart';
@@ -54,40 +53,38 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
   Widget build(BuildContext context) {
     print("Building Timereporting Screen");
     var size = MediaQuery.of(context).size;
-    Map<String, int>? absenceMap = Provider.of<ManagerProvider>(context, listen: true).absenceRequestReadMap;
+
     return FocusDetector(
       onFocusGained: () {
         setState(() {});
       },
       child: Scaffold(
         appBar: appBar("Tidrapportering", withBackButton: false),
-        body: Stack(
-          children: [
-            ZimpleDotBackground(
-              shouldAnimate: false,
-            ),
-            SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 12.0),
-                  _buildLatestTimereports(context),
-                  _buildSectionTitle("Funktioner".toUpperCase()),
-                  _buildFunctionsListedView(),
-                  widget.user.isAdmin
-                      ? Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: _buildSectionTitle("Admin".toUpperCase()),
-                        )
-                      : Container(),
-                  widget.user.isAdmin ? _buildAdminFunctionsListedView(absenceMap) : Container(),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
-          ],
-        ),
+        body: BackgroundWidget(child: _body(context)),
+      ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    Map<String, int>? absenceMap = Provider.of<ManagerProvider>(context, listen: true).absenceRequestReadMap;
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 12.0),
+          _buildLatestTimereports(context),
+          _buildSectionTitle("Funktioner".toUpperCase()),
+          _buildFunctionsListedView(),
+          widget.user.isAdmin
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: _buildSectionTitle("Admin".toUpperCase()),
+                )
+              : Container(),
+          widget.user.isAdmin ? _buildAdminFunctionsListedView(absenceMap) : Container(),
+          const SizedBox(height: 24),
+        ],
       ),
     );
   }

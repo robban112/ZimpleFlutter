@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -303,27 +304,30 @@ class _ZimpleState extends State<Zimple> {
         ChangeNotifierProvider(create: (_) => UserService(widget.user)),
       ],
       child: Consumer<ThemeNotifier>(
-        builder: (context, theme, _) => MaterialApp(
-          navigatorKey: _navigatorKey,
-          localizationsDelegates: [GlobalCupertinoLocalizations.delegate, GlobalMaterialLocalizations.delegate],
-          supportedLocales: [const Locale('sv', 'SV')],
-          locale: Locale.fromSubtags(languageCode: 'sv'),
-          debugShowCheckedModeBanner: false,
-          theme: theme.getTheme(),
-          navigatorObservers: [observer],
-          onGenerateRoute: (RouteSettings routeSettings) {
-            print("generated route: ${routeSettings.name}");
-          },
-          initialRoute: widget.user != null ? TabBarWidget.routeName : LoginScreen.routeName,
-          routes: {
-            LoginScreen.routeName: (context) => LoginScreen(),
-            TabBarWidget.routeName: (context) => TabBarWidget(),
-            FirstLoginScreen.routeName: (context) => FirstLoginScreen(email: '', token: ''),
-            // SettingsScreen.routeName: (context) => SettingsScreen(),
-            // TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
-            ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
-            SignUpScreen.routeName: (context) => SignUpScreen(),
-          },
+        builder: (context, theme, _) => CupertinoTheme(
+          data: theme.cupertinoTheme,
+          child: MaterialApp(
+            navigatorKey: _navigatorKey,
+            localizationsDelegates: [GlobalCupertinoLocalizations.delegate, GlobalMaterialLocalizations.delegate],
+            supportedLocales: [const Locale('sv', 'SV')],
+            locale: Locale.fromSubtags(languageCode: 'sv'),
+            debugShowCheckedModeBanner: false,
+            theme: theme.getTheme(),
+            navigatorObservers: [observer],
+            onGenerateRoute: (RouteSettings routeSettings) {
+              print("generated route: ${routeSettings.name}");
+            },
+            initialRoute: widget.user != null ? TabBarWidget.routeName : LoginScreen.routeName,
+            routes: {
+              LoginScreen.routeName: (context) => LoginScreen(),
+              TabBarWidget.routeName: (context) => TabBarWidget(),
+              FirstLoginScreen.routeName: (context) => FirstLoginScreen(email: '', token: ''),
+              // SettingsScreen.routeName: (context) => SettingsScreen(),
+              // TimeReportingScreen.routeName: (context) => TimeReportingScreen(),
+              ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
+              SignUpScreen.routeName: (context) => SignUpScreen(),
+            },
+          ),
         ),
       ),
     );

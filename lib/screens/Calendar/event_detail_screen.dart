@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
@@ -26,14 +25,16 @@ class EventDetailScreen extends StatefulWidget {
   final FirebaseStorageManager firebaseStorageManager;
   final Function(Event) didTapCopyEvent;
   final Function(Event) didTapChangeEvent;
-  EventDetailScreen(
-      {Key? key,
-      required this.event,
-      required this.firebaseEventManager,
-      required this.firebaseStorageManager,
-      required this.didTapCopyEvent,
-      required this.didTapChangeEvent})
-      : super(key: key);
+  final Function(Event) didTapRemoveEvent;
+  EventDetailScreen({
+    Key? key,
+    required this.event,
+    required this.firebaseEventManager,
+    required this.firebaseStorageManager,
+    required this.didTapCopyEvent,
+    required this.didTapChangeEvent,
+    required this.didTapRemoveEvent,
+  }) : super(key: key);
 
   @override
   _EventDetailScreenState createState() => _EventDetailScreenState();
@@ -450,34 +451,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         this.widget.didTapCopyEvent(this.widget.event);
         break;
       case 'Ta bort event':
-        handleDeleteEvent();
+        widget.didTapRemoveEvent(widget.event);
         break;
     }
-  }
-
-  void handleDeleteEvent() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-              title: new Text("Ta bort arbetsorder"),
-              content: new Text("Är du säker på att du vill ta bort den här arbetsordern?"),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                    isDestructiveAction: true,
-                    child: Text("Ja"),
-                    onPressed: () {
-                      HapticFeedback.heavyImpact();
-                      Navigator.of(context).pop();
-                      widget.firebaseEventManager.removeEvent(widget.event);
-                    }),
-                CupertinoDialogAction(
-                  child: Text("Nej"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            ));
   }
 
   Future<void> _makePhoneCall(String url) async {

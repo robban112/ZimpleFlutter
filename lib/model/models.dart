@@ -10,6 +10,8 @@ export 'event_type.dart';
 export 'note.dart';
 export 'offer.dart';
 export 'person.dart';
+export 'product.dart';
+export 'product_amount.dart';
 export 'timereport.dart';
 export 'user_parameters.dart';
 export 'work_category.dart';

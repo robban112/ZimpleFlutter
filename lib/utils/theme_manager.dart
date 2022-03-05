@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,10 @@ class ThemeNotifier with ChangeNotifier {
 
   Color get textColor {
     return isDarkMode() ? Colors.white : Colors.black;
+  }
+
+  Color get invertedTextColor {
+    return isDarkMode() ? Colors.black : Colors.white;
   }
 
   Color get yellow {
@@ -33,6 +38,8 @@ class ThemeNotifier with ChangeNotifier {
 
   static final Color darkThemePrimaryBg = Color(0xff0F0E0E);
 
+  static const String fontName = 'FiraSans';
+
   late final darkTheme = ThemeData(
       appBarTheme: AppBarTheme(
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -47,6 +54,7 @@ class ThemeNotifier with ChangeNotifier {
       primaryIconTheme: IconThemeData(color: Colors.white),
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo).copyWith(
         secondary: Color(0xFF3949AB),
+        tertiary: Color(0xff7CD8EC),
         brightness: Brightness.dark,
       ),
       snackBarTheme: SnackBarThemeData(
@@ -72,6 +80,7 @@ class ThemeNotifier with ChangeNotifier {
     backgroundColor: lightThemePrimaryBg,
     colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue).copyWith(
       secondary: Color(0xff3617F9),
+      tertiary: Color(0xff3617F9),
       brightness: Brightness.light,
     ),
     cardColor: Colors.white,
@@ -90,33 +99,102 @@ class ThemeNotifier with ChangeNotifier {
     bottomAppBarColor: lightThemePrimaryBg,
   );
 
+  CupertinoThemeData get _cupertinoLightTheme => CupertinoThemeData(
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Colors.transparent,
+        primaryColor: Colors.white,
+        textTheme: CupertinoTextThemeData(
+          primaryColor: CupertinoColors.white,
+          textStyle: TextStyle(
+            fontFamily: fontName,
+            color: Colors.black,
+          ),
+          tabLabelTextStyle: null,
+          navTitleTextStyle: TextStyle(
+            fontFamily: fontName,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          navLargeTitleTextStyle: TextStyle(
+            fontFamily: fontName,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -1,
+          ),
+          pickerTextStyle: null,
+          dateTimePickerTextStyle: null,
+          actionTextStyle: TextStyle(
+            fontFamily: fontName,
+            color: Colors.white,
+          ),
+          navActionTextStyle: null,
+        ),
+      );
+
+  CupertinoThemeData get _cupertinoDarkTheme => CupertinoThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: CupertinoTextThemeData(
+          primaryColor: CupertinoColors.white,
+          textStyle: TextStyle(
+            fontFamily: fontName,
+            color: Colors.white,
+          ),
+          tabLabelTextStyle: null,
+          navTitleTextStyle: TextStyle(
+            fontFamily: fontName,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          navLargeTitleTextStyle: TextStyle(
+            fontFamily: fontName,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -1,
+          ),
+          pickerTextStyle: TextStyle(
+            fontFamily: fontName,
+            color: Colors.white,
+          ),
+          dateTimePickerTextStyle: null,
+          actionTextStyle: null,
+          navActionTextStyle: null,
+        ),
+      );
+
   ThemeNotifier() {
     _themeData = lightTheme;
+    cupertinoTheme = _cupertinoLightTheme;
     ZPreferences.readData(Keys.themeMode).then((value) {
       print('value read from storage: ' + value.toString());
       var themeMode = value ?? 'light';
       if (themeMode == 'light') {
         print('setting light theme');
-        _themeData = lightTheme;
+        setLightMode();
       } else {
         print('setting dark theme');
-        _themeData = darkTheme;
+        setDarkMode();
       }
       notifyListeners();
     });
   }
 
   late ThemeData _themeData;
+
+  late CupertinoThemeData cupertinoTheme;
+
   ThemeData getTheme() => _themeData;
 
   void setDarkMode() async {
     _themeData = darkTheme;
+    cupertinoTheme = _cupertinoDarkTheme;
     ZPreferences.saveData(Keys.themeMode, 'dark');
     notifyListeners();
   }
 
   void setLightMode() async {
     _themeData = lightTheme;
+    cupertinoTheme = _cupertinoLightTheme;
     ZPreferences.saveData(Keys.themeMode, 'light');
     notifyListeners();
   }

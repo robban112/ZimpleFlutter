@@ -22,11 +22,14 @@ class Product {
 
   final double pricePerUnit;
 
+  final int vat;
+
   Product({
     required this.id,
     required this.name,
     required this.unit,
     required this.pricePerUnit,
+    this.vat = 25,
   });
 
   Product copyWith({
@@ -49,6 +52,7 @@ class Product {
       'name': name,
       'unit': unit.toMap(),
       'pricePerUnit': pricePerUnit,
+      'vat': vat,
     };
   }
 
@@ -58,6 +62,7 @@ class Product {
       name: map['name'] ?? '',
       unit: unitFromString(map['unit']),
       pricePerUnit: map['pricePerUnit']?.toDouble() ?? 0.0,
+      vat: map['vat'] ?? 25,
     );
   }
 

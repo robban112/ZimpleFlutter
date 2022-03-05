@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/screens/Economy/Offert/SavedProducts/saved_products_screen.dart';
 import 'package:zimple/screens/Economy/Offert/create_offer_screen.dart';
-import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
@@ -26,13 +25,8 @@ class _EconomyScreenState extends State<EconomyScreen> {
             "Ekonomi",
             withBackButton: false,
           )),
-      body: Stack(
-        children: [
-          ZimpleDotBackground(
-            shouldAnimate: false,
-          ),
-          _body(context),
-        ],
+      body: BackgroundWidget(
+        child: _body(context),
       ),
     );
   }

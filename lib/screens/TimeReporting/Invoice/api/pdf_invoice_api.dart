@@ -1,4 +1,5 @@
 import 'dart:io';
+
 //import 'package:generate_pdf_invoice_example/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -11,12 +12,24 @@ import 'package:zimple/screens/TimeReporting/Invoice/model/supplier.dart';
 import 'pdf_api.dart';
 
 class PdfInvoiceApi {
-  static formatPrice(double price) => '\$ ${price.toStringAsFixed(2)}';
-  static formatDate(DateTime date) => DateFormat.yMd().format(date);
+  static formatPrice(double price) => ' ${price.toStringAsFixed(2)} kr';
+
+  static formatDate(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
+
   static Future<File> generate(Invoice invoice) async {
+    print("Generating pdf");
     final pdf = Document();
 
-    pdf.addPage(MultiPage(
+    pdf.addPage(getInvoice(invoice));
+
+    File pdfFile = await PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
+
+    print("path: ${pdfFile.path}");
+    return pdfFile;
+  }
+
+  static MultiPage getInvoice(Invoice invoice) {
+    return MultiPage(
       build: (context) => [
         buildHeader(invoice),
         SizedBox(height: 3 * PdfPageFormat.cm),
@@ -26,10 +39,17 @@ class PdfInvoiceApi {
         buildTotal(invoice),
       ],
       footer: (context) => buildFooter(invoice),
-    ));
-
-    return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
+    );
   }
+
+  static List<Widget> invoiceChildren(Invoice invoice) => [
+        buildHeader(invoice),
+        SizedBox(height: 3 * PdfPageFormat.cm),
+        buildTitle(invoice),
+        buildInvoice(invoice),
+        Divider(),
+        buildTotal(invoice),
+      ];
 
   static Widget buildHeader(Invoice invoice) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,13 +90,8 @@ class PdfInvoiceApi {
       );
 
   static Widget buildInvoiceInfo(InvoiceInfo info) {
-    final paymentTerms = '${info.dueDate.difference(info.date).inDays} days';
-    final titles = <String>[
-      'Invoice Number:',
-      'Invoice Date:',
-      'Payment Terms:',
-      'Due Date:'
-    ];
+    final paymentTerms = '${info.dueDate.difference(info.date).inDays} dagar';
+    final titles = <String>['Fakturanummer:', 'Datum:', 'Betalningsvillkor:', 'Förfallodatum:'];
     final data = <String>[
       info.number,
       DateFormat.yMd().format(info.date),
@@ -108,7 +123,7 @@ class PdfInvoiceApi {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'INVOICE',
+            invoice.title,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 0.8 * PdfPageFormat.cm),
@@ -118,24 +133,17 @@ class PdfInvoiceApi {
       );
 
   static Widget buildInvoice(Invoice invoice) {
-    final headers = [
-      'Description',
-      'Date',
-      'Quantity',
-      'Unit Price',
-      'VAT',
-      'Total'
-    ];
+    final headers = ['Beskrivning', 'Datum', 'Antal', 'Á-pris', 'Moms', 'Total'];
     final data = invoice.items.map((item) {
-      final total = item.unitPrice * item.quantity * (1 + item.vat);
+      final total = item.unitPrice * item.quantity;
 
       return [
         item.description,
         DateFormat.yMd().format(item.date),
         '${item.quantity}',
-        '\$ ${item.unitPrice}',
+        '${item.unitPrice} kr',
         '${item.vat} %',
-        '\$ ${total.toStringAsFixed(2)}',
+        '${total.toStringAsFixed(2)} kr',
       ];
     }).toList();
 
@@ -158,12 +166,10 @@ class PdfInvoiceApi {
   }
 
   static Widget buildTotal(Invoice invoice) {
-    final netTotal = invoice.items
-        .map((item) => item.unitPrice * item.quantity)
-        .reduce((item1, item2) => item1 + item2);
+    final total = invoice.items.map((item) => item.unitPrice * item.quantity).reduce((item1, item2) => item1 + item2);
     final vatPercent = invoice.items.first.vat;
-    final vat = netTotal * vatPercent;
-    final total = netTotal + vat;
+    final vat = total * (vatPercent / 100);
+    final netTotal = total - vat;
 
     return Container(
       alignment: Alignment.centerRight,
@@ -176,12 +182,12 @@ class PdfInvoiceApi {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildText(
-                  title: 'Net total',
+                  title: 'Netto total',
                   value: formatPrice(netTotal),
                   unite: true,
                 ),
                 buildText(
-                  title: 'Vat ${vatPercent * 100} %',
+                  title: 'Moms $vatPercent %',
                   value: formatPrice(vat),
                   unite: true,
                 ),

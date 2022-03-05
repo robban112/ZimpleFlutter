@@ -28,34 +28,13 @@ class _SavedProductsScreenState extends State<SavedProductsScreen> {
           ZimpleDotBackground(
             shouldAnimate: false,
           ),
-          _body(context),
+          SavedProductsList(
+            hasDelete: true,
+            onDeleteProduct: deleteProduct,
+            onSelectProduct: (_) {},
+          )
         ],
       ),
-    );
-  }
-
-  Widget _body(BuildContext context) {
-    return StreamBuilder<List<Product>>(
-      stream: FirebaseProductManager.of(context).streamProducts(),
-      builder: (context, snapshot) {
-        if (snapshot.data == null) return Center(child: Text("Inga produkter"));
-        return _buildProductList(snapshot.data!);
-      },
-    );
-  }
-
-  Widget _buildProductList(List<Product> products) {
-    return ListView.separated(
-      padding: EdgeInsets.only(top: 16),
-      itemBuilder: (context, index) {
-        Product product = products[index];
-        return ProductItem(
-          product: product,
-          onTapDelete: deleteProduct,
-        );
-      },
-      itemCount: products.length,
-      separatorBuilder: (_, __) => SizedBox(height: 12),
     );
   }
 
@@ -79,34 +58,92 @@ class _SavedProductsScreenState extends State<SavedProductsScreen> {
   }
 }
 
-class ProductItem extends StatelessWidget {
-  final Product product;
+class SavedProductsList extends StatelessWidget {
+  final bool hasDelete;
 
-  final Function(Product) onTapDelete;
-  const ProductItem({
+  final Function(Product) onSelectProduct;
+
+  final Function(Product) onDeleteProduct;
+
+  const SavedProductsList({
     Key? key,
-    required this.product,
-    required this.onTapDelete,
+    required this.hasDelete,
+    required this.onSelectProduct,
+    required this.onDeleteProduct,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      width: width(context),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: ThemeNotifier.of(context).isDarkMode() ? null : standardShadow,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildLeftTextCol(),
-            _buildDeleteButton(context),
-          ],
+    return _body(context);
+  }
+
+  Widget _body(BuildContext context) {
+    return StreamBuilder<List<Product>>(
+      stream: FirebaseProductManager.of(context).streamProducts(),
+      builder: (context, snapshot) {
+        if (snapshot.data == null) return Center(child: Text("Inga produkter"));
+        return _buildProductList(snapshot.data!);
+      },
+    );
+  }
+
+  Widget _buildProductList(List<Product> products) {
+    return ListView.separated(
+      padding: EdgeInsets.only(top: 16),
+      itemBuilder: (context, index) {
+        Product product = products[index];
+        return ProductItem(
+          product: product,
+          onTapDelete: onDeleteProduct,
+          hasDelete: hasDelete,
+          onSelectProduct: onSelectProduct,
+        );
+      },
+      itemCount: products.length,
+      separatorBuilder: (_, __) => SizedBox(height: 12),
+    );
+  }
+}
+
+class ProductItem extends StatelessWidget {
+  final Product product;
+
+  final Function(Product) onTapDelete;
+
+  final Function(Product) onSelectProduct;
+
+  final bool hasDelete;
+
+  const ProductItem({
+    Key? key,
+    required this.product,
+    required this.onTapDelete,
+    required this.hasDelete,
+    required this.onSelectProduct,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => onSelectProduct(product),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16),
+        width: width(context),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: ThemeNotifier.of(context).isDarkMode() ? null : standardShadow,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildLeftTextCol(context),
+              hasDelete ? _buildDeleteButton(context) : Container(),
+            ],
+          ),
         ),
       ),
     );
@@ -128,13 +165,21 @@ class ProductItem extends StatelessWidget {
     );
   }
 
-  Widget _buildLeftTextCol() {
-    String pricePerUnit = "${product.pricePerUnit.toInt().toString()} per ${unitToString(product.unit)}";
+  Widget _buildLeftTextCol(BuildContext context) {
+    String pricePerUnit = "${product.pricePerUnit.toInt().toString()} kr per ${unitToString(product.unit)}";
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(product.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        Text(pricePerUnit, style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+        Text(product.name,
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: ThemeNotifier.of(context).textColor, fontFamily: 'FiraSans')),
+        const SizedBox(height: 3),
+        Text(pricePerUnit,
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.normal, color: ThemeNotifier.of(context).textColor, fontFamily: 'FiraSans')),
+        const SizedBox(height: 6),
+        Text("${product.vat.toString()} % moms",
+            style: textStyle(context).copyWith(color: ThemeNotifier.of(context).textColor.withOpacity(0.5)))
       ],
     );
   }

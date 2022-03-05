@@ -66,11 +66,11 @@ class _NotesScreenState extends State<NotesScreen> with SingleTickerProviderStat
         children: [
           TabBar(
             physics: BouncingScrollPhysics(),
-            labelColor: Theme.of(context).colorScheme.secondary,
-            unselectedLabelColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+            labelColor: Theme.of(context).colorScheme.tertiary,
+            unselectedLabelColor: Theme.of(context).colorScheme.tertiary.withOpacity(0.5),
             tabs: _tabs(context),
             controller: _tabController,
-            indicatorColor: Theme.of(context).colorScheme.secondary,
+            indicatorColor: Theme.of(context).colorScheme.tertiary,
           ),
           Expanded(
             child: Container(

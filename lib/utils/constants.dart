@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zimple/utils/theme_manager.dart';
 
 const locale = 'sv_SE';
 
@@ -96,5 +97,8 @@ Size size(BuildContext context) => MediaQuery.of(context).size;
 double width(BuildContext context) => size(context).width;
 
 double height(BuildContext context) => size(context).height;
+
+TextStyle textStyle(BuildContext context) =>
+    TextStyle(fontFamily: 'FiraSans', color: ThemeNotifier.of(context).textColor, fontWeight: FontWeight.normal, fontSize: 16);
 
 void onTapRemoveFocus(BuildContext context) => FocusScope.of(context).requestFocus(FocusNode());

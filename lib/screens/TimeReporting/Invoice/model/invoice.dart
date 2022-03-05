@@ -1,13 +1,16 @@
 import 'package:zimple/model/customer.dart';
+
 import 'supplier.dart';
 
 class Invoice {
+  final String title;
   final InvoiceInfo info;
   final Supplier supplier;
   final Customer customer;
   final List<InvoiceItem> items;
 
   const Invoice({
+    this.title = "Faktura",
     required this.info,
     required this.supplier,
     required this.customer,

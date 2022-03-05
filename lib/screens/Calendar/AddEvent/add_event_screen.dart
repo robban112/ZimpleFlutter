@@ -423,12 +423,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
       //     key: _phoneNumberFormKey,
       //     controller: phonenumberController),
       ListedItem(
-          leadingIcon: Icons.image_rounded,
+          leadingIcon: FeatherIcons.image,
           text: "Lägg till bilder",
           trailingWidget: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [selectedImagesPreview(), Icon(Icons.chevron_right)],
+            children: [
+              selectedImagesPreview(),
+              Icon(Icons.chevron_right),
+            ],
           ),
           onTap: () => setState(() {
                 isSelectingPhotoProvider = !isSelectingPhotoProvider;

@@ -61,6 +61,30 @@ class PhotoButtons extends StatelessWidget {
   }
 
   Widget _buildPhotoButton(BuildContext context, Function onTap, String text, {Color? color, Color? textColor}) {
+    return DragupButton(
+      onTap: () => onTap(),
+      title: text,
+      color: color,
+      textColor: textColor,
+    );
+  }
+}
+
+class DragupButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final String title;
+  final Color? color;
+  final Color? textColor;
+  const DragupButton({
+    Key? key,
+    required this.title,
+    required this.onTap,
+    this.color,
+    this.textColor,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: ThemeNotifier.of(context).photoButtonColor,
@@ -79,7 +103,7 @@ class PhotoButtons extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              text,
+              title,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: textColor ?? ThemeNotifier.of(context).textColor,

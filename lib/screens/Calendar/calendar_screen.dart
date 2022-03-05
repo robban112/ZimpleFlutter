@@ -12,6 +12,7 @@ import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/screens/Calendar/Filter/filter_persons_page.dart';
 import 'package:zimple/screens/drawer.dart';
 import 'package:zimple/utils/zpreferences.dart';
+import 'package:zimple/widgets/button/event_modify_buttons.dart';
 import 'package:zimple/widgets/floating_add_button.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -22,7 +23,6 @@ import '../../network/firebase_event_manager.dart';
 import '../../network/firebase_user_manager.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/days_changed_controller.dart';
-import '../../widgets/rounded_button.dart';
 import 'AddEvent/add_event_screen.dart';
 import 'event_detail_screen.dart';
 
@@ -89,11 +89,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Event? originalEventToMove;
 
+  Event? eventToModify;
+
   bool isShowingTimeplan = false;
 
   bool viewingMySchedule = false;
 
   bool isMovingEvent = false;
+
+  bool isShowingEventOptions = false;
 
   late Map<Person, bool> _filteredPersons;
 
@@ -157,7 +161,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     EventManager eventManager = context.read<ManagerProvider>().eventManager;
     return Scaffold(
       key: _drawerKey,
-      floatingActionButton: !isMovingEvent && !isCopyingEvent && widget.user.isAdmin
+      floatingActionButton: !isShowingEventOptions && !isMovingEvent && !isCopyingEvent && widget.user.isAdmin
           ? FloatingAddButton(
               onPressed: _goToAddEvent,
             )
@@ -199,6 +203,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
           didDoubleTapHour: (date, index) => _didDoubleTapHour(context, date, index),
           didLongPressEvent: _didLongPressEvent,
         ),
+        EventModifyButtons(
+          visible: isShowingEventOptions,
+          onTapCancel: () => setState(() {
+            isShowingEventOptions = false;
+            eventToModify = null;
+          }),
+          onTapChange: () => _didTapChangeEvent(eventToModify),
+          onTapCopy: () => _didTapCopyEvent(eventToModify),
+          onTapMove: () => _moveEvent(eventToModify),
+          onTapDelete: () => _didTapRemoveEvent(eventToModify),
+        ),
         buildCopyWidget(),
       ],
     );
@@ -210,26 +225,64 @@ class _CalendarScreenState extends State<CalendarScreen> {
       event: event,
       firebaseEventManager: widget.firebaseEventManager,
       firebaseStorageManager: firebaseStorageManager,
-      didTapCopyEvent: (event) {
-        HapticFeedback.lightImpact();
-        setState(() {
-          eventToCopy = event;
-          isCopyingEvent = true;
-        });
-      },
-      didTapChangeEvent: (event) {
-        HapticFeedback.lightImpact();
-        pushNewScreen(
-          context,
-          screen: AddEventScreen(
-            persons: widget.personManager.persons,
-            firebaseEventManager: widget.firebaseEventManager,
-            firebaseStorageManager: this.firebaseStorageManager,
-            eventToChange: event,
-          ),
-        );
-      },
+      didTapCopyEvent: _didTapCopyEvent,
+      didTapChangeEvent: _didTapChangeEvent,
+      didTapRemoveEvent: _didTapRemoveEvent,
     );
+  }
+
+  void _didTapCopyEvent(Event? event) {
+    _exitModifyEvent();
+    if (event == null) return;
+    HapticFeedback.lightImpact();
+    setState(() {
+      eventToCopy = event;
+      isCopyingEvent = true;
+    });
+  }
+
+  void _didTapChangeEvent(Event? event) {
+    _exitModifyEvent();
+    if (event == null) return;
+    HapticFeedback.lightImpact();
+    pushNewScreen(
+      context,
+      screen: AddEventScreen(
+        persons: widget.personManager.persons,
+        firebaseEventManager: widget.firebaseEventManager,
+        firebaseStorageManager: this.firebaseStorageManager,
+        eventToChange: event,
+      ),
+    );
+  }
+
+  void _exitModifyEvent() => setState(() => isShowingEventOptions = false);
+
+  void _didTapRemoveEvent(Event? event) {
+    _exitModifyEvent();
+    if (event == null) return;
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: new Text("Ta bort arbetsorder"),
+              content: new Text("Är du säker på att du vill ta bort den här arbetsordern?"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    child: Text("Ja"),
+                    onPressed: () {
+                      HapticFeedback.heavyImpact();
+                      Navigator.of(context).pop();
+                      widget.firebaseEventManager.removeEvent(event);
+                    }),
+                CupertinoDialogAction(
+                  child: Text("Nej"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ));
   }
 
   // MARK: Functions
@@ -298,19 +351,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
           )
         : Container();
-  }
-
-  Widget _buildSmallButton({required String title, required VoidCallback onPressed, required Color color}) {
-    return Container(
-      height: 75,
-      child: RoundedButton(
-        text: title,
-        fontSize: 16,
-        textColor: Colors.white,
-        color: color,
-        onTap: onPressed,
-      ),
-    );
   }
 
   void showFilterPage() {
@@ -455,6 +495,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void _didLongPressEvent(Event event) {
     HapticFeedback.mediumImpact();
+    setState(() {
+      isShowingEventOptions = true;
+      eventToModify = event;
+    });
+  }
+
+  void _moveEvent(Event? event) {
+    _exitModifyEvent();
+    if (event == null) return;
     print("isMovingEvent: $isMovingEvent");
     context.read<ManagerProvider>().updateEvent(key: event.id, newEvent: event.copyWith(isMovingEvent: true));
     setState(() {

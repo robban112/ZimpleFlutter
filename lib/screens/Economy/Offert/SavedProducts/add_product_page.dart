@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:zimple/model/product.dart';
 import 'package:zimple/network/firebase_product_manager.dart';
+import 'package:zimple/screens/Economy/Offert/SavedProducts/SelectVAT/select_vat_screen.dart';
 import 'package:zimple/widgets/snackbar/snackbar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
@@ -16,7 +18,9 @@ class _AddProductPageState extends State<AddProductPage> {
 
   final TextEditingController pricePerUnitController = TextEditingController();
 
-  final String selectedUnit = "timmar";
+  String selectedUnit = "timmar";
+
+  int selectedVat = 25;
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +54,21 @@ class _AddProductPageState extends State<AddProductPage> {
           children: [Text(selectedUnit), Icon(Icons.chevron_right)],
         ),
       ),
+      ListedItem(
+        leadingIcon: Icons.category_sharp,
+        text: 'Moms',
+        onTap: _onTapSelectVAT,
+        trailingWidget: Row(
+          children: [Text(selectedVat.toString()), Icon(Icons.chevron_right)],
+        ),
+      ),
     ]);
   }
 
   void _onTapSave() {
     Product product = Product(
       id: "",
+      vat: selectedVat,
       name: titleController.text,
       pricePerUnit: double.parse(pricePerUnitController.text),
       unit: unitFromString(
@@ -69,5 +82,15 @@ class _AddProductPageState extends State<AddProductPage> {
         showSnackbar(context: context, isSuccess: true, message: "Produkt tillagd!");
       });
     });
+  }
+
+  void _onTapSelectVAT() async {
+    var vat = await pushNewScreen(context,
+        screen: SelectVATPage(
+          selectedVat: selectedVat,
+        ));
+    if (vat is int) {
+      setState(() => this.selectedVat = vat);
+    }
   }
 }

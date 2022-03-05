@@ -12,7 +12,6 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
-import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/screens/Settings/CompanySettings/company_settings_screen.dart';
 import 'package:zimple/screens/Settings/Coworkers/add_coworker_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customers_screen.dart';
@@ -78,32 +77,30 @@ class _MoreScreenState extends State<MoreScreen> {
     return Scaffold(
       appBar: appBar(CompanySettings.of(context).companyName.capitalize(), withBackButton: false),
       body: Stack(
+        children: [BackgroundWidget(child: _body(context)), buildPhotoButtons()],
+      ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ZimpleDotBackground(
-            shouldAnimate: false,
-          ),
-          SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 24),
-                _buildProfile(),
-                const SizedBox(height: 12),
-                _buildTitle(),
-                const SizedBox(height: 4),
-                widget.user.isAdmin
-                    ? Text(
-                        "Admin",
-                        textAlign: TextAlign.center,
-                      )
-                    : Container(),
-                const SizedBox(height: 12),
-                buildListMenu(context)
-              ],
-            ),
-          ),
-          buildPhotoButtons()
+          const SizedBox(height: 24),
+          _buildProfile(),
+          const SizedBox(height: 12),
+          _buildTitle(),
+          const SizedBox(height: 4),
+          widget.user.isAdmin
+              ? Text(
+                  "Admin",
+                  textAlign: TextAlign.center,
+                )
+              : Container(),
+          const SizedBox(height: 12),
+          buildListMenu(context)
         ],
       ),
     );
@@ -124,7 +121,7 @@ class _MoreScreenState extends State<MoreScreen> {
           ListedItem(
               trailingIcon: Icons.chevron_right,
               leadingIcon: FeatherIcons.info,
-              text: "Företagsinställningar",
+              text: "Företagsinfo",
               onTap: () {
                 pushNewScreen(context, screen: CompanySettingsScreen());
               }),
