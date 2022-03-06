@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/models.dart';
+import 'package:zimple/screens/Economy/Offert/Components/invoice_item_widget.dart';
+import 'package:zimple/screens/Economy/Offert/CreatedOffer/created_offer_screen.dart';
 import 'package:zimple/screens/Economy/Offert/OfferPreview/offer_preview_screen.dart';
 import 'package:zimple/screens/Economy/Offert/SelectProduct/select_product_screen.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/model/invoice.dart';
+import 'package:zimple/screens/TimeReporting/Invoice/model/supplier.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/widgets.dart';
@@ -41,12 +43,21 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
 
   late final TextEditingController ibanController = TextEditingController(text: CompanySettings.of(context).iban);
 
+  late final TextEditingController emailController = TextEditingController(text: user(context).email);
+
+  late final TextEditingController phoneController =
+      TextEditingController(text: ManagerProvider.of(context).getLoggedInPerson()?.phonenumber);
+
+  final TextEditingController termsController = TextEditingController();
+
+  final TextEditingController descController = TextEditingController();
+
   List<InvoiceItem> selectedProducts = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.fromHeight(appBarHeight), child: StandardAppBar("Skapa offert")),
+      appBar: appBar("Skapa offert", trailing: ZTextButton(text: "Skapa", onTap: _onTapCreateOffer)),
       body: BackgroundWidget(child: _body(context)),
     );
   }
@@ -90,16 +101,6 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ListedView(
-        //   rowInset: rowInset,
-        //   items: [
-        //     ListedItem(
-        //       leadingIcon: FeatherIcons.archive,
-        //       text: "Lägg till produkt",
-        //       onTap: _onTapSelectProduct,
-        //     ),
-        //   ],
-        // ),
         smallDivider(),
         Wrap(
           runSpacing: 8,
@@ -118,16 +119,17 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
             onPressed: _onTapSelectProduct,
             padding: EdgeInsets.zero,
             child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: ThemeNotifier.of(context).textColor,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: ThemeNotifier.of(context).textColor,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
-                  child: Text("+ Lägg till produkt", style: textStyle(context)),
-                )),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+                child: Text("+ Lägg till produkt", style: textStyle(context)),
+              ),
+            ),
           ),
         ),
       ],
@@ -195,8 +197,24 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
       ),
       ListedTextField(
         leadingIcon: Icons.title,
+        placeholder: 'Din email',
+        controller: emailController,
+      ),
+      ListedTextField(
+        leadingIcon: Icons.title,
+        placeholder: 'Ditt telefonnummer',
+        controller: phoneController,
+      ),
+      ListedTextField(
+        leadingIcon: Icons.title,
         placeholder: 'Betalningsvillkor',
-        controller: senderController,
+        controller: termsController,
+        inputType: TextInputType.number,
+      ),
+      ListedTextField(
+        leadingIcon: Icons.title,
+        placeholder: 'Beskrivning',
+        controller: descController,
       ),
     ]);
   }
@@ -212,7 +230,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
           GestureDetector(
             onTap: _onPresedPreviewOffer,
             child: Container(
-              width: width(context) * 0.5,
+              width: width(context) * 0.4,
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(16),
@@ -222,12 +240,13 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
                 child: IgnorePointer(
                   ignoring: true,
                   child: Container(
-                      height: 200,
-                      width: 200,
-                      color: Theme.of(context).cardColor,
-                      child: OfferPDF(
-                        selectedProducts: selectedProducts,
-                      )),
+                    height: 200,
+                    width: 200,
+                    color: Theme.of(context).cardColor,
+                    child: OfferPDF(
+                      invoice: getInvoice(),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -239,7 +258,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
   }
 
   void _onPresedPreviewOffer() {
-    showCupertinoDialog(context: context, builder: (_) => OfferPreviewScreen(selectedProducts: selectedProducts));
+    showCupertinoDialog(context: context, builder: (_) => OfferPreviewScreen(invoice: getInvoice()));
   }
 
   void _onTapSelectProduct() async {
@@ -251,59 +270,41 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
   }
 
   void _onDeleteAddedProduct(InvoiceItem productAmount) => setState(() => selectedProducts.remove(productAmount));
-}
 
-class ProductAmountItem extends StatelessWidget {
-  final InvoiceItem productAmount;
+  void _onTapCreateOffer() {
+    pushNewScreen(context, screen: CreatedOfferScreen(invoice: getInvoice()));
+  }
 
-  final VoidCallback onTapDeleteProduct;
+  Invoice getInvoice() {
+    InvoiceInfo info = InvoiceInfo(
+      date: DateTime.now(),
+      dueDate: DateTime.now().add(Duration(days: 30)),
+      description: descController.text,
+      number: '${DateTime.now().year}-${DateTime.now().month}${DateTime.now().day}${DateTime.now().hour}${DateTime.now().minute}',
+    );
 
-  const ProductAmountItem({
-    Key? key,
-    required this.productAmount,
-    required this.onTapDeleteProduct,
-  }) : super(key: key);
+    Supplier supplier = Supplier(
+      name: senderController.text,
+      address: '',
+      paymentInfo: '',
+      phonenumber: phoneController.text,
+      email: emailController.text,
+    );
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 75,
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: ThemeNotifier.of(context).textColor.withOpacity(0.1),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  productAmount.description,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "${productAmount.quantity.toString()} st x ${productAmount.unitPrice.toInt().toString()} kr / h = ${(productAmount.quantity * productAmount.unitPrice)} kr",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ],
-            ),
-            DeleteButton(onTapDelete: onTapDeleteProduct),
-          ],
-        ),
-      ),
+    BankInfo bankInfo = BankInfo(bankgiro: bankgiroController.text, plusgiro: plusgiroController.text, iban: ibanController.text);
+
+    CompanyInfo companyInfo = CompanyInfo(orgNr: orgController.text, vatNr: momsController.text, website: websiteController.text);
+
+    Customer customer = Customer(receiverController.text, '', '', []);
+
+    return Invoice(
+      title: 'Offert',
+      info: info,
+      supplier: supplier,
+      customer: customer,
+      items: selectedProducts,
+      bankInfo: bankInfo,
+      companyInfo: companyInfo,
     );
   }
 }

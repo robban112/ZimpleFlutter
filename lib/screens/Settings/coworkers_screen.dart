@@ -41,28 +41,32 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
         preferredSize: appBarSize,
         child: StandardAppBar("Medarbetare"),
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: ClampingScrollPhysics(),
-        child: DataTable(
-          showCheckboxColumn: false,
-          dividerThickness: 0.1,
-          columnSpacing: 25,
-          rows: personManager.persons.map((person) {
-            return DataRow(onSelectChanged: (_) => pushNewScreen(context, screen: CoworkerDetailsScreen(person: person)), cells: [
-              DataCell(_buildProfile(person)),
-              DataCell(Text(person.name)),
-              DataCell(Text(person.phonenumber ?? "")),
-              DataCell(Text(person.email ?? "")),
-            ]);
-          }).toList(),
-          columns: [
-            DataColumn(label: Text('')),
-            DataColumn(label: Text('Namn', style: TextStyle(color: Colors.grey))),
-            DataColumn(label: Text('Telefon', style: TextStyle(color: Colors.grey))),
-            DataColumn(label: Text('Email', style: TextStyle(color: Colors.grey))),
-          ],
-        ),
+      body: BackgroundWidget(child: _body(personManager, context)),
+    );
+  }
+
+  SingleChildScrollView _body(PersonManager personManager, BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: ClampingScrollPhysics(),
+      child: DataTable(
+        showCheckboxColumn: false,
+        dividerThickness: 0.1,
+        columnSpacing: 25,
+        rows: personManager.persons.map((person) {
+          return DataRow(onSelectChanged: (_) => pushNewScreen(context, screen: CoworkerDetailsScreen(person: person)), cells: [
+            DataCell(_buildProfile(person)),
+            DataCell(Text(person.name)),
+            DataCell(Text(person.phonenumber ?? "")),
+            DataCell(Text(person.email ?? "")),
+          ]);
+        }).toList(),
+        columns: [
+          DataColumn(label: Text('')),
+          DataColumn(label: Text('Namn', style: TextStyle(color: Colors.grey))),
+          DataColumn(label: Text('Telefon', style: TextStyle(color: Colors.grey))),
+          DataColumn(label: Text('Email', style: TextStyle(color: Colors.grey))),
+        ],
       ),
     );
   }

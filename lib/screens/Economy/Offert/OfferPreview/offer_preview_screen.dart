@@ -3,20 +3,18 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:zimple/model/models.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/api/pdf_invoice_api.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/model/invoice.dart';
-import 'package:zimple/screens/TimeReporting/Invoice/model/supplier.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class OfferPreviewScreen extends StatelessWidget {
-  final List<InvoiceItem> selectedProducts;
+  final Invoice invoice;
 
   const OfferPreviewScreen({
     Key? key,
-    required this.selectedProducts,
+    required this.invoice,
   }) : super(key: key);
 
   @override
@@ -37,7 +35,7 @@ class OfferPreviewScreen extends StatelessWidget {
             width: width(context),
             child: Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16, top: 80),
-              child: OfferPDF(selectedProducts: selectedProducts),
+              child: OfferPDF(invoice: invoice),
             ),
           ),
         ],
@@ -47,7 +45,7 @@ class OfferPreviewScreen extends StatelessWidget {
 }
 
 class OfferPDF extends StatelessWidget {
-  final List<InvoiceItem> selectedProducts;
+  final Invoice invoice;
 
   final double aspectRatio;
 
@@ -56,28 +54,11 @@ class OfferPDF extends StatelessWidget {
   OfferPDF({
     Key? key,
     this.aspectRatio = 1.0,
-    required this.selectedProducts,
+    required this.invoice,
     this.onTap,
   }) : super(key: key);
 
   late TextStyle bodyStyle = TextStyle(fontSize: aspectRatio * 14, fontWeight: FontWeight.normal, color: Colors.black);
-
-  InvoiceInfo info = InvoiceInfo(
-    date: DateTime.now(),
-    dueDate: DateTime.now().add(Duration(days: 30)),
-    description: 'My description...',
-    number: '${DateTime.now().year}-9999',
-  );
-
-  Supplier supplier = Supplier(
-    name: 'Sarah Field',
-    address: 'Sarah Street 9, Beijing, China',
-    paymentInfo: 'https://paypal.me/sarahfieldzz',
-  );
-
-  Customer customer = Customer('Apple Inc.', 'Apple Street, Cupertino, CA 95014', '1337', []);
-
-  late Invoice invoice = Invoice(info: info, supplier: supplier, customer: customer, items: selectedProducts);
 
   @override
   Widget build(BuildContext context) {

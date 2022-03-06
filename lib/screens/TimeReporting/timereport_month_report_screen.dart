@@ -48,8 +48,6 @@ class _TimereportMonthReportScreenState extends State<TimereportMonthReportScree
     List<String> customerKeys =
         widget.timereports.map((tr) => tr.customerKey).whereType<String>().where((element) => element != "").toList();
 
-    print(customerKeys.toSet());
-
     CustomerManager customerManager = ManagerProvider.of(context).customerManager;
 
     for (var key in customerKeys) {

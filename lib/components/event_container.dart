@@ -25,17 +25,17 @@ class EventContainer extends StatelessWidget {
     required this.didLongPressEvent,
   });
 
-  final double padding = 9;
+  final double padding = 8;
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     //if (eventLayout.width > screenWidth / 5) isEventLarge = true;
 
-    this.isEventLarge = (eventLayout.width > screenWidth / 5 && eventLayout.height > 200);
+    this.isEventLarge = (eventLayout.width > screenWidth / 5 && eventLayout.height > 100);
 
     // If the event is large enough to have text
-    bool isEventTextable = (eventLayout.width > 18 && eventLayout.height > 30);
+    bool isEventTextable = (eventLayout.width > 24 && eventLayout.height > 30);
 
     // Compute text color from luminance - Black or white
     Color textColor = _dynamicBlackWhite(context, event.color);
@@ -65,9 +65,9 @@ class EventContainer extends StatelessWidget {
               height: eventLayout.height,
               width: eventLayout.width - 1.0,
               margin: EdgeInsets.only(top: eventLayout.top, left: eventLayout.left),
-              padding: EdgeInsets.all(padding).copyWith(top: 6),
+              padding: EdgeInsets.all(padding).copyWith(top: 6, right: 1),
               decoration: BoxDecoration(
-                color: _eventColor().withOpacity(0.5),
+                color: _eventColor().withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: isEventTextable
@@ -92,7 +92,7 @@ class EventContainer extends StatelessWidget {
                         ],
                       ),
                     )
-                  : null,
+                  : Container(),
             ),
           ],
         ),
@@ -146,7 +146,8 @@ class EventContainer extends StatelessWidget {
   }
 
   Color _dynamicBlackWhite(BuildContext context, Color color) {
-    return ThemeNotifier.of(context).textColor;
+    return Color.alphaBlend(
+        event.color.withOpacity(0.2), ThemeNotifier.of(context).textColor); //ThemeNotifier.of(context).textColor;
     return color.computeLuminance() < 0.5 ? _fade(Colors.white) : _fade(Colors.black);
   }
 

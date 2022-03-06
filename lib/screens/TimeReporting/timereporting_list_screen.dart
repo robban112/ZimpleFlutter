@@ -1,17 +1,24 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/event_manager.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/event.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/model/timereport.dart';
 import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/screens/Calendar/Filter/filter_persons_page.dart';
+import 'package:zimple/screens/TimeReporting/TimereportList/timereport_list_widget.dart';
+import 'package:zimple/screens/TimeReporting/TimereportList/timereport_row_item.dart';
 import 'package:zimple/screens/TimeReporting/timereport_month_report_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
+import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
 import 'package:zimple/widgets/button/nav_bar_back.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
@@ -33,7 +40,8 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
 
   Map<TimeReport, bool> selectedTimereports = Map<TimeReport, bool>();
 
-  Map<Person, bool> selectedPersons = Map<Person, bool>();
+  late Map<Person, bool> selectedPersons =
+      Map.fromIterable(PersonManager.of(context).persons, key: (person) => person, value: (person) => false);
 
   late TimereportManager timereportManager;
 
@@ -55,21 +63,31 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
       children: [
         header,
         ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: timereports.length,
             itemBuilder: (contex, index) {
               TimeReport timereport = timereports[index];
               Event? event = eventManager.getEventForKey(key: timereport.eventId ?? "");
-              return TimereportRow(
-                timereport: timereport,
-                event: event,
-                isSelected: selectedTimereports[timereport] ?? false,
-                isSelectingMultiple: this.isSelectingMultiple,
-                didTapTimereport: (timereport) {
-                  isSelectingMultiple ? handleSelectTimereport(timereport) : goToTimereportingDetails(timereport);
-                },
+              return Column(
+                children: [
+                  TimeReportRowItem(
+                    timereport: timereport,
+                    onTapTimeReport: goToTimereportingDetails,
+                  ),
+                  TimeReportListSeparator(),
+                ],
               );
+              // return TimereportRow(
+              //   timereport: timereport,
+              //   event: event,
+              //   isSelected: selectedTimereports[timereport] ?? false,
+              //   isSelectingMultiple: this.isSelectingMultiple,
+              //   didTapTimereport: (timereport) {
+              //     isSelectingMultiple ? handleSelectTimereport(timereport) : goToTimereportingDetails(timereport);
+              //   },
+              // );
             }),
       ],
     );
@@ -121,7 +139,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(key, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
+          Text(key, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
           user.isAdmin
               ? TextButton(
                   child: Text("Visa månadsrapport", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
@@ -174,10 +192,12 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                       padding: const EdgeInsets.only(bottom: 24.0),
                       child: RectangularButton(
                         text: "Visa valda tidrapporter",
-                        onTap: () => pushNewScreen(context,
-                            screen: TimereportingDetails(
-                              listTimereports: _getSelectedTimereports(),
-                            )),
+                        onTap: () => pushNewScreen(
+                          context,
+                          screen: TimereportingDetails(
+                            listTimereports: _getSelectedTimereports(),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -190,16 +210,44 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
 
   Widget _buildPersonSelectComponent() {
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Välj personer", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-          SizedBox(height: 12.0),
-          _buildPersonChips(),
+          Text("Visa tidrapporter för", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+          SizedBox(height: 16.0),
+          //_buildPersonChips(),
+          ListedView(
+            rowInset: EdgeInsets.zero,
+            items: [
+              ListedItem(
+                  leadingIcon: FeatherIcons.userPlus,
+                  text: "Välj personer",
+                  onTap: onPressedSelectPersons,
+                  trailingWidget: Row(
+                    children: [
+                      ListPersonCircleAvatar(
+                        widthMultiplier: 0.4,
+                        persons: _selectedPersons(),
+                        alignment: WrapAlignment.end,
+                      ),
+                      const SizedBox(width: 6),
+                      Icon(Icons.chevron_right),
+                    ],
+                  )),
+            ],
+          )
         ],
       ),
     );
+  }
+
+  List<Person> _selectedPersons() {
+    List<Person> persons = [];
+    selectedPersons.forEach((key, value) {
+      if (value) persons.add(key);
+    });
+    return persons;
   }
 
   Widget _buildPersonChips() {
@@ -237,7 +285,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
 
   AppBar _buildAppBar(Map<String, List<TimeReport>>? mappedTimereports, BuildContext context) {
     return AppBar(
-      backgroundColor: primaryColor,
+      backgroundColor: ThemeNotifier.darkThemePrimaryBg,
       elevation: 0,
       actions: <Widget>[
         TextButton(
@@ -255,6 +303,24 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
           alignment: Alignment.centerLeft,
           child: Text("", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18.0))),
       leading: NavBarBack(),
+    );
+  }
+
+  List<String> get personIds => _selectedPersons().map((p) => p.id).toList();
+
+  void onPressedSelectPersons() {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => FilterPersonsPage(
+        preSelectedPersons: selectedPersons,
+        selected: (selected) {
+          for (Person person in selected) {
+            selectedPersons[person] = true;
+          }
+          mappedTimereports = groupTimereportsByMonth(timereportManager.getTimereportsForMulitple(personIds));
+          setState(() {});
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/generic_imports.dart';
 
 import 'api/pdf_api.dart';
 import 'api/pdf_invoice_api.dart';
@@ -61,8 +62,7 @@ class _GenerateInvoiceScreenState extends State<GenerateInvoiceScreen> {
                         address: 'Sarah Street 9, Beijing, China',
                         paymentInfo: 'https://paypal.me/sarahfieldzz',
                       ),
-                      customer: Customer('Apple Inc.',
-                          'Apple Street, Cupertino, CA 95014', '1337', []),
+                      customer: Customer('Apple Inc.', 'Apple Street, Cupertino, CA 95014', '1337', []),
                       info: InvoiceInfo(
                         date: date,
                         dueDate: dueDate,
@@ -122,7 +122,9 @@ class _GenerateInvoiceScreenState extends State<GenerateInvoiceScreen> {
                       ],
                     );
 
-                    final pdfFile = await PdfInvoiceApi.generate(invoice);
+                    final pdfFile = await PdfInvoiceApi.generate(
+                      invoice,
+                    );
 
                     PdfApi.openFile(pdfFile);
                   },

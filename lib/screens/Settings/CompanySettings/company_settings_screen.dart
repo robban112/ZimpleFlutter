@@ -29,7 +29,7 @@ class _CompanySettingsScreenState extends State<CompanySettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar("Företagsinfo", trailing: _saveButton()),
-      body: _body(context),
+      body: BackgroundWidget(child: _body(context)),
     );
   }
 

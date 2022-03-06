@@ -7,6 +7,8 @@ class Invoice {
   final InvoiceInfo info;
   final Supplier supplier;
   final Customer customer;
+  final BankInfo? bankInfo;
+  final CompanyInfo? companyInfo;
   final List<InvoiceItem> items;
 
   const Invoice({
@@ -15,6 +17,30 @@ class Invoice {
     required this.supplier,
     required this.customer,
     required this.items,
+    this.bankInfo,
+    this.companyInfo,
+  });
+}
+
+class BankInfo {
+  final String bankgiro;
+  final String plusgiro;
+  final String iban;
+  BankInfo({
+    required this.bankgiro,
+    required this.plusgiro,
+    required this.iban,
+  });
+}
+
+class CompanyInfo {
+  final String orgNr;
+  final String vatNr;
+  final String website;
+  CompanyInfo({
+    required this.orgNr,
+    required this.vatNr,
+    required this.website,
   });
 }
 

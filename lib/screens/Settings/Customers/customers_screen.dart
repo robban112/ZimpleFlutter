@@ -7,6 +7,7 @@ import 'package:zimple/model/customer.dart';
 import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customer_details_screen.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/provider_widget.dart';
@@ -59,34 +60,38 @@ class _CustomerScreenState extends State<CustomerScreen> {
             trailing: _addCustomerTextButton(),
           ),
         ),
-        body: SingleChildScrollView(
-          child: ListedView(
-              items: List.generate(customers.length, (index) {
-            Customer customer = customers[index];
-            return ListedItem(
-                leadingWidget: CustomerCircle(customer: customer),
-                trailingIcon: Icons.chevron_right,
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        child: Text(
-                          customer.name,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Text(customer.address ?? "", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600))
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  pushNewScreen(context, screen: CustomerDetailsScreen(customer: customer));
-                });
-          })),
-        ),
+        body: BackgroundWidget(child: _body(customers, context)),
       ),
+    );
+  }
+
+  SingleChildScrollView _body(List<Customer> customers, BuildContext context) {
+    return SingleChildScrollView(
+      child: ListedView(
+          items: List.generate(customers.length, (index) {
+        Customer customer = customers[index];
+        return ListedItem(
+            leadingWidget: CustomerCircle(customer: customer),
+            trailingIcon: Icons.chevron_right,
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: Text(
+                      customer.name,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Text(customer.address ?? "", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600))
+                ],
+              ),
+            ),
+            onTap: () {
+              pushNewScreen(context, screen: CustomerDetailsScreen(customer: customer));
+            });
+      })),
     );
   }
 

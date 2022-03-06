@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 
 import '../../utils/constants.dart';
@@ -8,38 +9,42 @@ class SupportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Support")),
-        body: Column(
-          children: [
-            //TopHeader(kPadding: kPadding),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, top: 12.0, left: 16),
-              child: Text(
-                "Vi finns här för att hjälpa dig.\nHör av dig genom att kontakta oss på email eller telefon",
-                style: TextStyle(fontSize: 15.0),
-              ),
-            ),
-            SizedBox(height: 12.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(Icons.phone),
-                  SizedBox(width: 16),
-                  Text("0760313335", style: TextStyle(fontSize: 16)),
-                ],
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [Icon(Icons.email), SizedBox(width: 16), Text("zebastian@zimple.se", style: TextStyle(fontSize: 16))],
-              ),
-            )
-          ],
-        ));
+        body: BackgroundWidget(child: _body()));
+  }
+
+  Column _body() {
+    return Column(
+      children: [
+        //TopHeader(kPadding: kPadding),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0, top: 12.0, left: 16),
+          child: Text(
+            "Vi finns här för att hjälpa dig.\nHör av dig genom att kontakta oss på email eller telefon",
+            style: TextStyle(fontSize: 15.0),
+          ),
+        ),
+        SizedBox(height: 12.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.phone),
+              SizedBox(width: 16),
+              Text("0760313335", style: TextStyle(fontSize: 16)),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [Icon(Icons.email), SizedBox(width: 16), Text("zebastian@zimple.se", style: TextStyle(fontSize: 16))],
+          ),
+        )
+      ],
+    );
   }
 }
 

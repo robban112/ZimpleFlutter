@@ -10,6 +10,8 @@ class ThemeNotifier with ChangeNotifier {
     return context.watch<ThemeNotifier>();
   }
 
+  Color get borderColor => textColor.withOpacity(0.1);
+
   Color get textColor {
     return isDarkMode() ? Colors.white : Colors.black;
   }
@@ -38,6 +40,8 @@ class ThemeNotifier with ChangeNotifier {
 
   static final Color darkThemePrimaryBg = Color(0xff0F0E0E);
 
+  static final Color darkCardColor = Color(0xff191A19);
+
   static const String fontName = 'FiraSans';
 
   late final darkTheme = ThemeData(
@@ -50,7 +54,7 @@ class ThemeNotifier with ChangeNotifier {
       primaryColor: Colors.black,
       scaffoldBackgroundColor: darkThemePrimaryBg,
       backgroundColor: darkThemePrimaryBg,
-      cardColor: Color(0xff191A19),
+      cardColor: darkCardColor,
       primaryIconTheme: IconThemeData(color: Colors.white),
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo).copyWith(
         secondary: Color(0xFF3949AB),

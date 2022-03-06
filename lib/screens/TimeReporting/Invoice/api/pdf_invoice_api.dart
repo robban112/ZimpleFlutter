@@ -8,13 +8,16 @@ import 'package:pdf/widgets.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/model/invoice.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/model/supplier.dart';
+import 'package:zimple/utils/generic_imports.dart';
 
 import 'pdf_api.dart';
 
 class PdfInvoiceApi {
   static formatPrice(double price) => ' ${price.toStringAsFixed(2)} kr';
 
-  static formatDate(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
+  static formatDate(DateTime date) => format.format(date);
+
+  static get format => DateFormat('yyyy-MM-dd');
 
   static Future<File> generate(Invoice invoice) async {
     print("Generating pdf");
@@ -84,19 +87,20 @@ class PdfInvoiceApi {
   static Widget buildCustomerAddress(Customer customer) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(customer.name, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text("Er referens", style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(customer.name),
           Text(customer.address ?? ""),
         ],
       );
 
   static Widget buildInvoiceInfo(InvoiceInfo info) {
     final paymentTerms = '${info.dueDate.difference(info.date).inDays} dagar';
-    final titles = <String>['Fakturanummer:', 'Datum:', 'Betalningsvillkor:', 'Förfallodatum:'];
+    final titles = <String>['Offertnummer:', 'Datum:', 'Betalningsvillkor:', 'Förfallodatum:'];
     final data = <String>[
       info.number,
-      DateFormat.yMd().format(info.date),
+      format.format(info.date),
       paymentTerms,
-      DateFormat.yMd().format(info.dueDate),
+      format.format(info.dueDate),
     ];
 
     return Column(
@@ -113,7 +117,8 @@ class PdfInvoiceApi {
   static Widget buildSupplierAddress(Supplier supplier) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(supplier.name, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text("Vår referens", style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(supplier.name),
           SizedBox(height: 1 * PdfPageFormat.mm),
           Text(supplier.address),
         ],
@@ -139,7 +144,7 @@ class PdfInvoiceApi {
 
       return [
         item.description,
-        DateFormat.yMd().format(item.date),
+        format.format(item.date),
         '${item.quantity}',
         '${item.unitPrice} kr',
         '${item.vat} %',
@@ -182,7 +187,7 @@ class PdfInvoiceApi {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildText(
-                  title: 'Netto total',
+                  title: 'Belopp före moms',
                   value: formatPrice(netTotal),
                   unite: true,
                 ),
@@ -193,7 +198,7 @@ class PdfInvoiceApi {
                 ),
                 Divider(),
                 buildText(
-                  title: 'Total amount due',
+                  title: 'Att betala (SEK)',
                   titleStyle: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -202,9 +207,6 @@ class PdfInvoiceApi {
                   unite: true,
                 ),
                 SizedBox(height: 2 * PdfPageFormat.mm),
-                Container(height: 1, color: PdfColors.grey400),
-                SizedBox(height: 0.5 * PdfPageFormat.mm),
-                Container(height: 1, color: PdfColors.grey400),
               ],
             ),
           ),
@@ -213,16 +215,121 @@ class PdfInvoiceApi {
     );
   }
 
-  static Widget buildFooter(Invoice invoice) => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Divider(),
-          SizedBox(height: 2 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Address', value: invoice.supplier.address),
-          SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Paypal', value: invoice.supplier.paymentInfo),
-        ],
-      );
+  static Widget buildFooter(Invoice invoice) {
+    double width = 150;
+    return Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildText(title: 'Tel.nr', value: invoice.supplier.phonenumber ?? "", width: width),
+            buildText(title: 'E-post', value: invoice.supplier.email ?? "", width: width),
+            buildText(title: 'Hemsida', value: invoice.companyInfo?.website ?? "", width: width),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildText(title: 'Org.nr', value: invoice.companyInfo?.orgNr ?? "", width: 120),
+            buildText(title: 'VAT.nr', value: invoice.companyInfo?.vatNr ?? "", width: 120),
+            buildText(title: 'iban', value: invoice.bankInfo?.iban ?? "", width: 120),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            buildText(title: 'Bankgiro', value: invoice.bankInfo?.bankgiro ?? "", width: 120),
+            buildText(title: 'Plusgiro', value: invoice.bankInfo?.plusgiro ?? "", width: 120),
+          ],
+        ),
+      ],
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(),
+        SizedBox(height: 2 * PdfPageFormat.mm),
+        Table.fromTextArray(
+            border: null,
+            headerStyle: TextStyle(fontWeight: FontWeight.bold),
+            headerDecoration: null,
+            cellHeight: 5,
+            headerHeight: 5,
+            cellPadding: EdgeInsets.zero,
+            cellAlignments: {
+              0: Alignment.centerLeft,
+              1: Alignment.centerLeft,
+              2: Alignment.centerRight,
+            },
+            headers: [
+              "Tel.nr",
+              "Org.nr",
+              "Bankgiro"
+            ],
+            data: [
+              [
+                "${invoice.supplier.phonenumber ?? ""}",
+                "${invoice.companyInfo?.orgNr ?? ""}",
+                "${invoice.bankInfo?.bankgiro ?? ""}",
+              ]
+            ]),
+        pw.SizedBox(height: 2 * PdfPageFormat.mm),
+        Table.fromTextArray(
+            border: null,
+            headerStyle: TextStyle(fontWeight: FontWeight.bold),
+            headerDecoration: null,
+            cellHeight: 5,
+            headerHeight: 5,
+            cellPadding: EdgeInsets.zero,
+            cellAlignments: {
+              0: Alignment.centerLeft,
+              1: Alignment.centerLeft,
+              2: Alignment.centerRight,
+            },
+            headers: [
+              "E-post",
+              "VAT.nr",
+              "Plusgiro"
+            ],
+            data: [
+              [
+                "${invoice.supplier.email ?? ""}",
+                "${invoice.companyInfo?.vatNr ?? ""}",
+                "${invoice.bankInfo?.plusgiro ?? ""}",
+              ]
+            ]),
+        // pw.Row(
+        //   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     buildSimpleText(title: 'Tel.nr', value: settings.orgNr ?? ""),
+        //     buildSimpleText(title: 'Org.nr', value: settings.orgNr ?? ""),
+        //     buildSimpleText(title: 'Bankgiro', value: settings.bankgiro ?? ""),
+        //   ],
+        // ),
+        // pw.Row(
+        //   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     buildSimpleText(title: 'Hemsida', value: settings.website ?? ""),
+        //     buildSimpleText(title: 'VAT.nr', value: settings.vatNr ?? ""),
+        //     buildSimpleText(title: 'Bankgiro', value: settings.plusgiro ?? ""),
+        //   ],
+        // ),
+        // pw.Row(
+        //   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     buildSimpleText(title: 'E-post', value: settings.website ?? ""),
+        //     buildSimpleText(title: 'VAT.nr', value: settings.vatNr ?? ""),
+        //   ],
+        // ),
+        //buildSimpleText(title: 'Hemsida', value: settings.website ?? ""),
+        //buildSimpleText(title: 'E-post', value: settings.orgNr ?? ""),
+        //buildSimpleText(title: 'Address', value: invoice.supplier.address),
+      ],
+    );
+  }
 
   static buildSimpleText({
     required String title,

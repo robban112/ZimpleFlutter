@@ -46,7 +46,7 @@ class _EconomyScreenState extends State<EconomyScreen> {
           ListedView(
             rowInset: EdgeInsets.symmetric(vertical: 12),
             items: [
-              ListedItem(text: "Skapa faktura", leadingIcon: FeatherIcons.fileText),
+              //ListedItem(text: "Skapa faktura", leadingIcon: FeatherIcons.fileText),
               ListedItem(
                 text: "Skapa offert",
                 leadingIcon: FeatherIcons.fileText,

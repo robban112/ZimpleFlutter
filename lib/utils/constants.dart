@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/utils/theme_manager.dart';
+import 'package:zimple/widgets/provider_widget.dart';
 
 const locale = 'sv_SE';
 
@@ -71,6 +73,8 @@ final List<BoxShadow> standardShadow = [
 
 final TextStyle appBarTitleStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 25.0);
 
+final TextStyle headerStyle = TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0);
+
 String? emailValidator(String? value) {
   if (value == null) return null;
   Pattern pattern =
@@ -102,3 +106,9 @@ TextStyle textStyle(BuildContext context) =>
     TextStyle(fontFamily: 'FiraSans', color: ThemeNotifier.of(context).textColor, fontWeight: FontWeight.normal, fontSize: 16);
 
 void onTapRemoveFocus(BuildContext context) => FocusScope.of(context).requestFocus(FocusNode());
+
+bool isAdmin(BuildContext context) => ManagerProvider.of(context).user.isAdmin;
+
+bool isNotAdmin(BuildContext context) => ManagerProvider.of(context).user.isNotAdmin;
+
+UserParameters user(BuildContext context) => ManagerProvider.of(context).user;

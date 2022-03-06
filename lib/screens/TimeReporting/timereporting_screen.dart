@@ -8,13 +8,16 @@ import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_vacation_manager.dart';
 import 'package:zimple/screens/TimeReporting/AddTimereport/add_timereport_easy_screen.dart';
+import 'package:zimple/screens/TimeReporting/Components/timereport_card.dart';
+import 'package:zimple/screens/TimeReporting/SalaryBasis/salary_basis_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/report_vacation_screen.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/select_vacation_person_screen.dart';
 import 'package:zimple/screens/TimeReporting/add_timereport_screen.dart';
-import 'package:zimple/screens/TimeReporting/timereport_card.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
 import 'package:zimple/widgets/widgets.dart';
+
+import 'Components/timereport_overview.dart';
 
 class TimeReportingScreen extends StatefulWidget {
   static const routeName = "time_reporting_screen";
@@ -73,6 +76,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 12.0),
+          TimereportOverview(),
           _buildLatestTimereports(context),
           _buildSectionTitle("Funktioner".toUpperCase()),
           _buildFunctionsListedView(),
@@ -103,6 +107,11 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
             text: "Rapportera fristående tid",
             trailingIcon: Icons.chevron_right,
             onTap: goToAddTimereportScreen),
+        ListedItem(
+            leadingIcon: Icons.money,
+            text: "Löneunderlag",
+            trailingIcon: Icons.chevron_right,
+            onTap: () => pushNewScreen(context, screen: SalaryBasisScreen())),
         ListedItem(
             leadingIcon: Icons.wb_sunny,
             text: "Ansök frånvaro",

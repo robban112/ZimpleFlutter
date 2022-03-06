@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/company_settings.dart';
-import 'package:zimple/screens/Login/components/abstract_wave_animation.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
@@ -34,14 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         preferredSize: appBarSize,
         child: StandardAppBar("Inställningar"),
       ),
-      body: Stack(
-        children: [
-          ZimpleDotBackground(
-            shouldAnimate: false,
-          ),
-          _body(),
-        ],
-      ),
+      body: BackgroundWidget(child: _body()),
     );
   }
 

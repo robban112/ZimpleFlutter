@@ -10,6 +10,8 @@ class TimereportManager {
 
   static TimereportManager of(BuildContext context) => context.read<ManagerProvider>().timereportManager;
 
+  static TimereportManager watch(BuildContext context) => context.watch<ManagerProvider>().timereportManager;
+
   void addTimereport({required String userId, required TimeReport timeReport}) {
     if (!timereportMap.containsKey(userId)) {
       timereportMap[userId] = [timeReport];
@@ -71,5 +73,19 @@ class TimereportManager {
         timereportMap[key] = [timereport];
       }
     });
+  }
+
+  List<TimeReport> getTimereportForMonth({required int year, required int month, List<String>? userIds}) {
+    List<TimeReport> allTimereports = getAllTimereports();
+    print("$year, $month");
+    return allTimereports.where((timereport) => shouldIncludeTimereport(timereport, year, month, userIds)).toList();
+  }
+
+  bool shouldIncludeTimereport(TimeReport timereport, int year, int month, List<String>? userIds) {
+    if (timereport.userId == null) return false;
+    if (userIds == null) {
+      return timereport.startDate.year == year && timereport.startDate.month == month;
+    }
+    return timereport.startDate.year == year && timereport.startDate.month == month && userIds.contains(timereport.userId);
   }
 }

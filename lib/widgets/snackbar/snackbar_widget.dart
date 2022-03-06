@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:zimple/utils/theme_manager.dart';
 
 class SnackbarWidget extends StatelessWidget {
   final bool isSuccess;
@@ -70,7 +71,7 @@ void showSnackbar({
   required String message,
 }) {
   final snackBar = SnackBar(
-    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    backgroundColor: ThemeNotifier.darkThemePrimaryBg,
     content: SnackbarWidget(
       isSuccess: isSuccess,
       message: message,

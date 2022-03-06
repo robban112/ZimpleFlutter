@@ -44,41 +44,45 @@ class _AddCoworkerScreenState extends State<AddCoworkerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar('Bjud in')),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: _successfulInvite
-            ? _SucessInvite(iosMagicLink: this.iosMagicLink, androidMagicLink: this.androidMagicLink)
-            : Stack(
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ListedView(
-                          items: [
-                            ListedTextField(placeholder: 'Namn', leadingIcon: Icons.menu, controller: _nameController),
-                            ListedTextField(
-                                placeholder: 'Email',
-                                leadingIcon: Icons.email,
-                                controller: _emailController,
-                                inputType: TextInputType.emailAddress),
-                            ListedTextField(
-                                placeholder: 'Telefonnummer',
-                                leadingIcon: Icons.phone,
-                                controller: _phoneController,
-                                inputType: TextInputType.phone),
-                          ],
-                        ),
-                        const SizedBox(height: 32),
-                        _buildErrorMessage(),
-                      ],
-                    ).padding(vertical: 8),
-                  ),
-                  _buildInviteButton()
-                ],
-              ),
-      ),
+      body: BackgroundWidget(child: _body(context)),
+    );
+  }
+
+  GestureDetector _body(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: _successfulInvite
+          ? _SucessInvite(iosMagicLink: this.iosMagicLink, androidMagicLink: this.androidMagicLink)
+          : Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListedView(
+                        items: [
+                          ListedTextField(placeholder: 'Namn', leadingIcon: Icons.menu, controller: _nameController),
+                          ListedTextField(
+                              placeholder: 'Email',
+                              leadingIcon: Icons.email,
+                              controller: _emailController,
+                              inputType: TextInputType.emailAddress),
+                          ListedTextField(
+                              placeholder: 'Telefonnummer',
+                              leadingIcon: Icons.phone,
+                              controller: _phoneController,
+                              inputType: TextInputType.phone),
+                        ],
+                      ),
+                      const SizedBox(height: 32),
+                      _buildErrorMessage(),
+                    ],
+                  ).padding(vertical: 8),
+                ),
+                _buildInviteButton()
+              ],
+            ),
     );
   }
 

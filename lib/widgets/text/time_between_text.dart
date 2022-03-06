@@ -11,12 +11,15 @@ class TimeBetweenText extends StatelessWidget {
 
   final bool withHours;
 
+  final double opacity;
+
   const TimeBetweenText({
     Key? key,
     required this.start,
     required this.end,
     this.minutesBreak = 0,
     this.withHours = false,
+    this.opacity = 1,
   }) : super(key: key);
 
   @override
@@ -38,7 +41,7 @@ class TimeBetweenText extends StatelessWidget {
   }
 
   TextStyle style(BuildContext context, {bool isBold = false, double fontSize = 14}) => TextStyle(
-      color: ThemeNotifier.of(context).textColor,
+      color: ThemeNotifier.of(context).textColor.withOpacity(opacity),
       fontSize: fontSize,
       fontWeight: isBold ? FontWeight.w900 : FontWeight.normal,
       fontFamily: 'FiraSans');

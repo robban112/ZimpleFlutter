@@ -1,6 +1,10 @@
 import 'package:intl/intl.dart';
 import 'package:zimple/utils/constants.dart';
 
+int get thisYear => DateTime.now().year;
+
+int get thisMonth => DateTime.now().month;
+
 int weekNumber(DateTime date) {
   int dayOfYear = int.parse(DateFormat("D").format(date));
   return ((dayOfYear - date.weekday + 10) / 7).floor();
@@ -118,4 +122,36 @@ List<DateTime> getDaysInBetween(DateTime startDate, DateTime endDate) {
     days.add(startDate.add(Duration(days: i)));
   }
   return days;
+}
+
+String getMonthName(int month) {
+  switch (month) {
+    case 1:
+      return "Januari";
+    case 2:
+      return "Februari";
+    case 3:
+      return "Mars";
+    case 4:
+      return "April";
+    case 5:
+      return "Maj";
+    case 6:
+      return "Juni";
+    case 7:
+      return "Juli";
+    case 8:
+      return "Augusti";
+    case 9:
+      return "September";
+    case 10:
+      return "Oktober";
+    case 11:
+      return "November";
+    case 12:
+      return "December";
+    default:
+      print("ERROR: Couldn't parse month name!");
+      return "";
+  }
 }

@@ -21,3 +21,28 @@ class SaveTextButton extends StatelessWidget {
     );
   }
 }
+
+class ZTextButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  final String text;
+  const ZTextButton({
+    Key? key,
+    required this.onTap,
+    required this.text,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+        ),
+      ),
+      onPressed: onTap,
+    );
+  }
+}

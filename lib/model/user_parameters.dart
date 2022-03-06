@@ -21,4 +21,6 @@ class UserParameters {
     return {'name': name, 'email': email, 'company': company, 'profilePicturePath': profilePicturePath, 'token': token}
         .toString();
   }
+
+  bool get isNotAdmin => !isAdmin;
 }
