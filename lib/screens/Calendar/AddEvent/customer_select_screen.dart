@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
 import 'package:zimple/screens/Settings/Customers/add_customer_screen.dart';
 import 'package:zimple/utils/constants.dart';
+import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/floating_add_button.dart';
@@ -42,7 +43,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
           ),
         );
       }),
-      body: buildBody(),
+      body: BackgroundWidget(child: buildBody()),
     );
   }
 
@@ -69,6 +70,7 @@ class _CustomerSelectScreenState extends State<CustomerSelectScreen> {
     }
     return ListView.separated(
         separatorBuilder: (context, index) {
+          return ZSeparator(padding: EdgeInsets.only(left: 70, right: 16));
           return Divider(
             indent: 16,
             endIndent: 16,

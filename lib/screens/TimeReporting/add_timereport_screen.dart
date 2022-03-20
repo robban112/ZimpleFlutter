@@ -4,25 +4,30 @@ import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:logger/logger.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:uuid/uuid.dart';
+import 'package:zimple/extensions/double_extensions.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
+import 'package:zimple/screens/Calendar/Notes/add_notes_screen.dart/add_notes_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_select_screen.dart';
-import 'package:zimple/widgets/button/nav_bar_back.dart';
+import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/widgets/image_dialog.dart';
 import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/photo_buttons.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
+import 'package:zimple/widgets/snackbar/snackbar_widget.dart';
 import 'package:zimple/widgets/start_end_date_selector.dart';
 
 import '../../utils/constants.dart';
@@ -41,6 +46,8 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   DateSelectorController startDateController = DateSelectorController();
   DateSelectorController endDateController = DateSelectorController();
   TextEditingController notesController = TextEditingController();
+  TextEditingController breakController = TextEditingController();
+  BehaviorSubject<double> totalTimeStreamController = BehaviorSubject<double>();
   late FirebaseTimeReportManager firebaseTimeReportManager;
   late FirebaseEventManager firebaseEventManager;
   late FirebaseStorageManager firebaseStorageManager;
@@ -66,6 +73,11 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      totalTimeStreamController.add(getTotalTime());
+    });
+
+    breakController.addListener(() => totalTimeStreamController.add(getTotalTime()));
     logger.log(Level.info, "Init State Add Timereport");
     super.initState();
     firebaseTimeReportManager = Provider.of<ManagerProvider>(context, listen: false).firebaseTimereportManager;
@@ -76,7 +88,20 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   @override
   void dispose() {
+    totalTimeStreamController.close();
     super.dispose();
+  }
+
+  double getTotalTime() {
+    DateTime start = startDateController.getDate();
+    DateTime end = endDateController.getDate();
+    int diff = (end.difference(start).inMinutes);
+    return (diff - getBreakTime()) / 60;
+  }
+
+  int getBreakTime() {
+    if (breakController.text.isEmpty) return 0;
+    return double.parse(breakController.text).toInt();
   }
 
   Widget _buildSectionTitle(String title) {
@@ -105,6 +130,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
       end = end.subtract(Duration(minutes: breakTime));
       startEndDifference = end.difference(start);
     });
+    totalTimeStreamController.add(getTotalTime());
   }
 
   Container _buildContainer(Widget child) {
@@ -137,58 +163,150 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        title: Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Tidrapportera", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 24.0, color: Colors.white))),
-        elevation: 0.0,
-        leading: NavBarBack(),
+      appBar: appBar("Tidrapportera"),
+      body: BackgroundWidget(child: _body(context)),
+    );
+  }
+
+  GestureDetector _body(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Stack(
+        children: [
+          ListView(
+            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8.0),
+            children: [
+              ListedTitle(text: "TID"),
+              ZSeparator(),
+              buildTimeComponent(),
+              ListedView(
+                items: [
+                  ListedTextField(
+                    placeholder: 'Rast',
+                    leadingIcon: FontAwesome.coffee,
+                    controller: breakController,
+                    inputType: TextInputType.number,
+                  ),
+                  ListedItem(leadingIcon: Icons.access_time, text: "Arbetad tid", trailingWidget: _buildTotalTimeText())
+                ],
+              ),
+              ZSeparator(),
+              const SizedBox(height: 32),
+              ListedTitle(text: "ÖVRIG INFO"),
+              //buildSelectCustomerTile(),
+              ListedView(
+                hidesFirstLastSeparator: false,
+                items: [
+                  ListedItem(
+                      leadingIcon: Icons.person,
+                      child: Text("Kund", style: TextStyle(fontSize: 16)),
+                      trailingWidget: Row(
+                        children: [
+                          Text(selectedCustomer?.name ?? ""),
+                          selectedCustomer == null ? Icon(Icons.chevron_right) : Container(),
+                          selectedCustomer != null
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      this.selectedCustomer = null;
+                                    });
+                                  },
+                                  child: Icon(Icons.clear))
+                              : Container()
+                        ],
+                      ),
+                      onTap: () {
+                        pushNewScreen(context, screen: CustomerSelectScreen(
+                          didSelectCustomer: (customer, contact) {
+                            setState(() {
+                              selectedCustomer = customer;
+                            });
+                          },
+                        ));
+                      }),
+                  ListedItem(
+                    leadingIcon: Icons.image,
+                    text: "Bilder",
+                    onTap: () {
+                      setState(() => this.isSelectingPhotoProvider = true);
+                    },
+                    trailingWidget: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 30),
+                            child: PreviewImagesComponent(selectedImages: this.selectedImages)),
+                        Icon(Icons.chevron_right)
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: ListedNotefield(
+                    context: context,
+                    numberOfLines: 8,
+                    item: ListedTextField(placeholder: 'Anteckningar', isMultipleLine: true, controller: notesController)),
+              ),
+              // ListedItemWidget(
+              //   rowInset: EdgeInsets.only(right: 16.0, left: 16.0),
+              //   item: ListedItem(
+              //     leadingIcon: Icons.image,
+              //     text: "Bilder",
+              //     onTap: () {
+              //       setState(() => this.isSelectingPhotoProvider = true);
+              //     },
+              //     trailingWidget: Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       mainAxisAlignment: MainAxisAlignment.end,
+              //       crossAxisAlignment: CrossAxisAlignment.center,
+              //       children: [
+              //         ConstrainedBox(
+              //             constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 50),
+              //             child: PreviewImagesComponent(selectedImages: this.selectedImages)),
+              //         Icon(Icons.chevron_right)
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              SizedBox(height: 32.0),
+              //buildInfoComponent(),
+              //SizedBox(height: 16.0),
+              //buildCostComponent(),
+              //SizedBox(height: 24.0),
+              //_buildPlannedInfoComponent(),
+              SizedBox(height: 24.0),
+              buildDoneButton(context),
+              SizedBox(height: 175.0),
+            ],
+          ),
+          SelectImagesComponent(
+            isSelectingPhotoProvider: this.isSelectingPhotoProvider,
+            didPickImage: (file) {
+              setState(() {
+                this.isSelectingPhotoProvider = false;
+                this.selectedImages.add(file);
+              });
+            },
+            didTapCancel: () {
+              setState(() => this.isSelectingPhotoProvider = false);
+            },
+          )
+        ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Stack(
-          children: [
-            ListView(
-              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8.0),
-              children: [
-                buildChooseWorkOrderComponent(),
-                SizedBox(height: 12.0),
-                selectedEvent == null ? _buildSectionTitle("Eller välj kund") : Container(),
-                buildSelectCustomerTile(),
-                SizedBox(height: 32.0),
-                buildTimeComponent(),
-                SizedBox(height: 32.0),
-                buildInfoComponent(),
-                SizedBox(height: 16.0),
-                buildCostComponent(),
-                SizedBox(height: 24.0),
-                _buildPlannedInfoComponent(),
-                SizedBox(height: 24.0),
-                buildDoneButton(context),
-                SizedBox(height: 175.0),
-              ],
-            ),
-            SelectImagesComponent(
-              isSelectingPhotoProvider: this.isSelectingPhotoProvider,
-              didPickImage: (file) {
-                setState(() {
-                  this.isSelectingPhotoProvider = false;
-                  this.selectedImages.add(file);
-                });
-              },
-              didTapCancel: () {
-                setState(() => this.isSelectingPhotoProvider = false);
-              },
-            )
-          ],
-        ),
-      ),
+    );
+  }
+
+  Widget _buildTotalTimeText() {
+    return StreamBuilder<double>(
+      initialData: 8,
+      stream: totalTimeStreamController.stream,
+      builder: (context, snapshot) {
+        return Text(snapshot.data?.parseToTwoDigits() ?? "", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
+      },
     );
   }
 
@@ -245,30 +363,31 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NotesComponent(
-              controller: notesController,
-            ),
-            ListedItemWidget(
-              rowInset: EdgeInsets.only(right: 16.0, left: 20.0),
-              item: ListedItem(
-                leadingIcon: Icons.image,
-                child: Text("Bilder"),
-                onTap: () {
-                  setState(() => this.isSelectingPhotoProvider = true);
-                },
-                trailingWidget: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 50),
-                        child: PreviewImagesComponent(selectedImages: this.selectedImages)),
-                    Icon(Icons.chevron_right)
-                  ],
-                ),
-              ),
-            ),
+            // NotesComponent(
+            //   controller: notesController,
+            // ),
+
+            // ListedItemWidget(
+            //   rowInset: EdgeInsets.only(right: 16.0, left: 20.0),
+            //   item: ListedItem(
+            //     leadingIcon: Icons.image,
+            //     child: Text("Bilder"),
+            //     onTap: () {
+            //       setState(() => this.isSelectingPhotoProvider = true);
+            //     },
+            //     trailingWidget: Row(
+            //       mainAxisSize: MainAxisSize.min,
+            //       mainAxisAlignment: MainAxisAlignment.end,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       children: [
+            //         ConstrainedBox(
+            //             constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 50),
+            //             child: PreviewImagesComponent(selectedImages: this.selectedImages)),
+            //         Icon(Icons.chevron_right)
+            //       ],
+            //     ),
+            //   ),
+            // ),
             Container(height: 0.5, color: Colors.grey.shade400)
           ],
         )
@@ -276,43 +395,43 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     );
   }
 
-  Widget buildSelectCustomerTile() {
-    return selectedEvent == null
-        ? ListedView(
-            hidesFirstLastSeparator: false,
-            //rowInset: EdgeInsets.symmetric(horizontal: 12),
-            items: [
-              ListedItem(
-                  leadingIcon: Icons.person,
-                  child: Text("Kund", style: TextStyle(fontSize: 16)),
-                  trailingWidget: Row(
-                    children: [
-                      Text(selectedCustomer?.name ?? ""),
-                      selectedCustomer == null ? Icon(Icons.chevron_right) : Container(),
-                      selectedCustomer != null
-                          ? GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  this.selectedCustomer = null;
-                                });
-                              },
-                              child: Icon(Icons.clear))
-                          : Container()
-                    ],
-                  ),
-                  onTap: () {
-                    pushNewScreen(context, screen: CustomerSelectScreen(
-                      didSelectCustomer: (customer, contact) {
-                        setState(() {
-                          selectedCustomer = customer;
-                        });
-                      },
-                    ));
-                  }),
-            ],
-          )
-        : Container();
-  }
+  // Widget buildSelectCustomerTile() {
+  //   return selectedEvent == null
+  //       ? ListedView(
+  //           hidesFirstLastSeparator: false,
+  //           //rowInset: EdgeInsets.symmetric(horizontal: 12),
+  //           items: [
+  //             ListedItem(
+  //                 leadingIcon: Icons.person,
+  //                 child: Text("Kund", style: TextStyle(fontSize: 16)),
+  //                 trailingWidget: Row(
+  //                   children: [
+  //                     Text(selectedCustomer?.name ?? ""),
+  //                     selectedCustomer == null ? Icon(Icons.chevron_right) : Container(),
+  //                     selectedCustomer != null
+  //                         ? GestureDetector(
+  //                             onTap: () {
+  //                               setState(() {
+  //                                 this.selectedCustomer = null;
+  //                               });
+  //                             },
+  //                             child: Icon(Icons.clear))
+  //                         : Container()
+  //                   ],
+  //                 ),
+  //                 onTap: () {
+  //                   pushNewScreen(context, screen: CustomerSelectScreen(
+  //                     didSelectCustomer: (customer, contact) {
+  //                       setState(() {
+  //                         selectedCustomer = customer;
+  //                       });
+  //                     },
+  //                   ));
+  //                 }),
+  //           ],
+  //         )
+  //       : Container();
+  // }
 
   Column buildCostComponent() {
     return Column(
@@ -381,36 +500,17 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle("Tid"),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(height: 0.5, color: Colors.grey.shade400),
-            StartEndDateSelector(
-              key: _startEndKey,
-              startDateSelectorController: startDateController,
-              endDateSelectorController: endDateController,
-              onChangeStart: (startDate) => updateDifference(startDate, endDateController.getDate(), this.minutesBreak),
-              onChangeEnd: (endDate) => updateDifference(startDateController.getDate(), endDate, this.minutesBreak),
-              datePickerMode: selectedEvent != null ? CupertinoDatePickerMode.time : CupertinoDatePickerMode.dateAndTime,
-              startTitle: "Började",
-              endTitle: "Slutade",
-            ),
-            Container(height: 0.5, color: Colors.grey.shade400),
-            //buildBreakRow(),
-            const SizedBox(height: 6),
-            buildBreakSlider(),
-            const SizedBox(height: 6),
-            Container(height: 0.5, color: Colors.grey.shade400),
-            const SizedBox(height: 12),
-            TimereportRow(
-              "Total arbetad tid",
-              Text(_getTotalTime(startEndDifference)),
-              hidesSeparatorByDefault: true,
-            ),
-            Container(height: 0.5, color: Colors.grey.shade400),
-          ],
+        StartEndDateSelector(
+          key: _startEndKey,
+          startDateSelectorController: startDateController,
+          endDateSelectorController: endDateController,
+          onChangeStart: (startDate) => updateDifference(startDate, endDateController.getDate(), this.minutesBreak),
+          onChangeEnd: (endDate) => updateDifference(startDateController.getDate(), endDate, this.minutesBreak),
+          datePickerMode: selectedEvent != null ? CupertinoDatePickerMode.time : CupertinoDatePickerMode.dateAndTime,
+          startTitle: "Började",
+          endTitle: "Slutade",
         ),
+        ZSeparator(padding: EdgeInsets.only(left: 16)),
       ],
     );
   }
@@ -509,7 +609,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
         id: "",
         startDate: startDateController.getDate(),
         endDate: endDateController.getDate(),
-        breakTime: this.minutesBreak,
+        breakTime: getBreakTime(),
         totalTime: startEndDifference.inMinutes,
         eventId: selectedEvent?.id,
         costs: this.costs,
@@ -522,6 +622,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     firebaseTimeReportManager.addTimeReport(timereport, user).then((value) {
       _setEventTimereported(value).then((value) {
         setLoading(false);
+        showSnackbar(context: context, isSuccess: true, message: "Tidrapport tillagd!");
         Navigator.of(context).popUntil((route) => route.isFirst);
       });
     });

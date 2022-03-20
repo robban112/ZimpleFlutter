@@ -321,9 +321,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
                       _buildTextField("Titel", null, TextInputType.text, 24, Colors.orange, (title) {
                         this.title = title;
                       }, _titleFormKey, title, null),
-                      SizedBox(height: 40),
+                      SizedBox(height: 32),
                       buildTimeSection(),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 32),
                       _buildSectionTitle("INFORMATION"),
                       buildListedView(context),
                       const SizedBox(

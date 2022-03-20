@@ -290,6 +290,19 @@ class ListedView extends StatelessWidget {
   }
 }
 
+class ZSeparator extends StatelessWidget {
+  final EdgeInsets padding;
+  const ZSeparator({
+    Key? key,
+    this.padding = EdgeInsets.zero,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(margin: padding, color: Theme.of(context).dividerColor.withOpacity(0.3), height: 0.3);
+  }
+}
+
 class ZimpleTextField extends StatelessWidget {
   final TextInputType? inputType;
   final TextEditingController? controller;
