@@ -20,7 +20,6 @@ import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
-import 'package:zimple/widgets/button/nav_bar_back.dart';
 import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/rectangular_button.dart';
@@ -164,45 +163,47 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
     //     groupTimereportsByMonth(timereportManager.timereportMap[widget.userId]);
 
     return Scaffold(
-      appBar: _buildAppBar(mappedTimereports, context),
+      appBar: appBar(""),
       body: mappedTimereports != null
-          ? Stack(
-              children: [
-                SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                          widget.userId != null ? Container() : _buildPersonSelectComponent(),
-                        ] +
-                        List.generate(mappedTimereports!.length, (index) {
-                          String key = mappedTimereports!.keys.elementAt(index);
-                          return _buildMonthTimereports(_buildHeader(key), mappedTimereports![key]!, eventManager);
-                        }) +
-                        [
-                          SizedBox(height: 150),
-                        ],
+          ? BackgroundWidget(
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                            widget.userId != null ? Container() : _buildPersonSelectComponent(),
+                          ] +
+                          List.generate(mappedTimereports!.length, (index) {
+                            String key = mappedTimereports!.keys.elementAt(index);
+                            return _buildMonthTimereports(_buildHeader(key), mappedTimereports![key]!, eventManager);
+                          }) +
+                          [
+                            SizedBox(height: 150),
+                          ],
+                    ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: AnimatedOpacity(
-                    duration: Duration(milliseconds: 300),
-                    opacity: isSelectingMultiple ? 1 : 0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 24.0),
-                      child: RectangularButton(
-                        text: "Visa valda tidrapporter",
-                        onTap: () => pushNewScreen(
-                          context,
-                          screen: TimereportingDetails(
-                            listTimereports: _getSelectedTimereports(),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: AnimatedOpacity(
+                      duration: Duration(milliseconds: 300),
+                      opacity: isSelectingMultiple ? 1 : 0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 24.0),
+                        child: RectangularButton(
+                          text: "Visa valda tidrapporter",
+                          onTap: () => pushNewScreen(
+                            context,
+                            screen: TimereportingDetails(
+                              listTimereports: _getSelectedTimereports(),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             )
           : Center(child: Text("Inga tidrapporter hittade", style: TextStyle(fontSize: 20.0))),
     );
@@ -218,7 +219,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
           SizedBox(height: 16.0),
           //_buildPersonChips(),
           ListedView(
-            rowInset: EdgeInsets.zero,
+            rowInset: EdgeInsets.symmetric(vertical: 12),
             items: [
               ListedItem(
                   leadingIcon: FeatherIcons.userPlus,
@@ -283,29 +284,6 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
         }));
   }
 
-  AppBar _buildAppBar(Map<String, List<TimeReport>>? mappedTimereports, BuildContext context) {
-    return AppBar(
-      backgroundColor: ThemeNotifier.darkThemePrimaryBg,
-      elevation: 0,
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => {
-            setState(() {
-              this.isSelectingMultiple = !this.isSelectingMultiple;
-            })
-          },
-          child: mappedTimereports != null
-              ? Text(isSelectingMultiple ? "Välj en" : "Välj flera", style: TextStyle(fontSize: 17.0, color: Colors.white))
-              : Container(),
-        ),
-      ],
-      title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text("", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 18.0))),
-      leading: NavBarBack(),
-    );
-  }
-
   List<String> get personIds => _selectedPersons().map((p) => p.id).toList();
 
   void onPressedSelectPersons() {
@@ -314,11 +292,12 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
       builder: (context) => FilterPersonsPage(
         preSelectedPersons: selectedPersons,
         selected: (selected) {
-          for (Person person in selected) {
-            selectedPersons[person] = true;
-          }
-          mappedTimereports = groupTimereportsByMonth(timereportManager.getTimereportsForMulitple(personIds));
-          setState(() {});
+          setState(() {
+            for (Person person in selected) {
+              selectedPersons[person] = true;
+            }
+            mappedTimereports = groupTimereportsByMonth(timereportManager.getTimereportsForMulitple(personIds));
+          });
         },
       ),
     );

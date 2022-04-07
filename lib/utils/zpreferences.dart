@@ -1,6 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum Keys { cachedImages, themeMode, calendarFilteredPersons, calendarIsShowingWeekend }
+enum Keys {
+  cachedImages,
+  themeMode,
+  calendarFilteredPersons,
+  calendarIsShowingWeekend,
+  hasSeenOnboarding,
+}
 
 class ZPreferences {
   static Future<void> saveData<T>(Keys key, T value) async {

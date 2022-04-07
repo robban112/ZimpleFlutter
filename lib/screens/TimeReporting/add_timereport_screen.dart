@@ -171,130 +171,152 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
   GestureDetector _body(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-      child: Stack(
-        children: [
-          ListView(
-            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8.0),
-            children: [
-              ListedTitle(text: "TID"),
-              ZSeparator(),
-              buildTimeComponent(),
-              ListedView(
-                items: [
-                  ListedTextField(
-                    placeholder: 'Rast',
-                    leadingIcon: FontAwesome.coffee,
-                    controller: breakController,
-                    inputType: TextInputType.number,
-                  ),
-                  ListedItem(leadingIcon: Icons.access_time, text: "Arbetad tid", trailingWidget: _buildTotalTimeText())
-                ],
-              ),
-              ZSeparator(),
-              const SizedBox(height: 32),
-              ListedTitle(text: "ÖVRIG INFO"),
-              //buildSelectCustomerTile(),
-              ListedView(
-                hidesFirstLastSeparator: false,
-                items: [
-                  ListedItem(
-                      leadingIcon: Icons.person,
-                      child: Text("Kund", style: TextStyle(fontSize: 16)),
-                      trailingWidget: Row(
-                        children: [
-                          Text(selectedCustomer?.name ?? ""),
-                          selectedCustomer == null ? Icon(Icons.chevron_right) : Container(),
-                          selectedCustomer != null
-                              ? GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      this.selectedCustomer = null;
-                                    });
-                                  },
-                                  child: Icon(Icons.clear))
-                              : Container()
-                        ],
-                      ),
-                      onTap: () {
-                        pushNewScreen(context, screen: CustomerSelectScreen(
-                          didSelectCustomer: (customer, contact) {
-                            setState(() {
-                              selectedCustomer = customer;
-                            });
-                          },
-                        ));
-                      }),
-                  ListedItem(
-                    leadingIcon: Icons.image,
-                    text: "Bilder",
-                    onTap: () {
-                      setState(() => this.isSelectingPhotoProvider = true);
-                    },
-                    trailingWidget: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 30),
-                            child: PreviewImagesComponent(selectedImages: this.selectedImages)),
-                        Icon(Icons.chevron_right)
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ListedNotefield(
-                    context: context,
-                    numberOfLines: 8,
-                    item: ListedTextField(placeholder: 'Anteckningar', isMultipleLine: true, controller: notesController)),
-              ),
-              // ListedItemWidget(
-              //   rowInset: EdgeInsets.only(right: 16.0, left: 16.0),
-              //   item: ListedItem(
-              //     leadingIcon: Icons.image,
-              //     text: "Bilder",
-              //     onTap: () {
-              //       setState(() => this.isSelectingPhotoProvider = true);
-              //     },
-              //     trailingWidget: Row(
-              //       mainAxisSize: MainAxisSize.min,
-              //       mainAxisAlignment: MainAxisAlignment.end,
-              //       crossAxisAlignment: CrossAxisAlignment.center,
-              //       children: [
-              //         ConstrainedBox(
-              //             constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 50),
-              //             child: PreviewImagesComponent(selectedImages: this.selectedImages)),
-              //         Icon(Icons.chevron_right)
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              SizedBox(height: 32.0),
-              //buildInfoComponent(),
-              //SizedBox(height: 16.0),
-              //buildCostComponent(),
-              //SizedBox(height: 24.0),
-              //_buildPlannedInfoComponent(),
-              SizedBox(height: 24.0),
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Stack(
+              children: [_buildListedView(context), _buildSelectImagesView()],
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            fillOverscroll: true,
+            child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
               buildDoneButton(context),
-              SizedBox(height: 175.0),
+              const SizedBox(height: 16),
+            ]),
+          )
+        ],
+      ),
+    );
+  }
+
+  SelectImagesComponent _buildSelectImagesView() {
+    return SelectImagesComponent(
+      isSelectingPhotoProvider: this.isSelectingPhotoProvider,
+      didPickImage: (file) {
+        setState(() {
+          this.isSelectingPhotoProvider = false;
+          this.selectedImages.add(file);
+        });
+      },
+      didTapCancel: () {
+        setState(() => this.isSelectingPhotoProvider = false);
+      },
+    );
+  }
+
+  Widget _buildListedView(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        //shrinkWrap: true,
+        //padding: EdgeInsets.symmetric(horizontal: 0, vertical: 24.0),
+        children: [
+          ListedTitle(text: "TID"),
+          ZSeparator(),
+          buildTimeComponent(),
+          ListedView(
+            items: [
+              ListedTextField(
+                placeholder: 'Rast',
+                leadingIcon: FontAwesome.coffee,
+                controller: breakController,
+                inputType: TextInputType.number,
+              ),
+              ListedItem(leadingIcon: Icons.access_time, text: "Arbetad tid", trailingWidget: _buildTotalTimeText())
             ],
           ),
-          SelectImagesComponent(
-            isSelectingPhotoProvider: this.isSelectingPhotoProvider,
-            didPickImage: (file) {
-              setState(() {
-                this.isSelectingPhotoProvider = false;
-                this.selectedImages.add(file);
-              });
-            },
-            didTapCancel: () {
-              setState(() => this.isSelectingPhotoProvider = false);
-            },
-          )
+          ZSeparator(),
+          const SizedBox(height: 32),
+          ListedTitle(text: "ÖVRIG INFO"),
+          //buildSelectCustomerTile(),
+          ListedView(
+            hidesFirstLastSeparator: false,
+            items: [
+              ListedItem(
+                  leadingIcon: Icons.person,
+                  child: Text("Kund", style: TextStyle(fontSize: 16)),
+                  trailingWidget: Row(
+                    children: [
+                      Text(selectedCustomer?.name ?? ""),
+                      selectedCustomer == null ? Icon(Icons.chevron_right) : Container(),
+                      selectedCustomer != null
+                          ? GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  this.selectedCustomer = null;
+                                });
+                              },
+                              child: Icon(Icons.clear))
+                          : Container()
+                    ],
+                  ),
+                  onTap: () {
+                    pushNewScreen(context, screen: CustomerSelectScreen(
+                      didSelectCustomer: (customer, contact) {
+                        setState(() {
+                          selectedCustomer = customer;
+                        });
+                      },
+                    ));
+                  }),
+              ListedItem(
+                leadingIcon: Icons.image,
+                text: "Bilder",
+                onTap: () {
+                  setState(() => this.isSelectingPhotoProvider = true);
+                },
+                trailingWidget: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 30),
+                        child: PreviewImagesComponent(selectedImages: this.selectedImages)),
+                    Icon(Icons.chevron_right)
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ListedNotefield(
+                context: context,
+                numberOfLines: 8,
+                item: ListedTextField(placeholder: 'Anteckningar', isMultipleLine: true, controller: notesController)),
+          ),
+          // ListedItemWidget(
+          //   rowInset: EdgeInsets.only(right: 16.0, left: 16.0),
+          //   item: ListedItem(
+          //     leadingIcon: Icons.image,
+          //     text: "Bilder",
+          //     onTap: () {
+          //       setState(() => this.isSelectingPhotoProvider = true);
+          //     },
+          //     trailingWidget: Row(
+          //       mainAxisSize: MainAxisSize.min,
+          //       mainAxisAlignment: MainAxisAlignment.end,
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       children: [
+          //         ConstrainedBox(
+          //             constraints: BoxConstraints(maxWidth: 150, minWidth: 0, maxHeight: 50),
+          //             child: PreviewImagesComponent(selectedImages: this.selectedImages)),
+          //         Icon(Icons.chevron_right)
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          SizedBox(height: 32.0),
+          //buildInfoComponent(),
+          //SizedBox(height: 16.0),
+          //buildCostComponent(),
+          //SizedBox(height: 24.0),
+          //_buildPlannedInfoComponent(),
+          SizedBox(height: 24.0),
         ],
       ),
     );
@@ -628,7 +650,11 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
     });
   }
 
-  Widget buildDoneButton(BuildContext context) => RectangularButton(onTap: _addTimeReport, text: "Skicka in tidrapport");
+  Widget buildDoneButton(BuildContext context) => Row(
+        children: [
+          Expanded(child: RectangularButton(onTap: _addTimeReport, text: "Skicka in tidrapport")),
+        ],
+      );
 }
 
 class TimereportRow extends StatelessWidget {

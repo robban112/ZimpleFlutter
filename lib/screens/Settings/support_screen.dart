@@ -1,18 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:zimple/screens/Calendar/Onboarding/onboarding_screen.dart';
 import 'package:zimple/utils/generic_imports.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
-
-import '../../utils/constants.dart';
 
 class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Support")),
-        body: BackgroundWidget(child: _body()));
+      appBar: PreferredSize(preferredSize: appBarSize, child: StandardAppBar("Support")),
+      body: BackgroundWidget(
+        child: _body(context),
+      ),
+    );
   }
 
-  Column _body() {
+  Column _body(BuildContext context) {
     return Column(
       children: [
         //TopHeader(kPadding: kPadding),
@@ -24,27 +27,69 @@ class SupportScreen extends StatelessWidget {
           ),
         ),
         SizedBox(height: 12.0),
-        Padding(
-          padding: const EdgeInsets.only(left: 24.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.phone),
-              SizedBox(width: 16),
-              Text("0760313335", style: TextStyle(fontSize: 16)),
-            ],
-          ),
+        ListedView(
+          items: [
+            ListedItem(
+              leadingIcon: Icons.mail,
+              text: "Få mailsupport",
+              onTap: _onPressedSendMail,
+            ),
+          ],
         ),
-        SizedBox(height: 10.0),
-        Padding(
-          padding: const EdgeInsets.only(left: 24.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [Icon(Icons.email), SizedBox(width: 16), Text("zebastian@zimple.se", style: TextStyle(fontSize: 16))],
-          ),
-        )
+        ListedView(
+          items: [
+            ListedItem(
+              leadingIcon: Icons.info,
+              text: "Visa introduktion",
+              onTap: () => _onPressedShowIntroduction(context),
+            ),
+          ],
+        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 24.0),
+        //   child: Row(
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     children: [
+        //       Icon(Icons.phone),
+        //       SizedBox(width: 16),
+        //       Text("0760313335", style: TextStyle(fontSize: 16)),
+        //     ],
+        //   ),
+        // ),
+        // SizedBox(height: 10.0),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 24.0),
+        //   child: Row(
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     children: [Icon(Icons.email), SizedBox(width: 16), Text("zebastian@zimple.se", style: TextStyle(fontSize: 16))],
+        //   ),
+        // )
       ],
     );
+  }
+
+  void _onPressedShowIntroduction(BuildContext context) {
+    showCupertinoModalPopup(context: context, builder: (context) => OnboardingScreen());
+  }
+
+  void _onPressedSendMail() async {
+    final Email email = Email(
+      body: "",
+      subject: "",
+      recipients: ["support@zimple.se"],
+      attachmentPaths: null,
+      isHTML: false,
+    );
+
+    String platformResponse;
+
+    try {
+      await FlutterEmailSender.send(email);
+      platformResponse = 'success';
+    } catch (error) {
+      platformResponse = error.toString();
+      print(platformResponse);
+    }
   }
 }
 

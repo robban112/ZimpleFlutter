@@ -10,6 +10,7 @@ import 'package:zimple/model/person.dart';
 import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/screens/Calendar/Filter/filter_persons_page.dart';
+import 'package:zimple/screens/Calendar/Onboarding/onboarding_screen.dart';
 import 'package:zimple/screens/drawer.dart';
 import 'package:zimple/utils/zpreferences.dart';
 import 'package:zimple/widgets/button/event_modify_buttons.dart';
@@ -114,12 +115,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
     firebaseUserManager = FirebaseUserManager();
     _filteredPersons = Map.fromIterable(widget.personManager.persons, key: (person) => person, value: (person) => true);
     _applyFilterForPersons(ManagerProvider.of(context).eventManager);
+    maybeShowOnboarding();
     Future.delayed(Duration.zero, () {
       initFilteredPersons();
       //_setupCompanySettingsListener(context);
     });
 
     //filteredPersons = widget.personManager.persons;
+  }
+
+  void maybeShowOnboarding() async {
+    await Future.delayed(Duration(milliseconds: 500), () async {
+      bool? hasSeenIntroduction = await ZPreferences.readData(Keys.hasSeenOnboarding);
+      if (hasSeenIntroduction != true) {
+        showCupertinoModalPopup(context: context, builder: (context) => OnboardingScreen());
+        ZPreferences.saveData(Keys.hasSeenOnboarding, true);
+      }
+    });
   }
 
   Future<void> initFilteredPersons() async {

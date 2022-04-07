@@ -16,6 +16,7 @@ import 'package:zimple/screens/TimeReporting/AddTimereport/change_timereport_scr
 import 'package:zimple/screens/TimeReporting/Invoice/generate_invoice_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/date_utils.dart';
+import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/widgets/button/nav_bar_back.dart';
 import 'package:zimple/widgets/conditional_widget.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
@@ -60,9 +61,10 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     print("Building Timereporting Details Screen");
     var user = Provider.of<ManagerProvider>(context, listen: false).user;
     var eventManager = Provider.of<ManagerProvider>(context, listen: true).eventManager;
-
+    //String
     return Scaffold(
-      appBar: _buildAppbar(context, user),
+      //appBar: _buildAppbar(context, user),
+      appBar: appBar(""),
       body: widget.listTimereports != null
           ? _buildMultipleBody(user, eventManager)
           : _buildBody(widget.timereport!, user, eventManager),

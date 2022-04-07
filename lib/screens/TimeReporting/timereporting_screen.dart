@@ -220,13 +220,13 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
 
   Widget buildLatestTimereportTitle() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      padding: const EdgeInsets.only(left: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("Senaste rapporter", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
           TextButton(
-            child: Text("Visa alla", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
+            child: Text("Visa alla »", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
             onPressed: () {
               if (widget.user.isAdmin) {
                 goToShowAllTimereportScreen();

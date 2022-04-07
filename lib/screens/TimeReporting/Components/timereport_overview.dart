@@ -33,7 +33,7 @@ class _TimereportOverviewState extends State<TimereportOverview> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Översikt", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
+          _buildTitle(),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -56,6 +56,16 @@ class _TimereportOverviewState extends State<TimereportOverview> {
           const SizedBox(height: 8),
         ],
       ),
+    );
+  }
+
+  Row _buildTitle() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("Översikt", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
+        //Text("Se mer »", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold))
+      ],
     );
   }
 }
