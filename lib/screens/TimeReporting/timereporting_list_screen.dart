@@ -40,12 +40,25 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
   Map<TimeReport, bool> selectedTimereports = Map<TimeReport, bool>();
 
   late Map<Person, bool> selectedPersons =
-      Map.fromIterable(PersonManager.of(context).persons, key: (person) => person, value: (person) => false);
+      Map.fromIterable(PersonManager.of(context).persons, key: (person) => person, value: (person) => true);
 
-  late TimereportManager timereportManager;
+  late TimereportManager timereportManager = TimereportManager.of(context);
 
   @override
   void initState() {
+    if (widget.userId != null) {
+      mappedTimereports = groupTimereportsByMonth(timereportManager.timereportMap[widget.userId]);
+    } else {
+      Future.delayed(Duration.zero, () {
+        if (isAdmin(context)) {
+          selectPersons(PersonManager.of(context).persons);
+        } else {
+          Person? person = loggedInPerson(context);
+          if (person != null) selectPersons([person]);
+        }
+      });
+    }
+
     super.initState();
   }
 
@@ -78,15 +91,6 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                   TimeReportListSeparator(),
                 ],
               );
-              // return TimereportRow(
-              //   timereport: timereport,
-              //   event: event,
-              //   isSelected: selectedTimereports[timereport] ?? false,
-              //   isSelectingMultiple: this.isSelectingMultiple,
-              //   didTapTimereport: (timereport) {
-              //     isSelectingMultiple ? handleSelectTimereport(timereport) : goToTimereportingDetails(timereport);
-              //   },
-              // );
             }),
       ],
     );
@@ -156,9 +160,6 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
     EventManager eventManager = Provider.of<ManagerProvider>(context, listen: true).eventManager;
     timereportManager = Provider.of<ManagerProvider>(context, listen: true).timereportManager;
 
-    if (widget.userId != null) {
-      mappedTimereports = groupTimereportsByMonth(timereportManager.timereportMap[widget.userId]);
-    }
     // var mappedTimereports =
     //     groupTimereportsByMonth(timereportManager.timereportMap[widget.userId]);
 
@@ -172,7 +173,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                            widget.userId != null ? Container() : _buildPersonSelectComponent(),
+                            isAdmin(context) ? _buildPersonSelectComponent() : Container(),
                           ] +
                           List.generate(mappedTimereports!.length, (index) {
                             String key = mappedTimereports!.keys.elementAt(index);
@@ -292,15 +293,19 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
       builder: (context) => FilterPersonsPage(
         preSelectedPersons: selectedPersons,
         selected: (selected) {
-          setState(() {
-            for (Person person in selected) {
-              selectedPersons[person] = true;
-            }
-            mappedTimereports = groupTimereportsByMonth(timereportManager.getTimereportsForMulitple(personIds));
-          });
+          selectPersons(selected);
         },
       ),
     );
+  }
+
+  void selectPersons(List<Person> persons) {
+    setState(() {
+      for (Person person in persons) {
+        selectedPersons[person] = true;
+      }
+      mappedTimereports = groupTimereportsByMonth(timereportManager.getTimereportsForMulitple(personIds));
+    });
   }
 }
 

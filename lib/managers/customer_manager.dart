@@ -1,10 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zimple/model/customer.dart';
+import 'package:zimple/utils/generic_imports.dart';
 
 class CustomerManager {
   List<Customer> customers;
+
   CustomerManager({required this.customers});
 
-  Customer? getCustomer(String customerKey) {
+  static CustomerManager of(BuildContext context) => context.read<ManagerProvider>().customerManager;
+
+  Customer? getCustomer(String? customerKey) {
+    if (customerKey == null) return null;
     if (customers.length == 0) return null;
     Customer? customer;
     try {

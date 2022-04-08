@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/utils/generic_imports.dart';
@@ -81,7 +82,7 @@ class TimeReportRowItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            event?.title ?? "",
+            title(context, event),
             style: textStyle(context).copyWith(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           Row(
@@ -104,5 +105,13 @@ class TimeReportRowItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String title(BuildContext context, Event? event) {
+    if (event != null) return event.title;
+    Customer? customer = CustomerManager.of(context).getCustomer(timereport.customerKey);
+    if (customer != null) return customer.name;
+
+    return getDayString(timereport.startDate);
   }
 }

@@ -33,7 +33,8 @@ class PersonManager {
 
   List<String> getProfilePicturePaths() => this.persons.map((person) => person.profilePicturePath).whereType<String>().toList();
 
-  Person? getPersonById(String id) {
+  Person? getPersonById(String? id) {
+    if (id == null) return null;
     try {
       return persons.firstWhere((p) => p.id == id, orElse: null);
     } catch (error) {

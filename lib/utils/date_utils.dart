@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/utils/constants.dart';
 
 int get thisYear => DateTime.now().year;
@@ -154,4 +155,8 @@ String getMonthName(int month) {
       print("ERROR: Couldn't parse month name!");
       return "";
   }
+}
+
+String getDayString(DateTime date) {
+  return DateFormat('EEEE', locale).format(date).capitalize();
 }

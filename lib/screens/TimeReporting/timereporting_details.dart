@@ -6,22 +6,16 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/managers/event_manager.dart';
-import 'package:zimple/model/event.dart';
-import 'package:zimple/model/timereport.dart';
-import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/event_detail_screen.dart';
 import 'package:zimple/screens/TimeReporting/AddTimereport/change_timereport_screen.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/generate_invoice_screen.dart';
-import 'package:zimple/utils/constants.dart';
-import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/generic_imports.dart';
-import 'package:zimple/widgets/button/nav_bar_back.dart';
 import 'package:zimple/widgets/conditional_widget.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
 import 'package:zimple/widgets/page_dots_indicator.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 
 class TimereportingDetails extends StatefulWidget {
   final TimeReport? timereport;
@@ -47,13 +41,33 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
         elevation: 0.0,
         title: Align(
           alignment: Alignment.centerLeft,
-          child: Text(
-            "Tidrapport detaljer",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
+          child: Row(
+            children: [
+              widget.timereport?.userId != null
+                  ? ProfilePictureIcon(
+                      size: Size(32, 32),
+                      fontSize: 20,
+                      person: person(context, widget.timereport!.userId!),
+                    )
+                  : Container(),
+              const SizedBox(width: 16),
+              Container(
+                width: width(context) * 0.5,
+                child: Text(
+                  getTitle(),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
+                ),
+              ),
+            ],
           ),
         ),
         leading: NavBarBack(),
         actions: user.isAdmin ? _buildActions(context) : []);
+  }
+
+  String getTitle() {
+    return person(context, widget.timereport?.userId)?.name ?? "Tidrapport detaljer";
   }
 
   @override
@@ -64,7 +78,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     //String
     return Scaffold(
       //appBar: _buildAppbar(context, user),
-      appBar: appBar(""),
+      appBar: _buildAppbar(context, user),
       body: widget.listTimereports != null
           ? _buildMultipleBody(user, eventManager)
           : _buildBody(widget.timereport!, user, eventManager),
@@ -113,6 +127,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            //_buildUserParameter(timereport),
             _buildParameter(
                 iconData: Icons.access_time,
                 title: dateToYearMonthDay(timereport.startDate),
@@ -129,6 +144,25 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
             _buildEventInfo(event)
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildUserParameter(TimeReport timereport) {
+    Person? person = PersonManager.of(context).getPersonById(timereport.userId);
+    if (person == null) return Container();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        children: [
+          ProfilePictureIcon(
+            person: person,
+            fontSize: 16,
+            size: Size(28, 28),
+          ),
+          const SizedBox(width: 24),
+          Text(person.name, style: TextStyle())
+        ],
       ),
     );
   }
@@ -333,7 +367,8 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     return Column(
       children: [
         _buildParameter(iconData: Icons.location_city, title: "Plats", subtitle: event.location ?? ""),
-        _buildParameter(iconData: FeatherIcons.briefcase, title: "Kund", subtitle: event.customer ?? ""),
+        if (event.customer.isNotBlank())
+          _buildParameter(iconData: FeatherIcons.briefcase, title: "Kund", subtitle: event.customer ?? ""),
         event.notes.isNotBlank()
             ? _buildParameter(iconData: Icons.event_note, title: "Arbetsorder anteckning", subtitle: event.notes ?? "")
             : Container(),

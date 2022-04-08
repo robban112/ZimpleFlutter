@@ -116,7 +116,7 @@ class TimeReport {
     DateTime startDate = DateTime.parse(timereportData['startDate']);
     DateTime endDate = DateTime.parse(timereportData['endDate']);
     int breakTime = timereportData['breakTime'] ?? 0;
-    int totalTime = timereportData['totalTime'] ?? 0;
+    int totalTime = calculateTotalTime(timereportData, startDate, endDate);
     List<String> imagesStoragePaths = _getImagesFromEventData(timereportData) ?? [];
     List<Cost> costs = _getCostsFromTimereportData(timereportData) ?? [];
     String? comment = timereportData['comment'];
@@ -135,6 +135,12 @@ class TimeReport {
         costs: costs,
         isCompleted: isCompleted,
         customerKey: customerKey);
+  }
+
+  static int calculateTotalTime(dynamic timereportData, DateTime startDate, DateTime endDate) {
+    int? totalTime = timereportData['totalTime'];
+    if (totalTime == 0 || totalTime == null) return endDate.difference(startDate).inMinutes;
+    return totalTime;
   }
 
   static List<String>? _getImagesFromEventData(dynamic eventData) {

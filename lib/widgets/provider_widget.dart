@@ -115,6 +115,16 @@ class ManagerProvider extends ChangeNotifier {
   Image? getPersonImage(Person? person) {
     return profilePictureService?.getProfilePicture(person?.profilePicturePath);
   }
+
+  Image? getPersonImageById(String? id) {
+    if (id == null) return null;
+    Person? person = personManager.getPersonById(id);
+    return profilePictureService?.getProfilePicture(person?.profilePicturePath);
+  }
+
+  Customer? getCustomer(String key) {
+    return customerManager.getCustomer(key);
+  }
 }
 
 class ProviderWidget extends InheritedWidget {

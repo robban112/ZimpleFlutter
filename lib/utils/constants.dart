@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/user_parameters.dart';
+import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/provider_widget.dart';
 
@@ -112,3 +114,7 @@ bool isAdmin(BuildContext context) => ManagerProvider.of(context).user.isAdmin;
 bool isNotAdmin(BuildContext context) => ManagerProvider.of(context).user.isNotAdmin;
 
 UserParameters user(BuildContext context) => ManagerProvider.of(context).user;
+
+Person? loggedInPerson(BuildContext context) => ManagerProvider.of(context).getLoggedInPerson();
+
+Person? person(BuildContext context, String? id) => PersonManager.of(context).getPersonById(id);

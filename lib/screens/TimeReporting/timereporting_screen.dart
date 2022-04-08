@@ -99,14 +99,14 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
       items: [
         ListedItem(
             leadingIcon: Icons.access_time,
+            text: "Tidrapportera",
+            trailingIcon: Icons.chevron_right,
+            onTap: goToAddTimereportScreen),
+        ListedItem(
+            leadingIcon: Icons.access_time,
             text: "Tidrapportera från arbetsorder",
             trailingIcon: Icons.chevron_right,
             onTap: goToNewAddTimereportingScreen),
-        ListedItem(
-            leadingIcon: Icons.access_time,
-            text: "Tidrapportera fristående tid",
-            trailingIcon: Icons.chevron_right,
-            onTap: goToAddTimereportScreen),
         ListedItem(
             leadingIcon: Icons.money,
             text: "Löneunderlag",

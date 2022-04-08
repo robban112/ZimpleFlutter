@@ -76,6 +76,7 @@ class TimereportOverviewCard extends StatelessWidget {
   final double amount;
 
   final int year;
+
   final int month;
 
   final String appendAmountText;
