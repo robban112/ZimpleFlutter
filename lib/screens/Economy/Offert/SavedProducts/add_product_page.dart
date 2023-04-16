@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/model/product.dart';
 import 'package:zimple/network/firebase_product_manager.dart';
 import 'package:zimple/screens/Economy/Offert/SavedProducts/SelectVAT/select_vat_screen.dart';
@@ -85,7 +85,7 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   void _onTapSelectVAT() async {
-    var vat = await pushNewScreen(context,
+    var vat = await PersistentNavBarNavigator.pushNewScreen(context,
         screen: SelectVATPage(
           selectedVat: selectedVat,
         ));

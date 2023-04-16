@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/absence_request.dart';
 import 'package:zimple/model/user_parameters.dart';
@@ -122,7 +122,7 @@ class _ReportVacationScreenState extends State<ReportVacationScreen> {
                                   Icon(Icons.chevron_right)
                                 ],
                               ),
-                              onTap: () => pushNewScreen(context, screen: SelectAbsenceType(
+                              onTap: () => PersistentNavBarNavigator.pushNewScreen(context, screen: SelectAbsenceType(
                                     didSelectAbsenceType: (absenceType) {
                                       setState(() {
                                         this.absenceType = absenceType;

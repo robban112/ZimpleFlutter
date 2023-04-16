@@ -2,27 +2,18 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
-import 'package:zimple/model/event.dart';
-import 'package:zimple/model/person.dart';
-import 'package:zimple/model/timereport.dart';
-import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/screens/Calendar/Filter/filter_persons_page.dart';
 import 'package:zimple/screens/TimeReporting/TimereportList/timereport_list_widget.dart';
 import 'package:zimple/screens/TimeReporting/TimereportList/timereport_row_item.dart';
 import 'package:zimple/screens/TimeReporting/timereport_month_report_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_details.dart';
-import 'package:zimple/utils/constants.dart';
-import 'package:zimple/utils/date_utils.dart';
 import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/utils/weekday_to_string.dart';
-import 'package:zimple/widgets/person_circle_avatar.dart';
-import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/widgets/rectangular_button.dart';
 
 class TimereportingListScreen extends StatefulWidget {
   final String? userId;
@@ -118,7 +109,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
     });
   }
 
-  void goToTimereportingDetails(TimeReport timereport) => pushNewScreen(context,
+  void goToTimereportingDetails(TimeReport timereport) => PersistentNavBarNavigator.pushNewScreen(context,
       screen: TimereportingDetails(
         timereport: timereport,
       ));
@@ -146,7 +137,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
           user.isAdmin
               ? TextButton(
                   child: Text("Visa månadsrapport", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
-                  onPressed: () => pushNewScreen(context,
+                  onPressed: () => PersistentNavBarNavigator.pushNewScreen(context,
                       screen: TimereportMonthReportScreen(timereports: mappedTimereports![key]!, month: key)),
                 )
               : Container()
@@ -193,7 +184,7 @@ class _TimereportingListScreenState extends State<TimereportingListScreen> {
                         padding: const EdgeInsets.only(bottom: 24.0),
                         child: RectangularButton(
                           text: "Visa valda tidrapporter",
-                          onTap: () => pushNewScreen(
+                          onTap: () => PersistentNavBarNavigator.pushNewScreen(
                             context,
                             screen: TimereportingDetails(
                               listTimereports: _getSelectedTimereports(),

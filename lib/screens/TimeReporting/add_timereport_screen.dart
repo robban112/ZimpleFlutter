@@ -8,13 +8,12 @@ import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:logger/logger.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zimple/extensions/double_extensions.dart';
 import 'package:zimple/managers/event_manager.dart';
-import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
@@ -22,15 +21,9 @@ import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Calendar/Notes/add_notes_screen.dart/add_notes_screen.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_select_screen.dart';
 import 'package:zimple/utils/generic_imports.dart';
-import 'package:zimple/widgets/image_dialog.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
-import 'package:zimple/widgets/photo_buttons.dart';
-import 'package:zimple/widgets/provider_widget.dart';
-import 'package:zimple/widgets/rectangular_button.dart';
 import 'package:zimple/widgets/snackbar/snackbar_widget.dart';
 import 'package:zimple/widgets/start_end_date_selector.dart';
 
-import '../../utils/constants.dart';
 import 'Components/timereport_cost_component.dart';
 
 class AddTimeReportingScreen extends StatefulWidget {
@@ -254,7 +247,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                     ],
                   ),
                   onTap: () {
-                    pushNewScreen(context, screen: CustomerSelectScreen(
+                    PersistentNavBarNavigator.pushNewScreen(context, screen: CustomerSelectScreen(
                       didSelectCustomer: (customer, contact) {
                         setState(() {
                           selectedCustomer = customer;
@@ -360,7 +353,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
                   ],
                 ),
                 onTap: () {
-                  pushNewScreen(context,
+                  PersistentNavBarNavigator.pushNewScreen(context,
                       screen: TimeReportingSelectScreen(
                         eventManager: widget.eventManager,
                         didSelectEvent: (event) {
@@ -466,7 +459,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
           child: _buildContainer(TimereportCostComponent(
               costs: this.costs,
               didAddCost: (cost) {
-                SchedulerBinding.instance?.addPostFrameCallback((_) {
+                SchedulerBinding.instance.addPostFrameCallback((_) {
                   Navigator.pop(context);
                   setState(() {
                     this.costs.add(cost);

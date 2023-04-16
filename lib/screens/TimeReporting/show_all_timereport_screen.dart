@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/screens/TimeReporting/timereporting_list_screen.dart';
@@ -34,7 +34,7 @@ class _ShowAllTimeReportScreenState extends State<ShowAllTimeReportScreen> {
                     leadingIcon: Icons.person,
                     child: Text(person.name),
                     onTap: () {
-                      pushNewScreen(context,
+                      PersistentNavBarNavigator.pushNewScreen(context,
                           screen: TimereportingListScreen(
                               // userId: person.id,
                               ));

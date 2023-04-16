@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/src/provider.dart';
 import 'package:zimple/model/contact.dart';
 import 'package:zimple/utils/constants.dart';
@@ -46,7 +46,7 @@ class ContactPersonSelectScreen extends StatelessWidget {
           color: Colors.white,
           size: 24,
         ),
-        onPressed: () => pushNewScreen(context, screen: AddContactScreen()),
+        onPressed: () => PersistentNavBarNavigator.pushNewScreen(context, screen: AddContactScreen()),
       );
 }
 

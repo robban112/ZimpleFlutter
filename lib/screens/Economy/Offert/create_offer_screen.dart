@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/screens/Economy/Offert/Components/invoice_item_widget.dart';
 import 'package:zimple/screens/Economy/Offert/CreatedOffer/created_offer_screen.dart';
@@ -262,7 +262,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
   }
 
   void _onTapSelectProduct() async {
-    var amountProduct = await pushNewScreen(
+    var amountProduct = await PersistentNavBarNavigator.pushNewScreen(
       context,
       screen: SelectProductScreen(),
     );
@@ -272,7 +272,7 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
   void _onDeleteAddedProduct(InvoiceItem productAmount) => setState(() => selectedProducts.remove(productAmount));
 
   void _onTapCreateOffer() {
-    pushNewScreen(context, screen: CreatedOfferScreen(invoice: getInvoice()));
+    PersistentNavBarNavigator.pushNewScreen(context, screen: CreatedOfferScreen(invoice: getInvoice()));
   }
 
   Invoice getInvoice() {

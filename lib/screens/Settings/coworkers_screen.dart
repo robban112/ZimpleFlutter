@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/person.dart';
@@ -54,12 +54,15 @@ class _CoworkersScreenState extends State<CoworkersScreen> {
         dividerThickness: 0.1,
         columnSpacing: 25,
         rows: personManager.persons.map((person) {
-          return DataRow(onSelectChanged: (_) => pushNewScreen(context, screen: CoworkerDetailsScreen(person: person)), cells: [
-            DataCell(_buildProfile(person)),
-            DataCell(Text(person.name)),
-            DataCell(Text(person.phonenumber ?? "")),
-            DataCell(Text(person.email ?? "")),
-          ]);
+          return DataRow(
+              onSelectChanged: (_) =>
+                  PersistentNavBarNavigator.pushNewScreen(context, screen: CoworkerDetailsScreen(person: person)),
+              cells: [
+                DataCell(_buildProfile(person)),
+                DataCell(Text(person.name)),
+                DataCell(Text(person.phonenumber ?? "")),
+                DataCell(Text(person.email ?? "")),
+              ]);
         }).toList(),
         columns: [
           DataColumn(label: Text('')),

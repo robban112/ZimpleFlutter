@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/managers/event_manager.dart';
@@ -214,7 +214,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
 
   void goToCreateInvoiceScreen() {
     Future.delayed(Duration(milliseconds: 800)).then((value) {
-      pushNewScreen(context, screen: GenerateInvoiceScreen());
+      PersistentNavBarNavigator.pushNewScreen(context, screen: GenerateInvoiceScreen());
     });
   }
 
@@ -223,7 +223,7 @@ class _TimereportingDetailsState extends State<TimereportingDetails> {
     Event? event = EventManager.of(context).getEventForKey(key: widget.timereport!.eventId);
     if (event == null) return;
     Future.delayed(Duration(milliseconds: 200)).then((value) {
-      pushNewScreen(context,
+      PersistentNavBarNavigator.pushNewScreen(context,
           screen: ChangeTimereportScreen(
             event: event,
             timereport: widget.timereport!,

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/TimeReporting/AddTimereport/change_timereport_screen.dart';
@@ -245,14 +245,14 @@ class ApproveEventItem extends StatelessWidget {
         _showError(context);
         return;
       }
-      pushNewScreen(context,
+      PersistentNavBarNavigator.pushNewScreen(context,
           screen: ChangeTimereportScreen(
             timereport: timereport,
             isChangingTimereport: true,
             event: event,
           ));
     } else {
-      pushNewScreen(
+      PersistentNavBarNavigator.pushNewScreen(
         context,
         screen: ChangeTimereportScreen(
           event: event,

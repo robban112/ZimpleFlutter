@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/model/product.dart';
 import 'package:zimple/screens/Economy/Offert/SelectProduct/select_saved_products_screen.dart';
@@ -67,7 +66,7 @@ class _SelectProductScreenState extends State<SelectProductScreen> {
   }
 
   void _onTapSelectSavedProduct() async {
-    var product = await pushNewScreen(
+    var product = await PersistentNavBarNavigator.pushNewScreen(
       context,
       screen: SelectSavedProductScreen(),
     );

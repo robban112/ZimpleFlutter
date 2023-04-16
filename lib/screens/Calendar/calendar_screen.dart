@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/components/timeplan.dart';
 import 'package:zimple/model/company_settings.dart';
@@ -257,7 +257,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _exitModifyEvent();
     if (event == null) return;
     HapticFeedback.lightImpact();
-    pushNewScreen(
+    PersistentNavBarNavigator.pushNewScreen(
       context,
       screen: AddEventScreen(
         persons: widget.personManager.persons,

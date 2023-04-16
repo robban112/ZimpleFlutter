@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/extensions/string_extensions.dart';
 import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/person.dart';
@@ -21,11 +20,7 @@ import 'package:zimple/screens/Settings/support_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/service/user_service.dart';
 import 'package:zimple/utils/theme_manager.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
-
-import '../../widgets/photo_buttons.dart';
 
 class MoreScreen extends StatefulWidget {
   static const String routeName = "settings_screen";
@@ -123,21 +118,22 @@ class _MoreScreenState extends State<MoreScreen> {
               leadingIcon: FeatherIcons.info,
               text: "Företagsinfo",
               onTap: () {
-                pushNewScreen(context, screen: CompanySettingsScreen());
+                PersistentNavBarNavigator.pushNewScreen(context, screen: CompanySettingsScreen());
               }),
         ListedItem(
             leadingIcon: Icons.people_alt_outlined,
             trailingIcon: Icons.chevron_right,
             text: "Kunder",
             onTap: () {
-              pushNewScreen(context, screen: CustomerScreen(customers: ManagerProvider.of(context).customers));
+              PersistentNavBarNavigator.pushNewScreen(context,
+                  screen: CustomerScreen(customers: ManagerProvider.of(context).customers));
             }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
             leadingIcon: Icons.people,
             text: "Medarbetare",
             onTap: () {
-              pushNewScreen(context, screen: CoworkersScreen());
+              PersistentNavBarNavigator.pushNewScreen(context, screen: CoworkersScreen());
             }),
         if (widget.user.isAdmin)
           ListedItem(
@@ -145,21 +141,21 @@ class _MoreScreenState extends State<MoreScreen> {
               leadingIcon: Icons.people,
               text: "Bjud in användare",
               onTap: () {
-                pushNewScreen(context, screen: AddCoworkerScreen());
+                PersistentNavBarNavigator.pushNewScreen(context, screen: AddCoworkerScreen());
               }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
             leadingIcon: Icons.support_agent,
             text: "Support",
             onTap: () {
-              pushNewScreen(context, screen: SupportScreen());
+              PersistentNavBarNavigator.pushNewScreen(context, screen: SupportScreen());
             }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
             leadingIcon: Icons.settings,
             text: "Inställningar",
             onTap: () {
-              pushNewScreen(context, screen: SettingsScreen(onLogout: widget.onLogout));
+              PersistentNavBarNavigator.pushNewScreen(context, screen: SettingsScreen(onLogout: widget.onLogout));
             }),
       ],
     );

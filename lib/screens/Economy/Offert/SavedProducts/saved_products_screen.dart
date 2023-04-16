@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/model/product.dart';
 import 'package:zimple/network/firebase_product_manager.dart';
 import 'package:zimple/screens/Economy/Offert/SavedProducts/add_product_page.dart';
@@ -39,7 +39,7 @@ class _SavedProductsScreenState extends State<SavedProductsScreen> {
   }
 
   Widget _addButton() => CupertinoButton(
-        onPressed: () => pushNewScreen(context, screen: AddProductPage()),
+        onPressed: () => PersistentNavBarNavigator.pushNewScreen(context, screen: AddProductPage()),
         child: Padding(
           padding: const EdgeInsets.only(right: 0.0),
           child: Center(

@@ -16,7 +16,7 @@ void showAlertDialog({
         child: new Text(message),
       ),
       actions: [
-        FlatButton(
+        MaterialButton(
           child: new Text("OK"),
           onPressed: () {
             Navigator.of(context).pop();

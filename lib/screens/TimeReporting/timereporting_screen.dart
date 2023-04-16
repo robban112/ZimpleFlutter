@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focus_detector/focus_detector.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
@@ -111,17 +111,17 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
             leadingIcon: Icons.money,
             text: "Löneunderlag",
             trailingIcon: Icons.chevron_right,
-            onTap: () => pushNewScreen(context, screen: SalaryBasisScreen())),
+            onTap: () => PersistentNavBarNavigator.pushNewScreen(context, screen: SalaryBasisScreen())),
         ListedItem(
             leadingIcon: Icons.wb_sunny,
             text: "Ansök frånvaro",
             trailingIcon: Icons.chevron_right,
-            onTap: () => pushNewScreen(context, screen: ReportVacationScreen())),
+            onTap: () => PersistentNavBarNavigator.pushNewScreen(context, screen: ReportVacationScreen())),
         ListedItem(
             leadingIcon: Icons.alarm_off,
             text: "Min frånvaro",
             trailingIcon: Icons.chevron_right,
-            onTap: () => pushNewScreen(context,
+            onTap: () => PersistentNavBarNavigator.pushNewScreen(context,
                 screen: AbsenceScreen(
                   userId: widget.user.token,
                   company: widget.user.company,
@@ -174,7 +174,8 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
             trailingWidget: Row(
               children: [_buildNumberOfUnreadAbsenceRequests(absenceMap), Icon(Icons.chevron_right)],
             ),
-            onTap: () => pushNewScreen(context, screen: SelectVacationPersonScreen(unreadAbsenceMap: absenceMap))),
+            onTap: () => PersistentNavBarNavigator.pushNewScreen(context,
+                screen: SelectVacationPersonScreen(unreadAbsenceMap: absenceMap))),
       ],
     );
   }
@@ -207,15 +208,15 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
   }
 
   void goToShowAllTimereportScreen() {
-    pushNewScreen(context, screen: TimereportingListScreen());
+    PersistentNavBarNavigator.pushNewScreen(context, screen: TimereportingListScreen());
   }
 
   void goToAddTimereportScreen() {
-    pushNewScreen(context, screen: AddTimeReportingScreen(eventManager: widget.eventManager));
+    PersistentNavBarNavigator.pushNewScreen(context, screen: AddTimeReportingScreen(eventManager: widget.eventManager));
   }
 
   void goToNewAddTimereportingScreen() {
-    pushNewScreen(context, screen: AddTimereportEasyScreen());
+    PersistentNavBarNavigator.pushNewScreen(context, screen: AddTimereportEasyScreen());
   }
 
   Widget buildLatestTimereportTitle() {
@@ -231,7 +232,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
               if (widget.user.isAdmin) {
                 goToShowAllTimereportScreen();
               } else {
-                pushNewScreen(context,
+                PersistentNavBarNavigator.pushNewScreen(context,
                     screen: TimereportingListScreen(
                       userId: widget.user.token,
                     ));

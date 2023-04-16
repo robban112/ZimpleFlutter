@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/screens/TimeReporting/Vacation/abscence_screen.dart';
@@ -49,7 +49,7 @@ class SelectVacationPersonScreenState extends State<SelectVacationPersonScreen> 
               leadingIcon: Icons.person,
               child: Text(person.name),
               onTap: () {
-                pushNewScreen(context,
+                PersistentNavBarNavigator.pushNewScreen(context,
                     screen: AbsenceScreen(
                       userId: person.id,
                       company: company,

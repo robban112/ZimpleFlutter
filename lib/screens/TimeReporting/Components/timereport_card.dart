@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/models.dart';
@@ -63,7 +63,7 @@ class _TimeReportCardState extends State<TimeReportCard> {
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
             splashColor: Colors.grey.shade300,
             onTap: () {
-              pushNewScreen(context,
+              PersistentNavBarNavigator.pushNewScreen(context,
                   screen: TimereportingDetails(
                     timereport: widget.timereport,
                   ));

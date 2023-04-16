@@ -1,16 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_detector/focus_detector.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
-import 'package:zimple/model/customer.dart';
 import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customer_details_screen.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/generic_imports.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 
 import 'add_customer_screen.dart';
 
@@ -89,7 +84,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
               ),
             ),
             onTap: () {
-              pushNewScreen(context, screen: CustomerDetailsScreen(customer: customer));
+              PersistentNavBarNavigator.pushNewScreen(context, screen: CustomerDetailsScreen(customer: customer));
             });
       })),
     );

@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zimple/extensions/string_extensions.dart';
@@ -19,7 +18,6 @@ import 'package:zimple/screens/Calendar/AddEvent/customer_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/person_select_screen.dart';
 import 'package:zimple/screens/Calendar/AddEvent/work_category_select.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/start_end_date_selector.dart';
 import 'package:zimple/widgets/widgets.dart';
 
@@ -440,7 +438,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   Future<dynamic> _onTapAddCustomer(BuildContext context) {
-    return pushNewScreen(context, screen: CustomerSelectScreen(
+    return PersistentNavBarNavigator.pushNewScreen(context, screen: CustomerSelectScreen(
       didSelectCustomer: (customer, contact) {
         setState(() {
           selectedCustomerContactPerson = contact;
@@ -454,7 +452,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   Future<dynamic> _onTapAddPersons(BuildContext context) {
-    return pushNewScreen(context,
+    return PersistentNavBarNavigator.pushNewScreen(context,
         screen: PersonSelectScreen(
           persons: widget.persons,
           personCallback: this.selectPersons,
@@ -514,7 +512,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
             Icon(Icons.chevron_right),
           ],
         ),
-        onTap: () => pushNewScreen(
+        onTap: () => PersistentNavBarNavigator.pushNewScreen(
           context,
           screen: ContactPersonSelectScreen(didSelectContact: (contact) => setState(() => this.selectedContactPerson = contact)),
         ),
@@ -530,7 +528,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         ],
       ),
       onTap: () {
-        pushNewScreen(context,
+        PersistentNavBarNavigator.pushNewScreen(context,
             screen: WorkCategorySelectScreen(
                 onSelectWorkCategory: (category) => setState(() => this.selectedWorkCategory = category)));
       });

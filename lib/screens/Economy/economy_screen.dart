@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/screens/Economy/Offert/SavedProducts/saved_products_screen.dart';
 import 'package:zimple/screens/Economy/Offert/create_offer_screen.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class EconomyScreen extends StatefulWidget {
@@ -50,7 +49,7 @@ class _EconomyScreenState extends State<EconomyScreen> {
               ListedItem(
                 text: "Skapa offert",
                 leadingIcon: FeatherIcons.fileText,
-                onTap: () => pushNewScreen(
+                onTap: () => PersistentNavBarNavigator.pushNewScreen(
                   context,
                   screen: CreateOfferScreen(),
                 ),
@@ -58,7 +57,7 @@ class _EconomyScreenState extends State<EconomyScreen> {
               ListedItem(
                 text: "Produkter / tjänster",
                 leadingWidget: SvgPicture.asset('images/shop.svg', color: Theme.of(context).iconTheme.color),
-                onTap: () => pushNewScreen(
+                onTap: () => PersistentNavBarNavigator.pushNewScreen(
                   context,
                   screen: SavedProductsScreen(),
                 ),
