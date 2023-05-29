@@ -122,10 +122,16 @@ class Zimple extends StatefulWidget {
 
 class _ZimpleState extends State<Zimple> {
   //FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final managerProvider = ManagerProvider();
+
   StreamSubscription? _sub;
+
   Uri? _initialUri;
+
   Uri? _latestUri;
+
   Object? _err;
+
   bool _initialUriIsHandled = false;
 
   GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
@@ -141,7 +147,29 @@ class _ZimpleState extends State<Zimple> {
     _handleIncomingLinks();
     _handleInitialUri();
     _initializeFlutterFire();
+    _setupInteractedMessage();
     super.initState();
+  }
+
+  Future<void> _setupInteractedMessage() async {
+    var message = await FirebaseMessaging.instance.getInitialMessage();
+
+    if (message != null) {
+      _handleMessage(message);
+    }
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      _handleMessage(event);
+    });
+  }
+
+  Future<void> _handleMessage(RemoteMessage? message) async {
+    print("Received message: $message");
+    if (message?.data['eventId'] != null) {
+      var eventId = message?.data['eventId'];
+      print('Go to event: $eventId');
+      managerProvider.eventIdMessageOpen.value = eventId;
+    }
   }
 
   Future<void> initDynamicLinks() async {
@@ -274,7 +302,8 @@ class _ZimpleState extends State<Zimple> {
     );
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("PUSH RECEIVED");
+      print("PUSH RECEIVED: $message");
+      print(message.data);
       //bFirebaseMessaging.showPush(message);
     });
 
@@ -299,7 +328,7 @@ class _ZimpleState extends State<Zimple> {
     FirebaseMessaging.onBackgroundMessage(_throwGetMessage);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ManagerProvider()),
+        ChangeNotifierProvider(create: (_) => managerProvider),
         ChangeNotifierProvider(create: (_) => AnalyticsService()),
         ChangeNotifierProvider(create: (_) => UserService(widget.user)),
       ],

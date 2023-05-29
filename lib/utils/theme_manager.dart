@@ -67,7 +67,7 @@ class ThemeNotifier with ChangeNotifier {
           fontWeight: FontWeight.normal,
         ),
       ),
-      accentIconTheme: IconThemeData(color: Colors.black),
+      //accentIconTheme: IconThemeData(color: Colors.black),
       dividerColor: Colors.white,
       fontFamily: 'FiraSans',
       iconTheme: IconThemeData(color: Colors.white),

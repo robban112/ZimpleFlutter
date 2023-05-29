@@ -132,7 +132,6 @@ class AppBarWidget extends StatelessWidget {
             ],
             flexibleSpace: AppBarBackground(),
             backgroundColor: ThemeNotifier.darkThemePrimaryBg,
-            brightness: Brightness.dark,
             toolbarHeight: 75.0,
             //iconTheme: IconThemeData(color: Colors.white),
             elevation: 0.0,

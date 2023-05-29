@@ -4,7 +4,6 @@ import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
-import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_company_manager.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
@@ -58,6 +57,8 @@ class ManagerProvider extends ChangeNotifier {
   bool mounted = false;
 
   FirebaseProductManager get firebaseProductManager => FirebaseProductManager(company: this.user.company);
+
+  final ValueNotifier<String?> eventIdMessageOpen = ValueNotifier(null);
 
   static ManagerProvider of(BuildContext context) {
     return context.read<ManagerProvider>();

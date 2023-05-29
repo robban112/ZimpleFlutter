@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
+//import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/api/pdf_invoice_api.dart';
 import 'package:zimple/screens/TimeReporting/Invoice/model/invoice.dart';
 import 'package:zimple/utils/constants.dart';
@@ -70,9 +69,10 @@ class OfferPDF extends StatelessWidget {
       future: PdfInvoiceApi.generate(invoice),
       builder: ((context, snapshot) {
         if (!snapshot.hasData) return Container(height: 200, width: 200);
-        return PDFView(
-          filePath: snapshot.data!.path,
-        );
+        //return PDFView(
+        //  filePath: snapshot.data!.path,
+        //);
+        return Container();
       }),
     );
     // return Container(

@@ -118,10 +118,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
     maybeShowOnboarding();
     Future.delayed(Duration.zero, () {
       initFilteredPersons();
+      _handleEventMessage(); // Handle first message if there are any
+      ManagerProvider.of(context).eventIdMessageOpen.addListener(() {
+        // setup on message opened listener
+        _handleEventMessage();
+      });
       //_setupCompanySettingsListener(context);
     });
+  }
 
-    //filteredPersons = widget.personManager.persons;
+  void _handleEventMessage() {
+    var eventId = ManagerProvider.of(context).eventIdMessageOpen.value;
+    if (eventId == null) return;
+    var event = EventManager.of(context).getEventForKey(key: eventId);
+    print("Event to open from push notification: $event");
+    if (event != null) _didTapEvent(event);
   }
 
   void maybeShowOnboarding() async {

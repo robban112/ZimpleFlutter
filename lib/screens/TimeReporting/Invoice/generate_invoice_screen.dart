@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zimple/model/customer.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/generic_imports.dart';
 
 import 'api/pdf_api.dart';
@@ -35,7 +33,6 @@ class _GenerateInvoiceScreenState extends State<GenerateInvoiceScreen> {
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: primaryColor,
-          brightness: Brightness.dark,
           title: Text("Skapa faktura"),
           centerTitle: true,
         ),

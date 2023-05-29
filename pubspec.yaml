@@ -1,6 +1,6 @@
 name: zimple
 description: Zimple projektverktyg
-version: 1.1.2
+version: 1.2.1+17
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
@@ -17,7 +17,7 @@ dependencies:
   firebase_crashlytics: ^3.1.0
   firebase_database: ^10.1.0
   firebase_dynamic_links: ^5.1.0
-  firebase_messaging: ^14.4.0
+  firebase_messaging: ^14.4.1
   firebase_remote_config: ^4.0.0
   firebase_storage: ^11.1.0
   fl_chart: ^0.61.0
@@ -33,7 +33,7 @@ dependencies:
   focus_detector: ^2.0.0
   image_picker: ^0.8.4+4
   infinite_listview: ^1.1.0
-  intl: ^0.17.0
+  intl: ^0.18.0
   loader_overlay: ^2.0.0
   logger: ^1.0.0
   maps_launcher: ^2.0.0
@@ -53,7 +53,6 @@ dependencies:
   tuple: ^2.0.0
   uni_links: ^0.5.1
   url_launcher: ^6.0.6
-  flutter_pdfview: ^1.2.2
   uuid: ^3.0.3
   flutter_email_sender: ^5.2.0
   smooth_page_indicator: ^1.0.0+2
