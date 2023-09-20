@@ -29,7 +29,7 @@ class WeekHeader extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 1),
       decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
           topLeft: Radius.circular(30),
@@ -56,12 +56,12 @@ class WeekHeader extends StatelessWidget {
                 children: <Widget>[
                   CircleAvatar(
                     backgroundColor:
-                        isToday(_dates[index]) ? Theme.of(context).colorScheme.secondary : Theme.of(context).backgroundColor,
+                        isToday(_dates[index]) ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.background,
                     child: Text(formattedDate.format(_dates[index]),
                         style: TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.w900,
-                            color: isToday(_dates[index]) ? Colors.white : Theme.of(context).textTheme.bodyText1?.color)),
+                            color: isToday(_dates[index]) ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color)),
                   ),
                   SizedBox(height: 2.0),
                   Text(dateToAbbreviatedString(_dates[index]).toUpperCase(), style: TextStyle(fontSize: 11.0, color: null)),

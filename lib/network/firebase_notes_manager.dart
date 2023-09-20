@@ -2,7 +2,6 @@ import 'package:firebase_database/firebase_database.dart' as fb;
 import 'package:zimple/model/note.dart';
 
 import '../managers/person_manager.dart';
-import '../model/note.dart';
 
 class FirebaseNotesManager {
   String company;

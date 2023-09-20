@@ -5,8 +5,6 @@ void showAlertDialog({
   String title = "Alert",
   required String message,
 }) {
-  assert(title != null);
-  assert(message != null);
 
   showDialog(
     context: context,

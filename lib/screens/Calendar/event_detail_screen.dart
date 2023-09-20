@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -12,7 +11,6 @@ import 'package:zimple/network/firebase_storage_manager.dart';
 import 'package:zimple/utils/color_utils.dart';
 import 'package:zimple/utils/theme_manager.dart';
 import 'package:zimple/widgets/future_image_widget.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 import '../../network/firebase_event_manager.dart';
@@ -73,7 +71,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       _buildBody(customer),
                       Expanded(
                         child: Container(
-                          color: Theme.of(context).backgroundColor,
+                          color: Theme.of(context).colorScheme.background,
                         ),
                       ),
                     ],
@@ -240,7 +238,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   Widget _buildBody(Customer? customer) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
         child: Column(

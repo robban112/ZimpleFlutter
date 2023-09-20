@@ -18,6 +18,7 @@ class RectangularButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
+      width: double.infinity,
       padding: padding,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0)),
       child: ButtonTheme(
@@ -29,8 +30,7 @@ class RectangularButton extends StatelessWidget {
             this.onTap();
           },
           style: ElevatedButton.styleFrom(
-            elevation: 0,
-            primary: color ?? Theme.of(context).colorScheme.secondary,
+            elevation: 0, backgroundColor: color ?? Theme.of(context).colorScheme.secondary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),

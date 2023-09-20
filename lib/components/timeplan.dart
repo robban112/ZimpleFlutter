@@ -40,7 +40,7 @@ class Timeplan extends StatelessWidget {
               ))
           : null,
       body: Container(
-          decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
+          decoration: BoxDecoration(color: Theme.of(context).colorScheme.background),
           child: InfiniteListView.separated(
             //controller: _infiniteController,
             itemBuilder: (BuildContext context, int index) {

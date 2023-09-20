@@ -9,7 +9,6 @@ import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/network/firebase_user_manager.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/encrypter.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class AddCoworkerScreen extends StatefulWidget {

@@ -48,7 +48,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
     super.initState();
   }
 
-  Widget _buildSectionTitle(String title, {IconData? leadingIcon}) {
+  Widget _buildSectionTitle(String title) {
     return ListedTitle(text: title);
   }
 

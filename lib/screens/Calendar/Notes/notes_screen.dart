@@ -76,7 +76,7 @@ class _NotesScreenState extends State<NotesScreen> with SingleTickerProviderStat
             child: Container(
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
               ),
               child: TabBarView(
                 controller: _tabController,

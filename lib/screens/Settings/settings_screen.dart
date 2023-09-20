@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/model/company_settings.dart';
+import 'package:zimple/screens/Settings/DeleteAccount/delete_account_screen.dart';
 import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/theme_manager.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/listed_view/listed_switch.dart';
 import 'package:zimple/widgets/widgets.dart';
 
@@ -61,6 +62,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       leadingIcon: Icons.privacy_tip_outlined,
                       onChanged: onSetPrivateWorkOrder,
                     ),
+                  ListedItem(
+                    leadingIcon: Icons.delete,
+                    text: "Ta bort konto",
+                    onTap: () {
+                      PersistentNavBarNavigator.pushNewScreen(context, screen: DeleteAccountScreen());
+                    },
+                  ),
                   ListedItem(
                       trailingIcon: Icons.chevron_right,
                       leadingIcon: Icons.logout,

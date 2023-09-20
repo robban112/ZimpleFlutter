@@ -136,7 +136,6 @@ class ProviderWidget extends InheritedWidget {
 
   static ProviderWidget of(BuildContext context) {
     final ProviderWidget result = context.dependOnInheritedWidgetOfExactType<ProviderWidget>()!;
-    assert(result != null, '');
     return result;
   }
 

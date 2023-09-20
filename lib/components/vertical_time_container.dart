@@ -20,7 +20,7 @@ class VerticalTimeContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.background),
       child: Column(
         children: List.generate(24, (index) {
           return index == 0

@@ -224,5 +224,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       case 3:
         return passwordFocusNode;
     }
+    return null;
   }
 }

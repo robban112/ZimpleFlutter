@@ -616,7 +616,7 @@ class _AddTimeReportingScreenState extends State<AddTimeReportingScreen> {
 
   void _addTimeReport() async {
     print("Uploading new timereport");
-    if (user == null || firebaseTimeReportManager == null) {
+    if (firebaseTimeReportManager == null) {
       return;
     }
     setLoading(true);

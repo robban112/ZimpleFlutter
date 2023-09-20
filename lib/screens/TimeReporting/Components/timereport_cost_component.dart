@@ -132,7 +132,7 @@ class _AddCostComponentState extends State<AddCostComponent> {
             return SingleChildScrollView(
               child: Container(
                 decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).colorScheme.background,
                     borderRadius:
                         BorderRadius.vertical(top: Radius.circular(30))),
                 child: ConstrainedBox(

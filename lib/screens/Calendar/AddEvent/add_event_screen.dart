@@ -239,9 +239,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
     List<String> fileUids = selectedImages.map((_) => Uuid().v4().toString()).toList();
     Map<String, Map<String, String>> map = {};
     fileUids.forEach((fileName) {
-      Map<String, String> inner_map = {'storagePath': "/Events/${key}/${fileName}"};
+      Map<String, String> innerMap = {'storagePath': "/Events/$key/$fileName"};
       var uuid = Uuid().v4().toString();
-      map[uuid] = inner_map;
+      map[uuid] = innerMap;
     });
     selectedImages.asMap().forEach((index, file) async {
       var fileName = fileUids[index];

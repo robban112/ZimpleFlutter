@@ -7,7 +7,6 @@ import 'package:zimple/utils/theme_manager.dart';
 
 import '../managers/event_layout_manager.dart';
 import '../model/event.dart';
-import '../utils/date_utils.dart';
 import 'vertical_time_container.dart';
 import 'week_header.dart';
 
@@ -146,8 +145,8 @@ class WeekView extends StatelessWidget {
             minuteHeight: _minuteHeight,
             dayWidth: dayWidth,
             color: isToday(date)
-                ? Color.alphaBlend(Theme.of(context).colorScheme.secondary.withOpacity(0.15), Theme.of(context).backgroundColor)
-                : Theme.of(context).backgroundColor,
+                ? Color.alphaBlend(Theme.of(context).colorScheme.secondary.withOpacity(0.15), Theme.of(context).colorScheme.background)
+                : Theme.of(context).colorScheme.background,
           ),
         ),
       ),

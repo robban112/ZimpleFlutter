@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zimple/model/customer.dart';
 import 'package:zimple/screens/Settings/Customers/add_customer_screen.dart';
-import 'package:zimple/utils/constants.dart';
 import 'package:zimple/utils/generic_imports.dart';
-import 'package:zimple/utils/theme_manager.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/floating_add_button.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 
 class CustomerSelectScreen extends StatefulWidget {
   final Function(Customer, int) didSelectCustomer;

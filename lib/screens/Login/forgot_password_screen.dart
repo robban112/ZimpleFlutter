@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/rectangular_button.dart';
 import 'package:zimple/widgets/widgets.dart';
 
-import '../../utils/constants.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   static final routeName = "forgot_password_screen";

@@ -33,10 +33,8 @@ class RoundedButton extends StatelessWidget {
             this.onTap!();
           },
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(100.0, 50.0),
+            foregroundColor: this.textColor == null ? Colors.white : this.textColor, minimumSize: Size(100.0, 50.0), backgroundColor: this.color,
             elevation: 5,
-            primary: this.color,
-            onPrimary: this.textColor == null ? Colors.white : this.textColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),

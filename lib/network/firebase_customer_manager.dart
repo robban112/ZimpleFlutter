@@ -1,5 +1,4 @@
 import 'package:firebase_database/firebase_database.dart' as fb;
-import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:zimple/model/contact.dart';
 import 'package:zimple/model/customer.dart';
@@ -54,14 +53,12 @@ class FirebaseCustomerManager {
     if (customerData['contacts'] == null) return [];
     var contactsList = List.from(customerData['contacts']);
     List<Contact> contacts = [];
-    if (contactsList != null) {
-      for (dynamic map in contactsList) {
-        dynamic contactData = Map.from(map);
-        var name = contactData['name'] ?? "";
-        var email = contactData['email'] ?? "";
-        var phoneNumber = contactData['phoneNumber'] ?? "";
-        contacts.add(Contact("", name, phoneNumber, email));
-      }
+    for (dynamic map in contactsList) {
+      dynamic contactData = Map.from(map);
+      var name = contactData['name'] ?? "";
+      var email = contactData['email'] ?? "";
+      var phoneNumber = contactData['phoneNumber'] ?? "";
+      contacts.add(Contact("", name, phoneNumber, email));
     }
     return contacts;
   }

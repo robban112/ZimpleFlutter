@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/utils/constants.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class CoworkerDetailsScreen extends StatefulWidget {
@@ -62,7 +61,7 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Container(
-          color: Theme.of(context).backgroundColor,
+          color: Theme.of(context).colorScheme.background,
           height: MediaQuery.of(context).size.height,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/note.dart';

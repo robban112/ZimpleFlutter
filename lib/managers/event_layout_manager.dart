@@ -1,10 +1,8 @@
 import 'package:zimple/model/event_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:zimple/model/event_type.dart';
 import '../components/event_container.dart';
 import '../model/event.dart';
 import 'package:tuple/tuple.dart';
-import 'package:quiver/iterables.dart';
 import '../utils/date_utils.dart';
 
 class EventLayoutManager {

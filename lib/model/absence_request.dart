@@ -30,7 +30,7 @@ class AbsenceRequest {
     if (vacationRequestData['eventIds'] != null) {
       eventIds = List.from(vacationRequestData['eventIds'] ?? []);
     }
-    if (start == null || end == null) return null;
+    if (end == null) return null;
     return AbsenceRequest(
         id: id,
         startDate: start,

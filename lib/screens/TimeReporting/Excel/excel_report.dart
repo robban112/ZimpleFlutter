@@ -7,7 +7,6 @@ import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/event_manager.dart';
 import 'package:zimple/managers/person_manager.dart';
 import 'package:zimple/model/models.dart';
-import 'package:zimple/model/timereport.dart';
 import 'package:zimple/utils/date_utils.dart';
 
 class ExcelManager {

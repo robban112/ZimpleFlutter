@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zimple/model/customer.dart';
 import 'package:zimple/utils/generic_imports.dart';
 
 class CustomerManager {

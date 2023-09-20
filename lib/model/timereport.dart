@@ -2,7 +2,6 @@ import 'package:uuid/uuid.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/utils/date_utils.dart';
 
-import 'cost.dart';
 
 class TimeReport {
   String id;
@@ -97,8 +96,8 @@ class TimeReport {
   void setImagesStoragePaths(String? key, List<String> filenames) {
     Map<String, Map<String, String>> map = {};
     filenames.forEach((fileName) {
-      Map<String, String> inner_map = {'storagePath': "/Timereport/$key/$fileName"};
-      map[fileName] = inner_map;
+      Map<String, String> innerMap = {'storagePath': "/Timereport/$key/$fileName"};
+      map[fileName] = innerMap;
     });
     this.imageStoragePaths = map;
   }
@@ -144,7 +143,7 @@ class TimeReport {
   }
 
   static List<String>? _getImagesFromEventData(dynamic eventData) {
-    dynamic? imageData = eventData['images'];
+    dynamic imageData = eventData['images'];
     if (imageData == null) {
       return null;
     }

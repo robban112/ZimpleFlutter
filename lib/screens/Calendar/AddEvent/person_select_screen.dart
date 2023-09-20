@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:zimple/utils/theme_manager.dart';
-import 'package:zimple/widgets/app_bar_widget.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 import '../../../model/person.dart';

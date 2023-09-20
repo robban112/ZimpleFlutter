@@ -345,6 +345,7 @@ class _ZimpleState extends State<Zimple> {
             navigatorObservers: [observer],
             onGenerateRoute: (RouteSettings routeSettings) {
               print("generated route: ${routeSettings.name}");
+              return null;
             },
             initialRoute: widget.user != null ? TabBarWidget.routeName : LoginScreen.routeName,
             routes: {

@@ -50,17 +50,10 @@ class ThemeNotifier with ChangeNotifier {
           statusBarBrightness: Brightness.dark,
         ),
       ),
-      primarySwatch: Colors.grey,
       primaryColor: Colors.black,
       scaffoldBackgroundColor: darkThemePrimaryBg,
-      backgroundColor: darkThemePrimaryBg,
       cardColor: darkCardColor,
       primaryIconTheme: IconThemeData(color: Colors.white),
-      colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo).copyWith(
-        secondary: Color(0xFF3949AB),
-        tertiary: Color(0xff7CD8EC),
-        brightness: Brightness.dark,
-      ),
       snackBarTheme: SnackBarThemeData(
         contentTextStyle: TextStyle(
           color: Colors.white,
@@ -75,18 +68,18 @@ class ThemeNotifier with ChangeNotifier {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: darkThemePrimaryBg,
       ),
-      bottomAppBarColor: Color(0xff0F0E0E));
+      colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo)
+          .copyWith(
+            secondary: Color(0xFF3949AB),
+            tertiary: Color(0xff7CD8EC),
+            brightness: Brightness.dark,
+          )
+          .copyWith(primary: Colors.grey, background: darkThemePrimaryBg),
+      bottomAppBarTheme: BottomAppBarTheme(color: Color(0xff0F0E0E)));
 
   late final lightTheme = ThemeData(
-    primarySwatch: Colors.grey,
     primaryColor: lightThemePrimaryBg,
     scaffoldBackgroundColor: lightThemePrimaryBg,
-    backgroundColor: lightThemePrimaryBg,
-    colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue).copyWith(
-      secondary: Color(0xff3617F9),
-      tertiary: Color(0xff3617F9),
-      brightness: Brightness.light,
-    ),
     cardColor: Colors.white,
     snackBarTheme: SnackBarThemeData(
       actionTextColor: Colors.white,
@@ -100,7 +93,14 @@ class ThemeNotifier with ChangeNotifier {
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: darkThemePrimaryBg,
     ),
-    bottomAppBarColor: lightThemePrimaryBg,
+    colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightBlue)
+        .copyWith(
+          secondary: Color(0xff3617F9),
+          tertiary: Color(0xff3617F9),
+          brightness: Brightness.light,
+        )
+        .copyWith(primary: Colors.grey, background: lightThemePrimaryBg),
+    bottomAppBarTheme: BottomAppBarTheme(color: lightThemePrimaryBg),
   );
 
   CupertinoThemeData get _cupertinoLightTheme => CupertinoThemeData(

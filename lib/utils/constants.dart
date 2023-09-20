@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zimple/managers/person_manager.dart';
-import 'package:zimple/model/user_parameters.dart';
 import 'package:zimple/utils/generic_imports.dart';
-import 'package:zimple/utils/theme_manager.dart';
-import 'package:zimple/widgets/provider_widget.dart';
 
 const locale = 'sv_SE';
 
@@ -63,6 +60,7 @@ final Color dividerColor = Colors.white;
 //final Color accentBlueColor = Colors.lightBlue.shade50;
 final Color accentBlueColor = Colors.indigo.shade800;
 final Color green = Color(0xff7BC9B5);
+final Color red = Color(0xffF44E7B);
 
 final List<BoxShadow> standardShadow = [
   BoxShadow(

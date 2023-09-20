@@ -5,8 +5,6 @@ import 'package:zimple/model/company_settings.dart';
 import 'package:zimple/model/person.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
 import 'package:zimple/utils/utils.dart';
-import 'package:zimple/widgets/listed_view/listed_view.dart';
-import 'package:zimple/widgets/person_circle_avatar.dart';
 import 'package:zimple/widgets/widgets.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -36,7 +34,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
         child: buildListMenu(),
       ),
     );
@@ -126,7 +124,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         elevation: 0,
         children: [
           ExpansionPanel(
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).colorScheme.background,
               canTapOnHeader: true,
               isExpanded: this.isFilteringPersonsExpanded,
               headerBuilder: (BuildContext context, bool isExpanded) {
