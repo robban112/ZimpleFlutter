@@ -375,7 +375,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Robert Lorentz (N8X7LB7478)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 60;
+				CURRENT_PROJECT_VERSION = 61;
 				DEVELOPMENT_TEAM = 3QZ49926JC;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3QZ49926JC;
 				ENABLE_BITCODE = NO;
@@ -522,7 +522,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Robert Lorentz (N8X7LB7478)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 60;
+				CURRENT_PROJECT_VERSION = 61;
 				DEVELOPMENT_TEAM = 3QZ49926JC;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3QZ49926JC;
 				ENABLE_BITCODE = NO;
@@ -563,7 +563,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Robert Lorentz (N8X7LB7478)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 60;
+				CURRENT_PROJECT_VERSION = 61;
 				DEVELOPMENT_TEAM = 3QZ49926JC;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 3QZ49926JC;
 				ENABLE_BITCODE = NO;
