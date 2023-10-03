@@ -110,8 +110,16 @@ class ListedTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: padding,
-        child: Text(text, style: TextStyle(fontWeight: FontWeight.w900, color: Colors.grey.shade500, letterSpacing: 0.5)));
+      padding: padding,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontWeight: FontWeight.w900,
+          color: Colors.black.withOpacity(0.5),
+          letterSpacing: 0.25,
+        ),
+      ),
+    );
   }
 }
 
@@ -123,6 +131,7 @@ class ListedTextField extends ListedItem {
   final TextEditingController? controller;
   final TextInputType? inputType;
   final bool isMultipleLine;
+  final Widget? trailingWidget;
   ListedTextField({
     this.key,
     leadingIcon,
@@ -132,6 +141,7 @@ class ListedTextField extends ListedItem {
     this.controller,
     this.inputType = TextInputType.text,
     this.isMultipleLine = false,
+    this.trailingWidget,
   }) : super(leadingIcon: leadingIcon, child: Container());
 }
 
@@ -261,6 +271,7 @@ class ListedView extends StatelessWidget {
                     border: InputBorder.none),
               ),
             ),
+            if (item.trailingWidget != null) Align(alignment: Alignment.centerRight, child: item.trailingWidget!)
           ],
         ),
       ),

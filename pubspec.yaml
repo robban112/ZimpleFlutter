@@ -57,6 +57,9 @@ dependencies:
   uuid: ^3.0.3
   flutter_email_sender: ^5.2.0
   smooth_page_indicator: ^1.0.0+2
+  geocoding: ^2.1.0
+  geolocator: ^8.2.0
+
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.0

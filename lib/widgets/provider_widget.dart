@@ -8,6 +8,7 @@ import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_company_manager.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
+import 'package:zimple/network/firebase_drive_journal_manager.dart';
 import 'package:zimple/network/firebase_event_manager.dart';
 import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/network/firebase_person_manager.dart';
@@ -41,6 +42,8 @@ class ManagerProvider extends ChangeNotifier {
   late FirebaseCompanyManager firebaseCompanyManager;
 
   late TimereportManager timereportManager;
+
+  late FirebaseDriveJournalManager firebaseDriveJournalManager;
 
   CustomerManager customerManager = CustomerManager(customers: []);
 

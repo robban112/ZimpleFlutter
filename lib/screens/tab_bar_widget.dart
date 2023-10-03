@@ -15,6 +15,7 @@ import 'package:zimple/model/models.dart';
 import 'package:zimple/network/firebase_company_manager.dart';
 import 'package:zimple/network/firebase_contact_manager.dart';
 import 'package:zimple/network/firebase_customer_manager.dart';
+import 'package:zimple/network/firebase_drive_journal_manager.dart';
 import 'package:zimple/network/firebase_notes_manager.dart';
 import 'package:zimple/network/firebase_timereport_manager.dart';
 import 'package:zimple/screens/Calendar/calendar_screen.dart';
@@ -105,6 +106,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
         setupFirebaseTimereport();
         setupPersonsListener();
         setupNotesManager();
+        setupDriveJournalManager();
       });
     });
     super.initState();
@@ -221,6 +223,13 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
 
   void setupNotesManager() {
     managerProvider.firebaseNotesManager = FirebaseNotesManager(
+      company: user.company,
+      personManager: personManager,
+    );
+  }
+
+  void setupDriveJournalManager() {
+    managerProvider.firebaseDriveJournalManager = FirebaseDriveJournalManager(
       company: user.company,
       personManager: personManager,
     );

@@ -75,8 +75,9 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 12.0),
+          HeightBoxes.medium,
           TimereportOverview(),
+          HeightBoxes.medium,
           _buildLatestTimereports(context),
           _buildSectionTitle("Funktioner".toUpperCase()),
           _buildFunctionsListedView(),
@@ -194,7 +195,7 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
                   eventManager: widget.eventManager,
                 ),
               ),
-              SizedBox(height: 24.0),
+              HeightBoxes.medium,
             ],
           )
         : Container();
@@ -221,13 +222,12 @@ class _TimeReportingScreenState extends State<TimeReportingScreen> {
 
   Widget buildLatestTimereportTitle() {
     return Padding(
-      padding: const EdgeInsets.only(left: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("Senaste rapporter", style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
-          TextButton(
-            child: Text("Visa alla »", style: TextStyle(color: Colors.grey.shade500, fontWeight: FontWeight.bold)),
+          ShowAllButton(
             onPressed: () {
               if (widget.user.isAdmin) {
                 goToShowAllTimereportScreen();

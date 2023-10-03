@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/extensions/string_extensions.dart';
@@ -14,6 +15,7 @@ import 'package:zimple/network/firebase_user_manager.dart';
 import 'package:zimple/screens/Settings/CompanySettings/company_settings_screen.dart';
 import 'package:zimple/screens/Settings/Coworkers/add_coworker_screen.dart';
 import 'package:zimple/screens/Settings/Customers/customers_screen.dart';
+import 'package:zimple/screens/Settings/DrivingRecord/driving_record_screen.dart';
 import 'package:zimple/screens/Settings/coworkers_screen.dart';
 import 'package:zimple/screens/Settings/settings_screen.dart';
 import 'package:zimple/screens/Settings/support_screen.dart';
@@ -53,13 +55,6 @@ class _MoreScreenState extends State<MoreScreen> {
 
   void logout(BuildContext context) async {
     await widget.onLogout();
-    // Navigator.of(context).pushAndRemoveUntil(
-    //   CupertinoPageRoute(
-    //     fullscreenDialog: true,
-    //     builder: (context) => LoginScreen(),
-    //   ),
-    //   (route) => false,
-    // );
   }
 
   ListTile buildMenuTile(String title, VoidCallback onTap) {
@@ -68,7 +63,6 @@ class _MoreScreenState extends State<MoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: appBar(CompanySettings.of(context).companyName.capitalize(), withBackButton: false),
       body: Stack(
@@ -127,6 +121,13 @@ class _MoreScreenState extends State<MoreScreen> {
             onTap: () {
               PersistentNavBarNavigator.pushNewScreen(context,
                   screen: CustomerScreen(customers: ManagerProvider.of(context).customers));
+            }),
+        ListedItem(
+            leadingIcon: FontAwesomeIcons.car,
+            trailingIcon: Icons.chevron_right,
+            text: "Körjournal",
+            onTap: () {
+              PersistentNavBarNavigator.pushNewScreen(context, screen: DrivingRecordScreen());
             }),
         ListedItem(
             trailingIcon: Icons.chevron_right,
