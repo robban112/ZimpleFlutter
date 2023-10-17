@@ -92,7 +92,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<bool> isUserLoggedIn() async {
   User? firebaseUser = getLoggedInFirebaseUser();
   if (firebaseUser != null) {
-    String tokenResult = await firebaseUser.getIdToken(true);
+    String? tokenResult = await firebaseUser.getIdToken(true);
     return true;
   } else {
     return false;

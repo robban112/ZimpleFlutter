@@ -11,15 +11,15 @@ dependencies:
   cupertino_icons: ^1.0.4
   encrypt: ^5.0.1
   excel: ^2.1.0
-  firebase_analytics: ^10.2.0
-  firebase_auth: ^4.4.0
-  firebase_core: ^2.9.0
-  firebase_crashlytics: ^3.1.0
-  firebase_database: ^10.1.0
-  firebase_dynamic_links: ^5.1.0
-  firebase_messaging: ^14.4.1
-  firebase_remote_config: ^4.0.0
-  firebase_storage: ^11.1.0
+  firebase_analytics: ^10.5.1
+  firebase_auth: ^4.10.1
+  firebase_core: ^2.17.0
+  firebase_crashlytics: ^3.3.7
+  firebase_database: ^10.2.7
+  firebase_dynamic_links: ^5.3.7
+  firebase_messaging: ^14.6.9
+  firebase_remote_config: ^4.2.7
+  firebase_storage: ^11.2.8
   fl_chart: ^0.61.0
   flutter:
     sdk: flutter

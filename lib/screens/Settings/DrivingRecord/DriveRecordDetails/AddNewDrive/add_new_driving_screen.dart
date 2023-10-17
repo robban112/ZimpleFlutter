@@ -82,19 +82,27 @@ class _DrivingRecordDetailsScreenState extends State<AddNewDrivingScreen> {
                 trailingWidget: GetAddressButton(controller: endAddress),
               ),
               ListedTextField(
-                leadingIcon: FontAwesomeIcons.ruler,
-                placeholder: "Mätarställning start (km)",
-                onChanged: (_) => {},
-                key: null,
-                controller: startMeasurement,
-              ),
+                  leadingIcon: FontAwesomeIcons.ruler,
+                  placeholder: "Mätarställning start (km)",
+                  onChanged: (_) => {},
+                  key: null,
+                  controller: startMeasurement,
+                  inputType: TextInputType.number,
+                  trailingWidget: GetMeasurementButton(
+                    controller: startMeasurement,
+                    driveJournal: widget.driveJournal,
+                  )),
               ListedTextField(
-                leadingIcon: FontAwesomeIcons.ruler,
-                placeholder: "Mätarställning slut (km)",
-                onChanged: (_) => {},
-                key: null,
-                controller: endMeasurement,
-              ),
+                  leadingIcon: FontAwesomeIcons.ruler,
+                  placeholder: "Mätarställning slut (km)",
+                  onChanged: (_) => {},
+                  inputType: TextInputType.number,
+                  key: null,
+                  controller: endMeasurement,
+                  trailingWidget: GetMeasurementButton(
+                    controller: endMeasurement,
+                    driveJournal: widget.driveJournal,
+                  )),
             ],
           ),
           ListedNotefield(
@@ -112,6 +120,12 @@ class _DrivingRecordDetailsScreenState extends State<AddNewDrivingScreen> {
   }
 
   Future<void> onTapSaveDrive() async {
+    final startMeasure = double.tryParse(startMeasurement.text);
+    final endMeasure = double.tryParse(endMeasurement.text);
+    if (startMeasure == null || endMeasure == null) {
+      showSnackbar(context: context, isSuccess: false, message: "Fel, kontrollera skrivna värden");
+      return;
+    }
     final driving = Driving(
       startAddress: startAddress.text,
       endAddress: endAddress.text,
@@ -121,10 +135,12 @@ class _DrivingRecordDetailsScreenState extends State<AddNewDrivingScreen> {
       date: DateTime.now(),
     );
     if (widget.drivingToChange == null) {
+      await updateMeasurement();
       await addNewDrive(driving: driving);
     } else {
       await changeDrive();
     }
+    showSnackbar(context: context, isSuccess: true, message: "Körning sparad!");
     Navigator.of(context).pop();
   }
 
@@ -132,6 +148,12 @@ class _DrivingRecordDetailsScreenState extends State<AddNewDrivingScreen> {
     return ManagerProvider.of(context).firebaseDriveJournalManager.addDrive(
           driveJournal: widget.driveJournal,
           driving: driving,
+        );
+  }
+
+  Future<void> updateMeasurement() {
+    return ManagerProvider.of(context).firebaseDriveJournalManager.updateDriveJournal(
+          newDriveJournal: widget.driveJournal.copyWith(measurement: double.parse(endMeasurement.text)),
         );
   }
 
@@ -147,6 +169,53 @@ class _DrivingRecordDetailsScreenState extends State<AddNewDrivingScreen> {
             isPrivateDrive: privateDrive,
           ),
         );
+  }
+}
+
+class GetMeasurementButton extends StatelessWidget {
+  final TextEditingController controller;
+  final DriveJournal driveJournal;
+  const GetMeasurementButton({required this.controller, required this.driveJournal, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFieldButton(
+      onTap: () {
+        controller.text = driveJournal.measurement.toInt().toString();
+      },
+      child: Center(
+        child: Text(
+          driveJournal.measurement.toInt().toString(),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
+        ),
+      ),
+    );
+  }
+}
+
+class TextFieldButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final Widget child;
+  const TextFieldButton({required this.onTap, required this.child, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 35,
+        width: 50,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.black,
+            width: 2,
+          ),
+        ),
+        child: child,
+      ),
+    );
   }
 }
 
@@ -167,17 +236,12 @@ class _GetAddressButtonState extends State<GetAddressButton> {
   Widget build(BuildContext context) {
     return isLoading
         ? CupertinoActivityIndicator(color: Colors.black)
-        : GestureDetector(
+        : TextFieldButton(
             onTap: onPressed,
-            child: Container(
-              height: 40,
-              width: 60,
-              decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
-              child: Center(
-                child: Text(
-                  "Hämta",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                ),
+            child: Center(
+              child: Text(
+                "Hämta",
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ),
           );

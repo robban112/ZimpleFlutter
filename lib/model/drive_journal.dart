@@ -14,13 +14,13 @@ class DriveJournal implements Model {
 
   const DriveJournal({
     this.id = "",
-    required this.measurement,
     required this.regNr,
     required this.year,
     required this.name,
+    required this.measurement,
+    required this.drivers,
     required this.createdBy,
     required this.createdAt,
-    required this.drivers,
   });
 
   @override
@@ -42,8 +42,30 @@ class DriveJournal implements Model {
       name: map["name"] as String,
       createdBy: map["createdBy"] as String,
       createdAt: DateTime.parse(map["createdAt"] as String),
-      drivers: personManager.getPersonsByIds(List.from(map["drivers"] as List)),
-      measurement: map["measurement"] as double? ?? 0,
+      drivers: map.containsKey("drivers") ? personManager.getPersonsByIds(List.from(map["drivers"] as List)) : [],
+      measurement: map.containsKey("measurement") ? double.parse(map["measurement"].toString()) : 0,
+    );
+  }
+
+  DriveJournal copyWith({
+    String? id,
+    String? regNr,
+    String? year,
+    String? name,
+    double? measurement,
+    List<Person>? drivers,
+    String? createdBy,
+    DateTime? createdAt,
+  }) {
+    return DriveJournal(
+      id: id ?? this.id,
+      regNr: regNr ?? this.regNr,
+      year: year ?? this.year,
+      name: name ?? this.name,
+      measurement: measurement ?? this.measurement,
+      drivers: drivers ?? this.drivers,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

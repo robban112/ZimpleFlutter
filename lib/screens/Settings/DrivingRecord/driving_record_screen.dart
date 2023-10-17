@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zimple/model/drive_journal.dart';
-import 'package:zimple/screens/Settings/DrivingRecord/CreateNewDriveRecord/add_new_drive_journal_screen.dart';
+import 'package:zimple/screens/Settings/DrivingRecord/CreateNewDriveRecord/add_new_drive_record_screen.dart';
 import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/widgets/scaffold/zimple_scaffold.dart';
 

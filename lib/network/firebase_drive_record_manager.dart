@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/person_manager.dart';
@@ -53,10 +54,22 @@ class FirebaseDriveJournalManager extends NetworkManager {
     return driveJournals;
   }
 
+  DriveJournal _mapSingleDriveJournal(DataSnapshot snapshot) {
+    Map<String, dynamic>? mapOfMaps = Map.from(snapshot.value as Map<dynamic, dynamic>);
+    return DriveJournal.fromJson(mapOfMaps, snapshot.key!, personManager);
+  }
+
   Future<List<Driving>> getDrives({required DriveJournal driveJournal}) async {
     if (driveJournal.id.isEmpty) return [];
-    var snapshot = await ref.child(driveJournal.id).child(drivingKey).get();
-    return _mapDrives(snapshot)!;
+    var snapshot = (await ref.child(driveJournal.id).child(drivingKey).once()).snapshot;
+    final drives = _mapDrives(snapshot);
+    if (drives == null) return [];
+    return drives;
+  }
+
+  Future<void> updateDriveJournal({required DriveJournal newDriveJournal}) async {
+    if (newDriveJournal.id.isEmpty) return SynchronousFuture(null);
+    return ref.child(newDriveJournal.id).update(newDriveJournal.toJson());
   }
 
   List<Driving>? _mapDrives(DataSnapshot snapshot) {
@@ -91,6 +104,15 @@ class FirebaseDriveJournalManager extends NetworkManager {
       refDriveJournal = refDriveJournal.limitToFirst(limit);
     }
     return refDriveJournal.onValue.map((event) => _mapDrives(event.snapshot));
+  }
+
+  Stream<DriveJournal> listenDriveJournal({required DriveJournal driveJournal}) {
+    return ref.child(driveJournal.id).onValue.map((event) => _mapSingleDriveJournal(event.snapshot));
+  }
+
+  Future<void> deleteDriveRecord({required DriveJournal driveJournal}) async {
+    if (driveJournal.id.isEmpty) return;
+    return ref.child(driveJournal.id).remove();
   }
 }
 

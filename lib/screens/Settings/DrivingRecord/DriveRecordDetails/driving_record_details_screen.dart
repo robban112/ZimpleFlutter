@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,11 +8,11 @@ import 'package:share_plus/share_plus.dart';
 import 'package:zimple/extensions/future_extensions.dart';
 import 'package:zimple/model/drive_journal.dart';
 import 'package:zimple/model/driving.dart';
-import 'package:zimple/network/firebase_drive_journal_manager.dart';
-import 'package:zimple/screens/Settings/DrivingRecord/CreateNewDriveRecord/add_new_drive_journal_screen.dart';
+import 'package:zimple/network/firebase_drive_record_manager.dart';
+import 'package:zimple/screens/Settings/DrivingRecord/CreateNewDriveRecord/add_new_drive_record_screen.dart';
 import 'package:zimple/screens/Settings/DrivingRecord/DriveRecordDetails/AddNewDrive/add_new_driving_screen.dart';
 import 'package:zimple/screens/Settings/DrivingRecord/DriveRecordDetails/AllDrivings/all_drivings_screen.dart';
-import 'package:zimple/utils/drive_journal_excel_manager.dart';
+import 'package:zimple/utils/drive_record_excel_manager.dart';
 import 'package:zimple/utils/generic_imports.dart';
 import 'package:zimple/widgets/scaffold/zimple_scaffold.dart';
 
@@ -24,10 +26,34 @@ class DrivingRecordDetailsScreen extends StatefulWidget {
 }
 
 class _DrivingRecordDetailsScreenState extends State<DrivingRecordDetailsScreen> {
+  late DriveJournal driveJournal = widget.driveJournal;
+  StreamSubscription? driveJournalSubscription;
+
+  @override
+  void initState() {
+    // Listen to changes to drivejournal
+    Future.delayed(Duration.zero, () {
+      driveJournalSubscription =
+          ManagerProvider.of(context).firebaseDriveJournalManager.listenDriveJournal(driveJournal: driveJournal).listen((event) {
+        print("Got new driveJournal: ${driveJournal.toJson()}");
+        setState(() {
+          driveJournal = event;
+        });
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    driveJournalSubscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ZimpleScaffold(
-      title: widget.driveJournal.name,
+      title: driveJournal.name,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -46,7 +72,7 @@ class _DrivingRecordDetailsScreenState extends State<DrivingRecordDetailsScreen>
               ],
             ),
             StreamBuilder(
-              stream: FirebaseDriveJournalManager.of(context).listenDrives(driveJournal: widget.driveJournal, limit: 10),
+              stream: FirebaseDriveJournalManager.of(context).listenDrives(driveJournal: driveJournal, limit: 10),
               builder: (_, snapshot) {
                 return ListedView(
                   rowInset: const EdgeInsets.symmetric(vertical: 12.0),
@@ -84,7 +110,7 @@ class _DrivingRecordDetailsScreenState extends State<DrivingRecordDetailsScreen>
             PersistentNavBarNavigator.pushNewScreen(
               context,
               screen: AddNewDrivingRecordScreen(
-                driveJournalToChange: widget.driveJournal,
+                driveJournalToChange: driveJournal,
               ),
             );
           },
@@ -129,8 +155,8 @@ class _DrivingRecordDetailsScreenState extends State<DrivingRecordDetailsScreen>
 
   Future<void> shareExcelDrives() async {
     final excel = await DriveJournalExcelManager(
-      driveJournal: widget.driveJournal,
-      drivings: await FirebaseDriveJournalManager.of(context).getDrives(driveJournal: widget.driveJournal),
+      driveJournal: driveJournal,
+      drivings: await FirebaseDriveJournalManager.of(context).getDrives(driveJournal: driveJournal),
     ).saveExcel();
     return Share.shareXFiles([XFile(excel)]).then((value) => null);
   }
@@ -139,7 +165,7 @@ class _DrivingRecordDetailsScreenState extends State<DrivingRecordDetailsScreen>
     return PersistentNavBarNavigator.pushNewScreen(
       context,
       screen: AddNewDrivingScreen(
-        driveJournal: widget.driveJournal,
+        driveJournal: driveJournal,
       ),
     );
   }
@@ -147,7 +173,7 @@ class _DrivingRecordDetailsScreenState extends State<DrivingRecordDetailsScreen>
   Future<void> goToAllDrives() {
     return PersistentNavBarNavigator.pushNewScreen(context,
         screen: AllDrivingsScreen(
-          driveJournal: widget.driveJournal,
+          driveJournal: driveJournal,
         ));
   }
 
@@ -157,7 +183,7 @@ class _DrivingRecordDetailsScreenState extends State<DrivingRecordDetailsScreen>
     PersistentNavBarNavigator.pushNewScreen(
       context,
       screen: AddNewDrivingScreen(
-        driveJournal: widget.driveJournal,
+        driveJournal: driveJournal,
         drivingToChange: driving,
       ),
     );

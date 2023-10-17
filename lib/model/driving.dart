@@ -63,11 +63,11 @@ class Driving implements Model {
   factory Driving.fromJson(Map<Object?, Object?> map, String id) {
     return Driving(
       id: id,
-      startAddress: map['startAddress'] as String,
-      endAddress: map['endAddress'] as String,
-      startMeasure: map['startMeasure'] as String,
-      endMeasure: map['endMeasure'] as String,
-      driverNotesPurpose: map['driverNotesPurpose'] as String,
+      startAddress: map['startAddress'] as String? ?? "",
+      endAddress: map['endAddress'] as String? ?? "",
+      startMeasure: map['startMeasure'] as String? ?? "",
+      endMeasure: map['endMeasure'] as String? ?? "",
+      driverNotesPurpose: map['driverNotesPurpose'] as String? ?? "",
       length: map['length'] as String? ?? "",
       isPrivateDrive: map['isPrivateDrive'] as bool? ?? false,
       date: DateTime.parse(map['date'] as String),
