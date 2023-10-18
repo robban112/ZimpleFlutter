@@ -43,17 +43,21 @@ class ListedItemWidget extends StatelessWidget {
       isTappable: item.onTap != null,
       child: Padding(
         padding: item.withHorizontalPadding ? this.rowInset : EdgeInsets.symmetric(vertical: 12),
-        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _leading(),
-              item.text != null ? _buildText(context, item.textWidth) : item.child!,
-            ],
-          ),
-          Expanded(child: Container()),
-          item.trailingWidget != null ? item.trailingWidget! : Icon(Icons.chevron_right)
-        ]),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Flexible(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _leading(),
+                  Flexible(child: item.text != null ? _buildText(context, item.textWidth) : item.child!),
+                ],
+              ),
+            ),
+            item.trailingWidget != null ? item.trailingWidget! : Icon(Icons.chevron_right)
+          ],
+        ),
       ),
     );
   }

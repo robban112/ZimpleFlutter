@@ -31,7 +31,7 @@ class _AllDrivingsScreenState extends State<AllDrivingsScreen> {
   Widget _buildDrivingInputForm(BuildContext context) {
     return SingleChildScrollView(
       child: StreamBuilder(
-        stream: FirebaseDriveJournalManager.of(context).listenDrives(driveJournal: widget.driveJournal, limit: 10),
+        stream: FirebaseDriveJournalManager.of(context).listenDrives(driveJournal: widget.driveJournal),
         builder: (_, snapshot) {
           return ListedView(
             rowInset: const EdgeInsets.symmetric(vertical: 12.0),

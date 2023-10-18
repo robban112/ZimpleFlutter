@@ -1,5 +1,4 @@
 import 'package:zimple/model/model.dart';
-import 'package:zimple/utils/date_utils.dart';
 
 class Driving implements Model {
   final String id;
@@ -56,7 +55,7 @@ class Driving implements Model {
       'driverNotesPurpose': driverNotesPurpose,
       'length': length,
       'isPrivateDrive': isPrivateDrive,
-      'date': dateStringVerbose(date),
+      'date': date.millisecondsSinceEpoch,
     };
   }
 
@@ -70,7 +69,7 @@ class Driving implements Model {
       driverNotesPurpose: map['driverNotesPurpose'] as String? ?? "",
       length: map['length'] as String? ?? "",
       isPrivateDrive: map['isPrivateDrive'] as bool? ?? false,
-      date: DateTime.parse(map['date'] as String),
+      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
     );
   }
 

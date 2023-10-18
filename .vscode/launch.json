@@ -8,7 +8,7 @@
             "name": "Zimple",
             "program": "lib/main.dart",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
         }
     ]
 }

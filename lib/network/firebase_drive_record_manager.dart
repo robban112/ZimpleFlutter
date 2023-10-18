@@ -75,10 +75,9 @@ class FirebaseDriveJournalManager extends NetworkManager {
   List<Driving>? _mapDrives(DataSnapshot snapshot) {
     List<Driving> drives = [];
     if (snapshot.value == null) return null;
-    Map<String, dynamic>? mapOfMaps = Map.from(snapshot.value as Map<dynamic, dynamic>);
 
-    for (String key in mapOfMaps.keys) {
-      Map<Object?, Object?> data = mapOfMaps[key];
+    for (final child in snapshot.children.toList().reversed) {
+      Map<Object?, Object?> data = child.value as Map<Object?, Object?>;
       var journal = Driving.fromJson(data, key);
       drives.add(journal);
     }
@@ -99,10 +98,7 @@ class FirebaseDriveJournalManager extends NetworkManager {
   }
 
   Stream<List<Driving>?> listenDrives({required DriveJournal driveJournal, int? limit}) {
-    Query refDriveJournal = ref.child(driveJournal.id).child(drivingKey);
-    if (limit != null) {
-      refDriveJournal = refDriveJournal.limitToFirst(limit);
-    }
+    Query refDriveJournal = ref.child(driveJournal.id).child(drivingKey).orderByChild("date").ref;
     return refDriveJournal.onValue.map((event) => _mapDrives(event.snapshot));
   }
 
