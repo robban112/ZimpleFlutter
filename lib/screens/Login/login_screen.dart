@@ -33,10 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: false,
       body: LoaderOverlay(
-        overlayWidget: CircularProgressIndicator(
+        overlayWidgetBuilder: (_) => CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(green),
         ),
-        overlayOpacity: 0.5,
         child: GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());

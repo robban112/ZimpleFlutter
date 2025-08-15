@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:zimple/model/user_parameters.dart';
+
 import '../model/person.dart';
-import '../utils/color_utils.dart';
 
 class FirebasePersonManager {
   String company;
@@ -33,18 +33,7 @@ class FirebasePersonManager {
       dynamic personData = mapOfMaps[key];
       try {
         persons.add(
-          Person(
-            color: hexToColor(personData['color']),
-            name: personData['name'] ?? "",
-            id: key,
-            email: personData['email'],
-            profilePicturePath: personData['profilePicturePath'],
-            phonenumber: personData['phonenumber'],
-            iOSLink: personData['iOSLink'],
-            androidLink: personData['androidLink'],
-            ssn: personData['ssn'],
-            address: personData['address'],
-          ),
+          Person.fromJson(personData, key: key),
         );
       } catch (error) {
         print("Unable to parse person: ${personData.toString()} key: ${snapshot.key}");

@@ -23,25 +23,17 @@ class CoworkerDetailsScreen extends StatefulWidget {
 class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
   Color? selectedNewColor;
 
-  late TextEditingController _nameController;
+  late TextEditingController _nameController = TextEditingController(text: widget.person.name);
 
-  late TextEditingController _phoneController;
+  late TextEditingController _phoneController = TextEditingController(text: widget.person.phonenumber);
 
-  late TextEditingController _emailController;
+  late TextEditingController _emailController = TextEditingController(text: widget.person.email);
 
-  late TextEditingController _ssnController;
+  late TextEditingController _ssnController = TextEditingController(text: widget.person.ssn);
 
-  late TextEditingController _addressController;
+  late TextEditingController _addressController = TextEditingController(text: widget.person.address);
 
-  @override
-  void initState() {
-    _nameController = TextEditingController(text: widget.person.name);
-    _phoneController = TextEditingController(text: widget.person.phonenumber);
-    _emailController = TextEditingController(text: widget.person.email);
-    _ssnController = TextEditingController(text: widget.person.ssn);
-    _addressController = TextEditingController(text: widget.person.address);
-    super.initState();
-  }
+  late TextEditingController _salaryController = TextEditingController(text: widget.person.salary);
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +80,13 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
                     leadingIcon: Icons.location_city,
                     controller: _addressController,
                     inputType: TextInputType.text),
+                if (user(context).isAdmin)
+                  ListedTextField(
+                    placeholder: 'Timlön',
+                    leadingIcon: Icons.money,
+                    controller: _salaryController,
+                    inputType: TextInputType.number,
+                  ),
                 _buildChangeColorRow(),
               ]),
               _buildMagicLinks(),
@@ -205,6 +204,7 @@ class _CoworkerDetailsScreenState extends State<CoworkerDetailsScreen> {
       ssn: _ssnController.text,
       color: selectedNewColor ?? widget.person.color,
       address: _addressController.text,
+      salary: _salaryController.text,
     );
     context.read<ManagerProvider>().firebasePersonManager.setUserProps(newPerson);
     context.read<ManagerProvider>().updatePerson(newPerson);

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:zimple/extensions/double_extensions.dart';
 import 'package:zimple/managers/timereport_manager.dart';
 import 'package:zimple/model/models.dart';
@@ -118,6 +118,7 @@ class _SalaryBasisScreenState extends State<SalaryBasisScreen> {
   }
 
   RichText _buildHourText(String amount) {
+    double salary = double.tryParse(loggedInPerson(context)?.salary ?? "0") ?? 0;
     return RichText(
       text: TextSpan(
         children: [
@@ -125,13 +126,61 @@ class _SalaryBasisScreenState extends State<SalaryBasisScreen> {
             text: amount,
             style: TextStyle(
               fontWeight: FontWeight.w900,
-              fontSize: 32,
+              fontSize: 24,
               color: ThemeNotifier.of(context).textColor,
             ),
           ),
           TextSpan(text: " "),
           TextSpan(
             text: "timmar",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: ThemeNotifier.of(context).textColor.withOpacity(0.5),
+            ),
+          ),
+          TextSpan(
+            text: " x ",
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 20,
+              color: ThemeNotifier.of(context).textColor.withOpacity(0.5),
+            ),
+          ),
+          TextSpan(
+            text: "${loggedInPerson(context)?.salary}",
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 24,
+              color: ThemeNotifier.of(context).textColor,
+            ),
+          ),
+          TextSpan(
+            text: " kr/h",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: ThemeNotifier.of(context).textColor.withOpacity(0.5),
+            ),
+          ),
+          TextSpan(
+            text: " = ",
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 24,
+              color: ThemeNotifier.of(context).textColor.withOpacity(0.5),
+            ),
+          ),
+          TextSpan(
+            text: "${(salary * double.parse(amount)).parseToTwoDigits()}",
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 24,
+              color: ThemeNotifier.of(context).textColor,
+            ),
+          ),
+          TextSpan(
+            text: " kr",
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,

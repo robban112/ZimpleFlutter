@@ -28,16 +28,16 @@ class ExcelManager {
     required this.customerManager,
   });
 
-  static const List<String> headers = [
-    "Personnr",
-    "Namn",
-    "Kund",
-    "Datum",
-    "Arbetad tid",
-    "Rast",
-    "Övertid",
-    "Utfört arbete",
-    "Address utfört arbete"
+  static List<TextCellValue> headers = [
+    TextCellValue("Personnr"),
+    TextCellValue("Namn"),
+    TextCellValue("Kund"),
+    TextCellValue("Datum"),
+    TextCellValue("Arbetad tid"),
+    TextCellValue("Rast"),
+    TextCellValue("Övertid"),
+    TextCellValue("Utfört arbete"),
+    TextCellValue("Address utfört arbete")
   ];
 
   Excel createExcel() {
@@ -52,19 +52,19 @@ class ExcelManager {
       String customerString = _getCustomerString(timereport, event);
 
       excel.appendRow('Sheet1', [
-        person?.ssn ?? "",
-        person?.name ?? "",
-        customerString,
-        dateToYearMonthDay(timereport.startDate),
-        getHourDiff(
+        TextCellValue(person?.ssn ?? ""),
+        TextCellValue(person?.name ?? ""),
+        TextCellValue(customerString),
+        TextCellValue(dateToYearMonthDay(timereport.startDate)),
+        TextCellValue(getHourDiff(
           timereport.startDate,
           timereport.endDate,
           minutesBreak: timereport.breakTime,
-        ),
-        (timereport.breakTime / 60).toStringAsFixed(2),
-        "",
-        timereport.comment,
-        event?.location ?? ""
+        )),
+        TextCellValue((timereport.breakTime / 60).toStringAsFixed(2)),
+        TextCellValue(""),
+        TextCellValue(timereport.comment ?? ""),
+        TextCellValue(event?.location ?? "")
       ]);
     }
     return excel;

@@ -49,6 +49,6 @@ class _CreatedOfferScreenState extends State<CreatedOfferScreen> {
 
   void _onPressedShare() async {
     File file = await PdfInvoiceApi.generate(widget.invoice);
-    Share.shareFiles([file.path]);
+    SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
   }
 }

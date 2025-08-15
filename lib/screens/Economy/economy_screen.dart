@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:zimple/screens/Economy/Offert/SavedProducts/saved_products_screen.dart';
 import 'package:zimple/screens/Economy/Offert/create_offer_screen.dart';
 import 'package:zimple/utils/constants.dart';

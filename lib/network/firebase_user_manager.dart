@@ -18,20 +18,26 @@ class FirebaseUserManager {
   }
 
   Future<UserParameters> _getUserParameters(String userToken) async {
-    final database = FirebaseDatabase.instance.ref();
-    print('USER TOKEN: $userToken');
-    var databaseEvent = await database.ref.child('Users').child(userToken).once();
-    var snapshot = databaseEvent.snapshot;
-    Map<dynamic, dynamic> snapshotMap = (snapshot.value as Map<dynamic, dynamic>);
-    print('COMPANY ID: ${snapshotMap['company']}');
-    return UserParameters(
-        company: snapshotMap['company'],
-        isAdmin: snapshotMap['isAdmin'] ?? false,
-        token: userToken,
-        email: user?.email ?? "",
-        name: snapshotMap['name'],
-        profilePicturePath: (snapshot.value as Map<dynamic, dynamic>)['profilePicturePath'],
-        fcmToken: snapshotMap['fcmToken']);
+    try {
+      // final url = FirebaseDatabase.instance.databaseURL;
+      final database = FirebaseDatabase.instance.ref();
+      print('USER TOKEN: $userToken');
+      var databaseEvent = await database.ref.child('Users').child(userToken).once();
+      var snapshot = databaseEvent.snapshot;
+      Map<dynamic, dynamic> snapshotMap = (snapshot.value as Map<dynamic, dynamic>);
+      print('COMPANY ID: ${snapshotMap['company']}');
+      return UserParameters(
+          company: snapshotMap['company'],
+          isAdmin: snapshotMap['isAdmin'] ?? false,
+          token: userToken,
+          email: user?.email ?? "",
+          name: snapshotMap['name'],
+          profilePicturePath: (snapshot.value as Map<dynamic, dynamic>)['profilePicturePath'],
+          fcmToken: snapshotMap['fcmToken']);
+    } catch (error) {
+      print("Unable to fetch current user: $error");
+      rethrow;
+    }
   }
 
   Future<void> setUserProfileImage(UserParameters user, String filePath) async {

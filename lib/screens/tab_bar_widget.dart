@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:zimple/managers/customer_manager.dart';
 import 'package:zimple/managers/timereport_manager.dart';
@@ -72,6 +72,11 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
   void initState() {
     managerProvider = Provider.of<ManagerProvider>(context, listen: false);
     managerProvider.firebaseUserManager = firebaseUserManager;
+    setupUser();
+    super.initState();
+  }
+
+  Future<void> setupUser() async {
     firebaseUserManager.getUser()?.then((user) {
       //Utils.setLoading(context, true);
       _setupUser(user);
@@ -109,7 +114,6 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
         setupDriveJournalManager();
       });
     });
-    super.initState();
   }
 
   _setupUser(UserParameters user) {
@@ -345,10 +349,9 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
             width: MediaQuery.of(context).size.width,
             color: Theme.of(context).primaryColor)
         : LoaderOverlay(
-            overlayWidget: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).bottomNavigationBarTheme.backgroundColor!),
-            ),
-            overlayOpacity: 0.0,
+            overlayWidgetBuilder: (_) => CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).bottomNavigationBarTheme.backgroundColor!),
+                ),
             child: Stack(
               children: [
                 Container(
@@ -360,15 +363,12 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
                   controller: _controller,
                   screens: _buildScreens(context),
                   items: _navBarsItems(),
-                  confineInSafeArea: true,
                   //backgroundColor: Color(0xffF4F7FB),
                   backgroundColor: ThemeNotifier.darkThemePrimaryBg,
                   handleAndroidBackButtonPress: true,
                   resizeToAvoidBottomInset:
                       true, // This needs to be true if you want to move up the screen when keyboard appears.
                   stateManagement: true,
-                  hideNavigationBarWhenKeyboardShows:
-                      true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
                   decoration: NavBarDecoration(
                     // borderRadius: BorderRadius.only(
                     //   topLeft: Radius.circular(7),
@@ -378,17 +378,7 @@ class _TabBarControllerState extends State<TabBarWidget> with TickerProviderStat
                     colorBehindNavBar: Colors.white,
                   ),
                   navBarHeight: kBottomNavigationBarHeight,
-                  popAllScreensOnTapOfSelectedTab: true,
-                  popActionScreens: PopActionScreensType.all,
-                  itemAnimationProperties: ItemAnimationProperties(
-                    // Navigation Bar's items animation properties.
-                    duration: Duration(milliseconds: 150),
-                    curve: Curves.ease,
-                  ),
-                  screenTransitionAnimation: ScreenTransitionAnimation(
-                    // Screen transition animation on change of selected tab.
-                    animateTabTransition: false,
-                  ),
+
                   navBarStyle: NavBarStyle.style12, // Choose the nav bar style with this property.
                 ),
               ],

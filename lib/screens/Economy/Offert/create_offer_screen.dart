@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/screens/Economy/Offert/Components/invoice_item_widget.dart';
 import 'package:zimple/screens/Economy/Offert/CreatedOffer/created_offer_screen.dart';
@@ -144,14 +144,12 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
     return ListedView(
       rowInset: EdgeInsets.symmetric(vertical: 12),
       items: [
-        ListedTextField(leadingIcon: Icons.title, placeholder: 'Bankgiro', controller: bankgiroController),
+        ListedTextField(placeholder: 'Bankgiro', controller: bankgiroController),
         ListedTextField(
-          leadingIcon: Icons.title,
           placeholder: 'Plusgiro',
           controller: plusgiroController,
         ),
         ListedTextField(
-          leadingIcon: Icons.title,
           placeholder: 'IBAN',
           controller: ibanController,
         ),
@@ -163,19 +161,16 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
     return ListedView(
       rowInset: EdgeInsets.symmetric(vertical: 12),
       items: [
-        ListedTextField(leadingIcon: Icons.title, placeholder: 'Organisationsnummer', controller: orgController),
+        ListedTextField(placeholder: 'Organisationsnummer', controller: orgController),
         ListedTextField(
-          leadingIcon: Icons.title,
           placeholder: 'Företagsnamn',
           controller: nameController,
         ),
         ListedTextField(
-          leadingIcon: Icons.title,
           placeholder: 'Moms registreringsnummer',
           controller: momsController,
         ),
         ListedTextField(
-          leadingIcon: Icons.title,
           placeholder: 'Företagets hemsida',
           controller: websiteController,
         ),
@@ -186,33 +181,27 @@ class _CreateOfferScreenState extends State<CreateOfferScreen> {
   ListedView _buildInformationInputFields() {
     return ListedView(rowInset: EdgeInsets.symmetric(vertical: 12), items: [
       ListedTextField(
-        leadingIcon: Icons.title,
         placeholder: 'Mottagare',
         controller: receiverController,
       ),
       ListedTextField(
-        leadingIcon: Icons.title,
         placeholder: 'Avsändare',
         controller: senderController,
       ),
       ListedTextField(
-        leadingIcon: Icons.title,
         placeholder: 'Din email',
         controller: emailController,
       ),
       ListedTextField(
-        leadingIcon: Icons.title,
         placeholder: 'Ditt telefonnummer',
         controller: phoneController,
       ),
       ListedTextField(
-        leadingIcon: Icons.title,
         placeholder: 'Betalningsvillkor',
         controller: termsController,
         inputType: TextInputType.number,
       ),
       ListedTextField(
-        leadingIcon: Icons.title,
         placeholder: 'Beskrivning',
         controller: descController,
       ),

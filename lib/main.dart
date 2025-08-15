@@ -4,9 +4,9 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -34,9 +34,25 @@ const _kTestingCrashlytics = true;
 Future<void> main() async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+    try {
+      await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: "AIzaSyDTq4RuCtwCLFcEwUvSbBlBq0o2NM2Ol1w",
+          appId: "1:449198960487:web:ee0403c4356ee156",
+          messagingSenderId: "449198960487",
+          projectId: "simple-ecb8f",
+          databaseURL: "https://simple-ecb8f.firebaseio.com",
+          storageBucket: "simple-ecb8f.appspot.com",
+          authDomain: "simple-ecb8f.firebaseapp.com",
+          measurementId: "G-K0HQMZXFN4",
+        ),
+      );
+    } catch (error) {
+      print("FIREBASEINITERROR: $error");
+    }
+
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    if (!kIsWeb) FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     runApp(
       ChangeNotifierProvider<ThemeNotifier>(
         create: (_) => new ThemeNotifier(),
@@ -44,7 +60,7 @@ Future<void> main() async {
       ),
     );
   }, (error, stackTrace) {
-    FirebaseCrashlytics.instance.recordError(error, stackTrace);
+    if (!kIsWeb) FirebaseCrashlytics.instance.recordError(error, stackTrace);
   });
 }
 
@@ -142,12 +158,15 @@ class _ZimpleState extends State<Zimple> {
 
   @override
   void initState() {
-    askPermissionForPush();
-    initDynamicLinks();
-    _handleIncomingLinks();
-    _handleInitialUri();
-    _initializeFlutterFire();
-    _setupInteractedMessage();
+    if (!kIsWeb) {
+      askPermissionForPush();
+      initDynamicLinks();
+      _handleIncomingLinks();
+      _handleInitialUri();
+      _initializeFlutterFire();
+      _setupInteractedMessage();
+    }
+
     super.initState();
   }
 
@@ -173,12 +192,14 @@ class _ZimpleState extends State<Zimple> {
   }
 
   Future<void> initDynamicLinks() async {
+    if (kIsWeb) return;
+
     print("Setting up Firebase Dynamic Link");
-    Stream<PendingDynamicLinkData> stream = FirebaseDynamicLinks.instance.onLink;
-    stream.listen((event) {
-      final Uri? deepLink = event.link;
-      print("Got deep link: $deepLink");
-    });
+    // Stream<PendingDynamicLinkData> stream = FirebaseDynamicLinks.instance.onLink;
+    // stream.listen((event) {
+    //   final Uri? deepLink = event.link;
+    //   print("Got deep link: $deepLink");
+    // });
   }
 
   void _onGotUri(Uri uri) {
@@ -228,11 +249,11 @@ class _ZimpleState extends State<Zimple> {
 
     if (_kTestingCrashlytics) {
       // Force enable crashlytics collection enabled if we're testing it.
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+      if (!kIsWeb) await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
     } else {
       // Else only enable it in non-debug builds.
       // You could additionally extend this to allow users to opt-in.
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+      if (!kIsWeb) await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
     }
 
     if (_kShouldTestAsyncErrorOnInit) {

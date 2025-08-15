@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:zimple/model/models.dart';
 import 'package:zimple/model/product.dart';
 import 'package:zimple/screens/Economy/Offert/SelectProduct/select_saved_products_screen.dart';

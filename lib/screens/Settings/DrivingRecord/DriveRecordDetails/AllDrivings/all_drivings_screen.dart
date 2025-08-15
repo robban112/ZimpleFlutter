@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:zimple/model/drive_journal.dart';
 import 'package:zimple/model/driving.dart';
 import 'package:zimple/network/firebase_drive_record_manager.dart';

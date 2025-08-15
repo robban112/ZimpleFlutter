@@ -176,7 +176,7 @@ class _TimereportMonthReportScreenState extends State<TimereportMonthReportScree
     try {
       String filePath = await excelManager.saveExcel();
       print("file saved at: $filePath");
-      Share.shareFiles([filePath]);
+      SharePlus.instance.share(ShareParams(files: [XFile(filePath)]));
     } catch (error) {
       // Show Error
       _showSnackbarError();

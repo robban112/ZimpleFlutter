@@ -17,39 +17,41 @@ class DriveJournalExcelManager {
     required this.drivings,
   });
 
-  static const List<String> headers = [
-    "Datum",
-    "Start (km)",
-    "Slut (km)",
-    "Reslängd (km)",
-    "StartAdress",
-    "SlutAdress",
-    "Förare, syfte och anteckningar",
+  static List<TextCellValue> headers = [
+    TextCellValue("Datum"),
+    TextCellValue("Start (km)"),
+    TextCellValue("Slut (km)"),
+    TextCellValue("Reslängd (km)"),
+    TextCellValue("StartAdress"),
+    TextCellValue("SlutAdress"),
+    TextCellValue("Förare, syfte och anteckningar"),
   ];
 
   Excel createExcel() {
     var excel = Excel.createExcel();
-    var headerStyle = CellStyle(fontSize: 12, fontColorHex: "#FF000000", bold: true);
-    excel.updateCell("Sheet1", CellIndex.indexByString("A1"), "Körjournal", cellStyle: headerStyle.copyWith(fontSizeVal: 20));
-    excel.updateCell("Sheet1", CellIndex.indexByString("A2"), "Registreringsnummer: ${driveJournal.regNr}",
+    var headerStyle = CellStyle(fontSize: 12, fontColorHex: ExcelColor.fromHexString("#FF000000"), bold: true);
+    excel.updateCell("Sheet1", CellIndex.indexByString("A1"), TextCellValue("Körjournal"),
+        cellStyle: headerStyle.copyWith(fontSizeVal: 20));
+    excel.updateCell("Sheet1", CellIndex.indexByString("A2"), TextCellValue("Registreringsnummer: ${driveJournal.regNr}"),
         cellStyle: headerStyle);
-    excel.updateCell("Sheet1", CellIndex.indexByString("A3"), "År: ${driveJournal.year}", cellStyle: headerStyle);
-    excel.updateCell("Sheet1", CellIndex.indexByString("A4"), "Datum", cellStyle: headerStyle);
-    excel.updateCell("Sheet1", CellIndex.indexByString("B4"), "Start (km)", cellStyle: headerStyle);
-    excel.updateCell("Sheet1", CellIndex.indexByString("C4"), "Slut (km)", cellStyle: headerStyle);
-    excel.updateCell("Sheet1", CellIndex.indexByString("D4"), "Reslängd (km)", cellStyle: headerStyle);
-    excel.updateCell("Sheet1", CellIndex.indexByString("E4"), "StartAdress", cellStyle: headerStyle);
-    excel.updateCell("Sheet1", CellIndex.indexByString("F4"), "SlutAdress", cellStyle: headerStyle);
-    excel.updateCell("Sheet1", CellIndex.indexByString("G4"), "Förare, syfte och anteckningar", cellStyle: headerStyle);
+    excel.updateCell("Sheet1", CellIndex.indexByString("A3"), TextCellValue("År: ${driveJournal.year}"), cellStyle: headerStyle);
+    excel.updateCell("Sheet1", CellIndex.indexByString("A4"), TextCellValue("Datum"), cellStyle: headerStyle);
+    excel.updateCell("Sheet1", CellIndex.indexByString("B4"), TextCellValue("Start (km)"), cellStyle: headerStyle);
+    excel.updateCell("Sheet1", CellIndex.indexByString("C4"), TextCellValue("Slut (km)"), cellStyle: headerStyle);
+    excel.updateCell("Sheet1", CellIndex.indexByString("D4"), TextCellValue("Reslängd (km)"), cellStyle: headerStyle);
+    excel.updateCell("Sheet1", CellIndex.indexByString("E4"), TextCellValue("StartAdress"), cellStyle: headerStyle);
+    excel.updateCell("Sheet1", CellIndex.indexByString("F4"), TextCellValue("SlutAdress"), cellStyle: headerStyle);
+    excel.updateCell("Sheet1", CellIndex.indexByString("G4"), TextCellValue("Förare, syfte och anteckningar"),
+        cellStyle: headerStyle);
     for (Driving driving in drivings) {
       excel.appendRow('Sheet1', [
-        dateStringVerbose(driving.date),
-        driving.startMeasure,
-        driving.endMeasure,
-        driving.length,
-        driving.startAddress,
-        driving.endAddress,
-        driving.driverNotesPurpose,
+        TextCellValue(dateStringVerbose(driving.date)),
+        TextCellValue(driving.startMeasure),
+        TextCellValue(driving.endMeasure),
+        TextCellValue(driving.length),
+        TextCellValue(driving.startAddress),
+        TextCellValue(driving.endAddress),
+        TextCellValue(driving.driverNotesPurpose),
       ]);
     }
     return excel;
